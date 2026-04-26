@@ -63,3 +63,7 @@ paper/appendix/*.tex
 paper/appendix_vldb/*.docx
 paper/appendix_vldb/*.pdf
 paper/appendix_vldb/*.tex
+
+# Internal planning docs (venue-specific, not for public repo)
+docs/*_PAPER_OUTLINE*.md
+docs/*VENUE_DISTILLATION*.md
