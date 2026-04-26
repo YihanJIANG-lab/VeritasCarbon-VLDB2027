@@ -49,3 +49,7 @@ open_source_release/
 !results/**/*.json
 !results/**/*.csv
 !results/**/*.tex
+
+# Allow sample dataset (small, representative)
+!data/sample/
+!data/sample/*.jsonl

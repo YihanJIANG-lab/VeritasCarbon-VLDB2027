@@ -53,13 +53,15 @@ VeritasCarbon-SIGMOD2027/
 │   │   ├── Layer3/samples/      # Regulatory guidelines (2 samples)
 │   │   ├── Layer4/samples/      # Industry analyses (2 samples)
 │   │   └── CORPUS_MANIFEST.md   # Full listing of all 17,721 documents
-│   ├── processed_corpus/        # Semantically segmented chunks [LFS]
+│   ├── processed_corpus/        # Semantically segmented chunks
 │   │   └── chunks_sampled_20000_by_year.jsonl
-│   ├── instructions/            # Generated QA pairs [LFS]
+│   ├── instructions/            # Generated QA pairs (full set reproducible via scripts)
 │   │   ├── qa_pairs_complete_v3_1.5w.jsonl  (15,000 pairs)
 │   │   └── qa_pairs_complete_v3_2w.jsonl    (20,000 pairs)
-│   └── instruction_datasets/
-│       └── train.jsonl           # Final training set
+│   ├── instruction_datasets/
+│   │   └── train.jsonl           # Final training set
+│   └── sample/                   # Representative 500-pair sample (in repo)
+│       └── veritascarbon_sample_500.jsonl
 ├── results/
 │   ├── baselines/               # Direct / Self-Instruct / WizardLM-Evol
 │   ├── ablation/                # Expert count / Collaboration / Feedback / Knowledge
@@ -148,6 +150,14 @@ The CoDE (Council of Domain Experts) framework operates in three stages:
 | Avg. instruction length | 106.5 chars |
 | Avg. response length | 380.4 chars |
 | Quality score (mean ± std) | 0.667 ± 0.103 |
+
+### Data Availability
+
+We release the dataset under a **tiered strategy** (see [`DATA_AVAILABILITY.md`](DATA_AVAILABILITY.md) for full details):
+
+- **Sample (500 pairs)**: Included directly in this repository (`data/sample/veritascarbon_sample_500.jsonl`). Drawn via `random.seed(42)` from the full pool; sufficient to inspect data quality, format, and metadata richness.
+- **Full dataset (35,009 pairs)**: Reproducible from source using the provided notebooks and scripts. The raw corpus (~2.7 GB) contains copyrighted material and cannot be redistributed in full; we provide `CORPUS_MANIFEST.md` with complete provenance.
+- **Pre-generated full data**: Available upon request via GitHub Issue or email (hosted externally due to size).
 
 **Format** (JSONL):
 ```json
