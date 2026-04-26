@@ -1,0 +1,9 @@
+Metric,Value
+Total QA pairs,35009.0
+Multi-expert ratio,0.4506
+Meta-expert ratio,1.0
+Expert types used,11.0
+Avg quality score,0.6667
+Std quality score,0.1028
+Avg instruction length (chars),106.5
+Avg response length (chars),380.4

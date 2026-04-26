@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Large data files
+*.jsonl
+*.xlsx
+*.png
+*.pdf
+*.docx
+
+# Unsloth cache
+unsloth_compiled_cache/
+
+# Logs
+logs/*.log
+results/logs/*.log
+
+# Notebook outputs
+notebooks/*_output.ipynb
+results/logs/*_output.ipynb
+
+# Raw corpus samples (large PDFs/TXTs/XLSXs)
+data/raw_corpus/**
+
+# Venue distillation intermediate outputs (irrelevant to reproducibility)
+docs/acm_submission/
+docs/venue_distillation/
+docs/*.docx
+
+# Large generated figures (reproducible via scripts)
+results/**/*.pdf
+results/**/*.png
+
+# Embedded repo
+open_source_release/
+
+# Keep small metadata
+!data/raw_corpus/CORPUS_MANIFEST.md
+!paper/figures/*.csv
+!results/**/*.json
+!results/**/*.csv
+!results/**/*.tex

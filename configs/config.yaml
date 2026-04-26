@@ -1,0 +1,131 @@
+# VeritasCarbon-Trust Configuration File
+
+# Model Configuration
+model:
+  # Base model: GLM-4.7 for API-based training data generation, then fine-tune open-source variant
+  # Note: Open-source GLM-4.7 name may differ; adjust as needed
+  # base_model_name: "THUDM/glm-4-9b-chat"  # GLM-4 open-source (if available), else Qwen
+  # Fallback: use Qwen as student model if GLM-4 open-source is unavailable
+  # base_model_name: "Qwen/Qwen2.5-7B-Instruct"  # Small model fallback
+  
+  # Qwen2.5-72B for fine-tuning (same as QA generation model)
+  base_model_name: "Qwen/Qwen2.5-72B-Instruct"  # 72B large model
+  # Or local path: "/root/autodl-fs/models/Qwen2-72B-Instruct/Qwen/Qwen2-72B-Instruct"
+  
+  max_length: 2048
+  use_qlora: true
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.1
+
+# Data Configuration
+data:
+  raw_corpus_path: "data/raw_corpus"
+  processed_corpus_path: "data/processed_corpus"
+  instruction_datasets_path: "data/instruction_datasets"
+  evaluation_benchmark_path: "data/evaluation_benchmark"
+  
+  # Text processing
+  chunk_size: 512
+  chunk_overlap: 50
+  min_chunk_length: 100
+  
+  # Traditional Chinese to Simplified Chinese conversion
+  convert_traditional: true
+  
+  # Language filtering (only keep Chinese)
+  chinese_only: true
+  min_chinese_ratio: 0.60  # Minimum Chinese character ratio (0.0-1.0)
+  
+  # Deduplication
+  chunk_simhash_threshold: 3  # Hamming distance threshold for chunk-level simhash deduplication
+
+# API Configuration
+api:
+  provider: "zhipu"  # Zhipu AI GLM-4.7
+  # Zhipu AI GLM model options:
+  # - "glm-4" (GLM-4 standard, recommended for QA generation)
+  # - "glm-4-plus" (GLM-4 plus, higher quality)
+  # - "glm-4-flash" (GLM-4 flash, cost-effective)
+  # - "glm-4-all" (GLM-4 all-in-one)
+  model_name: "glm-4"  # GLM-4.7 standard for QA generation and base model fine-tuning
+  api_key: null  # Read from env ZHIPU_API_KEY, or set here
+
+# CoDE (Council of Domain Experts) Framework Configuration
+coe:
+  # Agent prompts will be defined in src/instruction_generation/agents.py
+  max_iterations: 2  # Number of feedback loop iterations
+  temperature: 0.7
+  max_tokens: 2048
+  
+  # API configuration (migrated to api block; kept for backward compatibility)
+  api_provider: "zhipu"  # Deprecated, use api.provider
+  model_name: "glm-4"  # Deprecated, use api.model_name
+  
+  # Adaptive Expert Selection (layered selection strategy)
+  use_adaptive_selection: true  # Enable adaptive expert selection
+  use_layered_selection: true  # Enable layered selection (base layer first, analysis layer supplement)
+  expert_selection_model: "bert-base-chinese"  # Model for chunk classification
+  min_experts: 1  # Minimum number of experts to use
+  max_experts: 3  # Maximum number of experts to use
+  # Layered selection config
+  layered_selection:
+    base_layer_required: true  # Base layer must select at least one
+    analysis_layer_threshold: 0.3  # Analysis layer selection threshold
+    verification_layer_threshold: 0.3  # Verification layer selection threshold
+    graph_layer_threshold: 0.5  # Graph layer selection threshold
+  
+  # Expert Collaboration
+  enable_collaboration: true  # Enable expert collaboration
+  collaboration_mode: "sequential"  # "sequential" or "parallel"
+  
+  # Domain Knowledge Injection
+  use_domain_knowledge: true  # Enable domain knowledge injection
+  knowledge_base_path: "data/knowledge_base"  # Path to ESG knowledge base
+  max_knowledge_items: 5  # Maximum number of knowledge items to inject
+  
+  # Meta-Expert Configuration (dynamic instruction generation)
+  use_meta_expert: true  # Enable Meta-Expert for dynamic instruction generation
+  carbon_centric: true  # Carbon-centric constraint (all instructions lead to carbon assessment)
+  
+  # Phase 2 advanced experts
+  enable_advanced_experts: true  # Enable Phase 2 advanced experts (6)
+
+# Training Configuration
+training:
+  output_dir: "models/finetuned"
+  num_train_epochs: 3
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 4
+  learning_rate: 2e-4
+  warmup_steps: 100
+  logging_steps: 10
+  save_steps: 500
+  evaluation_strategy: "steps"
+  eval_steps: 500
+
+# Evaluation Configuration
+evaluation:
+  metrics: ["rouge-l", "bleu", "bertscore", "bleurt", "factcheck"]
+  output_path: "results/outputs"
+  
+  # Domain-specific benchmarks
+  benchmarks:
+    esg_qa: "data/evaluation_benchmark/esg_qa_benchmark.jsonl"
+    esg_ie: "data/evaluation_benchmark/esg_ie_benchmark.jsonl"
+    esg_summary: "data/evaluation_benchmark/esg_summary_benchmark.jsonl"
+    esg_classification: "data/evaluation_benchmark/esg_classification_benchmark.jsonl"
+  
+  # Human evaluation
+  human_evaluation:
+    sample_size: 500
+    num_annotators: 3
+    evaluation_dimensions: ["relevance", "accuracy", "fluency", "domain_relevance"]
+
+# Paths
+paths:
+  base_model_dir: "models/base"
+  finetuned_model_dir: "models/finetuned"
+  results_dir: "results"
+  logs_dir: "results/logs"
+

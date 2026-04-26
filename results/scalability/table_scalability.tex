@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\caption{Resource consumption at different corpus scales.}
+\label{tab:scalability}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{rccccc}
+\toprule
+Chunks & Gen. Time (s) & Throughput (pairs/min) & API Calls & Tokens ($\times 10^3$) & Peak Memory (MB) \\
+\midrule
+  500 & 1,308 & 22.9 & 1,500 & 400 & N/A \\
+  1,000 & 2,723 & 22.0 & 3,000 & 800 & N/A \\
+  2,000 & 5,088 & 23.6 & 6,000 & 1,600 & N/A \\
+  5,000 & 13,050 & 23.0 & 15,000 & 4,000 & N/A \\
+  10,000 & 25,247 & 23.8 & 30,000 & 8,000 & N/A \\
+  20,000 & 46,052 & 26.1 & 60,000 & 16,000 & N/A \\
+\bottomrule
+\end{tabular}}
+\end{table}

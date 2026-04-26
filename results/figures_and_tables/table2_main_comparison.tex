@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\caption{Intrinsic evaluation results comparing CoDE with baseline methods. Best results are in \textbf{bold}.}
+\label{tab:main_comparison}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccccccc}
+\toprule
+Method & N & ROUGE-L & BLEU-4 & Distinct-2 & Distinct-3 & Domain Rel. & FactCheck & Struct. Comp. \\
+\midrule
+\textbf{CoDE (ours)} & 2000 & \textbf{0.3380} & \textbf{0.1932} & \textbf{0.1061} & \textbf{0.3045} & \textbf{0.3637} & \textbf{0.9478} & 0.9985 \\
+Direct Prompting & 2000 & 0.0838 & 0.0424 & 0.0124 & 0.0291 & 0.0197 & 0.8702 & \textbf{1.0000} \\
+Self-Instruct & 2000 & 0.0407 & 0.0098 & 0.0033 & 0.0113 & 0.0025 & 0.9336 & 1.0000 \\
+WizardLM-Evol & 2000 & 0.0376 & 0.0119 & 0.0038 & 0.0102 & 0.0249 & 0.5508 & 1.0000 \\
+\bottomrule
+\end{tabular}}
+\end{table}

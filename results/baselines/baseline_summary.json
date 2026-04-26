@@ -1,0 +1,23 @@
+{
+  "direct_prompting": {
+    "total": 2000,
+    "successful": 2000,
+    "resumed_from": 500,
+    "newly_generated": 1500,
+    "output_file": "/hpc2hdd/home/yjiang909/Veritas/VeritasCarbon_SIGMOD/results/baselines/direct_prompting_results.jsonl"
+  },
+  "self_instruct": {
+    "total": 2000,
+    "successful": 2000,
+    "resumed_from": 500,
+    "newly_generated": 1500,
+    "output_file": "/hpc2hdd/home/yjiang909/Veritas/VeritasCarbon_SIGMOD/results/baselines/self_instruct_results.jsonl"
+  },
+  "wizardlm_evol": {
+    "total": 2000,
+    "successful": 2000,
+    "resumed_from": 500,
+    "newly_generated": 1500,
+    "output_file": "/hpc2hdd/home/yjiang909/Veritas/VeritasCarbon_SIGMOD/results/baselines/wizardlm_evol_results.jsonl"
+  }
+}

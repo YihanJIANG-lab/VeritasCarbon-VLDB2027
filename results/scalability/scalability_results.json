@@ -1,0 +1,487 @@
+[
+  {
+    "experiment_name": "corpus_size_scalability",
+    "parameter_name": "n_chunks",
+    "parameter_values": [
+      500,
+      1000,
+      2000,
+      5000,
+      10000,
+      20000
+    ],
+    "timing_records": [
+      [
+        {
+          "stage": "chunking",
+          "n_items": 500,
+          "wall_seconds": 5.5,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "expert_selection",
+          "n_items": 500,
+          "wall_seconds": 2.8,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "generation",
+          "n_items": 500,
+          "wall_seconds": 1307.8393622494957,
+          "api_calls": 1500,
+          "tokens_used": 400000,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "quality_check",
+          "n_items": 500,
+          "wall_seconds": 11.0,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        }
+      ],
+      [
+        {
+          "stage": "chunking",
+          "n_items": 1000,
+          "wall_seconds": 10.5,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "expert_selection",
+          "n_items": 1000,
+          "wall_seconds": 5.3,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "generation",
+          "n_items": 1000,
+          "wall_seconds": 2722.9127368468917,
+          "api_calls": 3000,
+          "tokens_used": 800000,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "quality_check",
+          "n_items": 1000,
+          "wall_seconds": 21.0,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        }
+      ],
+      [
+        {
+          "stage": "chunking",
+          "n_items": 2000,
+          "wall_seconds": 20.5,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "expert_selection",
+          "n_items": 2000,
+          "wall_seconds": 10.3,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "generation",
+          "n_items": 2000,
+          "wall_seconds": 5087.55882751701,
+          "api_calls": 6000,
+          "tokens_used": 1600000,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "quality_check",
+          "n_items": 2000,
+          "wall_seconds": 41.0,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        }
+      ],
+      [
+        {
+          "stage": "chunking",
+          "n_items": 5000,
+          "wall_seconds": 50.5,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "expert_selection",
+          "n_items": 5000,
+          "wall_seconds": 25.3,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "generation",
+          "n_items": 5000,
+          "wall_seconds": 13050.36092093215,
+          "api_calls": 15000,
+          "tokens_used": 4000000,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "quality_check",
+          "n_items": 5000,
+          "wall_seconds": 101.0,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        }
+      ],
+      [
+        {
+          "stage": "chunking",
+          "n_items": 10000,
+          "wall_seconds": 100.5,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "expert_selection",
+          "n_items": 10000,
+          "wall_seconds": 50.3,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "generation",
+          "n_items": 10000,
+          "wall_seconds": 25246.709936731368,
+          "api_calls": 30000,
+          "tokens_used": 8000000,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "quality_check",
+          "n_items": 10000,
+          "wall_seconds": 201.0,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        }
+      ],
+      [
+        {
+          "stage": "chunking",
+          "n_items": 20000,
+          "wall_seconds": 200.5,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "expert_selection",
+          "n_items": 20000,
+          "wall_seconds": 100.3,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "generation",
+          "n_items": 20000,
+          "wall_seconds": 46051.9555603088,
+          "api_calls": 60000,
+          "tokens_used": 16000000,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "quality_check",
+          "n_items": 20000,
+          "wall_seconds": 401.0,
+          "api_calls": 0,
+          "tokens_used": 0,
+          "peak_memory_mb": 0.0
+        }
+      ]
+    ],
+    "metadata": {
+      "config": {
+        "model": {
+          "base_model_name": "Qwen/Qwen2.5-72B-Instruct",
+          "max_length": 2048,
+          "use_qlora": true,
+          "lora_r": 16,
+          "lora_alpha": 32,
+          "lora_dropout": 0.1
+        },
+        "data": {
+          "raw_corpus_path": "data/raw_corpus",
+          "processed_corpus_path": "data/processed_corpus",
+          "instruction_datasets_path": "data/instruction_datasets",
+          "evaluation_benchmark_path": "data/evaluation_benchmark",
+          "chunk_size": 512,
+          "chunk_overlap": 50,
+          "min_chunk_length": 100,
+          "convert_traditional": true,
+          "chinese_only": true,
+          "min_chinese_ratio": 0.6,
+          "chunk_simhash_threshold": 3
+        },
+        "api": {
+          "provider": "zhipu",
+          "model_name": "glm-4",
+          "api_key": null
+        },
+        "coe": {
+          "max_iterations": 2,
+          "temperature": 0.7,
+          "max_tokens": 2048,
+          "api_provider": "zhipu",
+          "model_name": "glm-4",
+          "use_adaptive_selection": true,
+          "use_layered_selection": true,
+          "expert_selection_model": "bert-base-chinese",
+          "min_experts": 1,
+          "max_experts": 3,
+          "layered_selection": {
+            "base_layer_required": true,
+            "analysis_layer_threshold": 0.3,
+            "verification_layer_threshold": 0.3,
+            "graph_layer_threshold": 0.5
+          },
+          "enable_collaboration": true,
+          "collaboration_mode": "sequential",
+          "use_domain_knowledge": true,
+          "knowledge_base_path": "data/knowledge_base",
+          "max_knowledge_items": 5,
+          "use_meta_expert": true,
+          "carbon_centric": true,
+          "enable_advanced_experts": true
+        },
+        "training": {
+          "output_dir": "models/finetuned",
+          "num_train_epochs": 3,
+          "per_device_train_batch_size": 4,
+          "gradient_accumulation_steps": 4,
+          "learning_rate": "2e-4",
+          "warmup_steps": 100,
+          "logging_steps": 10,
+          "save_steps": 500,
+          "evaluation_strategy": "steps",
+          "eval_steps": 500
+        },
+        "evaluation": {
+          "metrics": [
+            "rouge-l",
+            "bleu",
+            "bertscore",
+            "bleurt",
+            "factcheck"
+          ],
+          "output_path": "results/outputs",
+          "benchmarks": {
+            "esg_qa": "data/evaluation_benchmark/esg_qa_benchmark.jsonl",
+            "esg_ie": "data/evaluation_benchmark/esg_ie_benchmark.jsonl",
+            "esg_summary": "data/evaluation_benchmark/esg_summary_benchmark.jsonl",
+            "esg_classification": "data/evaluation_benchmark/esg_classification_benchmark.jsonl"
+          },
+          "human_evaluation": {
+            "sample_size": 500,
+            "num_annotators": 3,
+            "evaluation_dimensions": [
+              "relevance",
+              "accuracy",
+              "fluency",
+              "domain_relevance"
+            ]
+          }
+        },
+        "paths": {
+          "base_model_dir": "models/base",
+          "finetuned_model_dir": "models/finetuned",
+          "results_dir": "results",
+          "logs_dir": "results/logs"
+        }
+      },
+      "timestamp": "2026-03-03T14:37:12.394979",
+      "dry_run": true
+    }
+  },
+  {
+    "experiment_name": "expert_count_scalability",
+    "parameter_name": "K",
+    "parameter_values": [
+      1,
+      2,
+      3,
+      5,
+      7
+    ],
+    "timing_records": [
+      [
+        {
+          "stage": "generation_parallel",
+          "n_items": 200,
+          "wall_seconds": 400.0,
+          "api_calls": 200,
+          "tokens_used": 100000,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "generation_sequential",
+          "n_items": 200,
+          "wall_seconds": 400.0,
+          "api_calls": 200,
+          "tokens_used": 100000,
+          "peak_memory_mb": 0.0
+        }
+      ],
+      [
+        {
+          "stage": "generation_parallel",
+          "n_items": 200,
+          "wall_seconds": 483.17766166719343,
+          "api_calls": 400,
+          "tokens_used": 200000,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "generation_sequential",
+          "n_items": 200,
+          "wall_seconds": 800.0,
+          "api_calls": 400,
+          "tokens_used": 200000,
+          "peak_memory_mb": 0.0
+        }
+      ],
+      [
+        {
+          "stage": "generation_parallel",
+          "n_items": 200,
+          "wall_seconds": 531.8334746401731,
+          "api_calls": 600,
+          "tokens_used": 300000,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "generation_sequential",
+          "n_items": 200,
+          "wall_seconds": 1200.0,
+          "api_calls": 600,
+          "tokens_used": 300000,
+          "peak_memory_mb": 0.0
+        }
+      ],
+      [
+        {
+          "stage": "generation_parallel",
+          "n_items": 200,
+          "wall_seconds": 593.132549492092,
+          "api_calls": 1000,
+          "tokens_used": 500000,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "generation_sequential",
+          "n_items": 200,
+          "wall_seconds": 2000.0,
+          "api_calls": 1000,
+          "tokens_used": 500000,
+          "peak_memory_mb": 0.0
+        }
+      ],
+      [
+        {
+          "stage": "generation_parallel",
+          "n_items": 200,
+          "wall_seconds": 633.5092178866375,
+          "api_calls": 1400,
+          "tokens_used": 700000,
+          "peak_memory_mb": 0.0
+        },
+        {
+          "stage": "generation_sequential",
+          "n_items": 200,
+          "wall_seconds": 2800.0,
+          "api_calls": 1400,
+          "tokens_used": 700000,
+          "peak_memory_mb": 0.0
+        }
+      ]
+    ],
+    "metadata": {
+      "sample_size": 200,
+      "timestamp": "2026-03-03T14:37:12.395215",
+      "dry_run": true
+    }
+  },
+  {
+    "experiment_name": "feedback_rounds_scalability",
+    "parameter_name": "R",
+    "parameter_values": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "timing_records": [
+      [
+        {
+          "stage": "generation",
+          "n_items": 200,
+          "wall_seconds": 400.0,
+          "api_calls": 600,
+          "tokens_used": 160000,
+          "peak_memory_mb": 0.0
+        }
+      ],
+      [
+        {
+          "stage": "generation",
+          "n_items": 200,
+          "wall_seconds": 800.0,
+          "api_calls": 1200,
+          "tokens_used": 320000,
+          "peak_memory_mb": 0.0
+        }
+      ],
+      [
+        {
+          "stage": "generation",
+          "n_items": 200,
+          "wall_seconds": 1200.0,
+          "api_calls": 1800,
+          "tokens_used": 480000,
+          "peak_memory_mb": 0.0
+        }
+      ],
+      [
+        {
+          "stage": "generation",
+          "n_items": 200,
+          "wall_seconds": 1600.0,
+          "api_calls": 2400,
+          "tokens_used": 640000,
+          "peak_memory_mb": 0.0
+        }
+      ]
+    ],
+    "metadata": {
+      "sample_size": 200,
+      "timestamp": "2026-03-03T14:37:12.395396",
+      "dry_run": true
+    }
+  }
+]

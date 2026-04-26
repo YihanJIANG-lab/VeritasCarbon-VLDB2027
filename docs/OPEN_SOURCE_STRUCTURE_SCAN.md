@@ -1,0 +1,212 @@
+# Open-source Structure & Chinese Scan
+
+- Total dirs: 38
+- Total files: 161
+- Dirs with Chinese names: 0
+- Files with Chinese names: 10
+- Files containing Chinese text: 49
+
+## Chinese directory names
+
+## Chinese file names
+- data/raw_corpus/Layer4/samples/10.国务院：加快构建碳排放双控制度体系工作方案.pdf
+- data/raw_corpus/Layer4/samples/碳足迹核算：中国中小企业（SME）碳报告工具用户指南.pdf
+- data/raw_corpus/Layer3/samples/【标准】金融机构环境信息披露指南（JRT 0227—2021）.pdf
+- data/raw_corpus/Layer3/samples/信息披露质量、ESG评级与企业融资约束_刘宇博.pdf
+- data/raw_corpus/Layer2/samples/000001_2023_#CSR_平安银行_2023年社会责任报告_2024-03-15.txt
+- data/raw_corpus/Layer2/samples/上市公司社会责任报告基础信息表.xlsx
+- data/raw_corpus/Layer2/samples/说明.txt
+- data/raw_corpus/Layer2/samples/000001_2020_#SD_平安银行_2020年可持续发展报告_2021-02-01.txt
+- data/raw_corpus/Layer1/samples/北京证券交易所上市公司可持续发展报告编制指南.pdf
+- data/raw_corpus/Layer1/samples/【规范】ESG 信息披露细则.pdf
+
+## Chinese content hits (sample lines)
+- docs/SIGMOD_PAPER_OUTLINE_v2.md
+  - L1: # VeritasCarbon SIGMOD 2027 — 论文大纲与合作者对接文档 (v2)
+  - L3: > **最后更新**: 2026-03-18  
+  - L4: > **目标会议**: ACM SIGMOD 2027 — DI&DS Application Track  
+- notebooks/02_InstructionGeneration_v3.ipynb
+  - L733:     "        \"\"\"Parse response into instruction and answer (supports Instruction:/Response: or 指令/回答).\"\"\"\n",
+  - L739:     "        if \"指令\" in response and \"回答\" in response:\n",
+  - L740:     "            parts = response.split(\"回答\")\n",
+- notebooks/03_SIGMOD_Experiments_output.ipynb
+  - L704:     "            if line.lower().startswith('instruction:') or line.startswith('指令'):\n",
+  - L706:     "            elif line.lower().startswith('response:') or line.lower().startswith('answer:') or line.startswith('回答'):\n",
+- notebooks/01_DataPreprocess.ipynb
+  - L43:       "✅ 环境初始化完成\n",
+  - L44:       "📁 项目根目录: D:\\9_Projects\\Veritas\\VeritasCarbon_SIGMOD\n"
+  - L96:       "✅ 预处理器初始化完成\n",
+- notebooks/03_SIGMOD_Experiments.ipynb
+  - L281:     "            if line.lower().startswith('instruction:') or line.startswith('指令'):\n",
+  - L283:     "            elif line.lower().startswith('response:') or line.lower().startswith('answer:') or line.startswith('回答'):\n",
+- notebooks/02.5_QA_Inspection_and_COE_Architecture.ipynb
+  - L852:       "chunk_id: 第二层_社会责任报告（2006年-2024年）_社会责任报告（去重）_17082份_2024_002001_2024_#ESG_新和成_2024年度环境、社会及公司治理（ESG）报告_2025-04-15_chunk_16\n",
+  - L854:       "Chunk: 级人才——专家级人才——资深专家级人才——首席专家级人才，以学习路径图的搭建落实人才培养管理序列专业新和成年度培训支出706 万元全体员工总受训时长达人均受训时长达员工培训覆盖率达42.12 小时掌握级精通级专家级资深专家首席专家文化融入、技能训练、目标执行专业训练、训战结合、战术推动攻坚克
+  - L856:       "Q: 验证新和成年度培训支出、员工受训时长、培训覆盖率及其对员工创新能力提升、碳足迹变化或能效改进措施的数据一致性，以及这些指标与公司碳减排目标的关联性。特别注意数据的准确性和企业ESG承诺的可靠性，同时分析上述指标的变化趋势与公司低碳技术或流程创新的关系。\n",
+- results/outputs/qa_samples_02_5_seed20_k30.csv
+  - L2: 1,0.6588235294117647,extraction_expert|consistency_verification_expert,提取专家|一致性验证专家,第二层_社会责任报告（2006年-2024年）_社会责任报告（去重）_17082份_2024_002001_2024_#ESG_新和成_2024年度环境
+  - L4: 然而，存在一个潜在的不一致性问题，即文本中先前提到的员工培训覆盖率为100%，而之后却出现了42.12小时的人均受训时长这一数据，理论上如果全员参与，人均受训时长应基于总受训时长和员工总数计算得出。如果没有员工总数的上下文信息，无法确定这个人均数字是否准确反映了全员参与的情况。此外，虽然提到了培训活动和员工发展路径，但
+  - L6: 综上所述，虽然新和成展示了在员工培训方面的显著努力，但需要更多的具体数据和信息来证明这些培训如何直接贡献于ESG目标，特别是环境方面的目标，以及如何与公司的长期碳减排承诺相一致。为了增强ESG报告的一致性和透明度，建议公司在未来的报告中提供更详细的数据，如培训项目的环境影响评估、能效改进措施的具体案例，以及这些措施如何
+- results/logs/03_SIGMOD_Experiments_output.ipynb
+  - L704:     "            if line.lower().startswith('instruction:') or line.startswith('指令'):\n",
+  - L706:     "            elif line.lower().startswith('response:') or line.lower().startswith('answer:') or line.startswith('回答'):\n",
+- results/figures_and_tables/table2_qa_statistics.json
+  - L20:     "环境": 13245,
+  - L21:     "社会": 10243,
+  - L22:     "风险": 8456,
+- results/baselines/wizardlm_evol.jsonl
+  - L1: {"instruction": "Improved Instruction:\n\n1. Conduct a detailed evaluation of the \"乡村振兴帮扶工作方案\" (Rural Revitalization Assistance Plan) executed by Wodun Techno
+  - L2: {"instruction": "Improved Instruction:\n\n1. **Develop a Comprehensive Strategic Roadmap for CCUS Integration**: By 2035, formulate a detailed strategic roadmap
+  - L3: {"instruction": "Improved Instruction:\n\nPursuant to the Compliance Management Basic System of Shenzhen Great Wall Development Science & Technology Co., Ltd., 
+- results/baselines/wizardlm_evol_results.jsonl
+  - L1: {"instruction": "Improved Instruction:\n\n1. Conduct a detailed evaluation of the \"乡村振兴帮扶工作方案\" (Rural Revitalization Assistance Plan) executed by Wodun Techno
+  - L2: {"instruction": "Improved Instruction:\n\n1. **Develop a Comprehensive Strategic Roadmap for CCUS Integration**: By 2035, formulate a detailed strategic roadmap
+  - L3: {"instruction": "Improved Instruction:\n\nPursuant to the Compliance Management Basic System of Shenzhen Great Wall Development Science & Technology Co., Ltd., 
+- results/baselines/self_instruct.jsonl
+  - L1: {"instruction": "What strategies does沃顿科技use to support rural development and community construction?", "input": "沃顿科技严格按照中车集团、中车产投、贵州省国有资产监督管理委员会等上级党委的规划要求执行落实
+  - L2: {"instruction": "Classify the ESG dimensions mentioned in the following text.", "input": "应用于高浓度排放源，并与地质、化工、生物等较为成熟的利用技术相结合，推动形成种类多样化、附加值较高的终端商业产品；把握2030—2035年碳
+  - L3: {"instruction": "Analyze the environmental management practices described in the text and summarize the key points.", "input": "培训覆盖率守法合规深科技多年来诚信经营，严格遵守在公司治理、财务
+- results/baselines/self_instruct_results.jsonl
+  - L1: {"instruction": "What strategies does沃顿科技use to support rural development and community construction?", "input": "沃顿科技严格按照中车集团、中车产投、贵州省国有资产监督管理委员会等上级党委的规划要求执行落实
+  - L2: {"instruction": "Classify the ESG dimensions mentioned in the following text.", "input": "应用于高浓度排放源，并与地质、化工、生物等较为成熟的利用技术相结合，推动形成种类多样化、附加值较高的终端商业产品；把握2030—2035年碳
+  - L3: {"instruction": "Analyze the environmental management practices described in the text and summarize the key points.", "input": "培训覆盖率守法合规深科技多年来诚信经营，严格遵守在公司治理、财务
+- results/baselines/direct_prompting.jsonl
+  - L1: {"instruction": "What strategies has Wharton Technology implemented to support rural revitalization and community development?", "input": "沃顿科技严格按照中车集团、中车产投、贵州省
+  - L2: {"instruction": "What strategies are suggested in the text for promoting the development and application of carbon capture, utilization, and storage (CCUS) tech
+  - L3: {"instruction": "What are the four main areas of compliance focus for Shenzhen Kaifa Technology Co., Ltd. according to the text?", "input": "培训覆盖率守法合规深科技多年来诚信经营
+- results/baselines/direct_prompting_results.jsonl
+  - L1: {"instruction": "What strategies has Wharton Technology implemented to support rural revitalization and community development?", "input": "沃顿科技严格按照中车集团、中车产投、贵州省
+  - L2: {"instruction": "What strategies are suggested in the text for promoting the development and application of carbon capture, utilization, and storage (CCUS) tech
+  - L3: {"instruction": "What are the four main areas of compliance focus for Shenzhen Kaifa Technology Co., Ltd. according to the text?", "input": "培训覆盖率守法合规深科技多年来诚信经营
+- results/ablation/feedback/feedback_1.jsonl
+  - L1: {"instruction": "沃顿科技如何落实乡村振兴战略，并支持乡村发展和社区建设？", "input": "沃顿科技严格按照中车集团、中车产投、贵州省国有资产监督管理委员会等上级党委的规划要求执行落实乡村振兴战略，通过分析区域特色与资源优势，制定《乡村振兴帮扶工作方案》，高度重视乡村振兴工作的研究、部署、调度与
+  - L2: {"instruction": "如何通过政策和市场机制推动碳捕集、利用与封存技术的发展？", "input": "应用于高浓度排放源，并与地质、化工、生物等较为成熟的利用技术相结合，推动形成种类多样化、附加值较高的终端商业产品；把握2030—2035年碳捕集、利用与封存技术电厂改造的最佳改造窗口期，争取最大减排效益；
+  - L3: {"instruction": "In which specific areas does Shenzhen Kaifa Technology Co., Ltd. demonstrate its commitment to ESG principles through compliance?", "input": "培
+- results/ablation/feedback/feedback_2.jsonl
+  - L1: {"instruction": "沃顿科技如何落实乡村振兴战略？", "input": "沃顿科技严格按照中车集团、中车产投、贵州省国有资产监督管理委员会等上级党委的规划要求执行落实乡村振兴战略，通过分析区域特色与资源优势，制定《乡村振兴帮扶工作方案》，高度重视乡村振兴工作的研究、部署、调度与具体工作的开展, 成立以公
+  - L2: {"instruction": "如何加强碳捕集、利用与封存技术的研究能力和基础设施建设？", "input": "应用于高浓度排放源，并与地质、化工、生物等较为成熟的利用技术相结合，推动形成种类多样化、附加值较高的终端商业产品；把握2030—2035年碳捕集、利用与封存技术电厂改造的最佳改造窗口期，争取最大减排效益；
+  - L3: {"instruction": "What are the core principles guiding Shenzhen Kaifa Technology Co., Ltd.'s approach to compliance across various operational aspects, and how d
+- results/ablation/feedback/feedback_0.jsonl
+  - L1: {"instruction": "What specific measures has Wharton Technology taken to support rural revitalization and community development?", "input": "沃顿科技严格按照中车集团、中车产投、贵州
+  - L2: {"instruction": "在推动碳捕集、利用与封存技术发展的过程中，应采取哪些策略以实现减排目标和技术创新？", "input": "应用于高浓度排放源，并与地质、化工、生物等较为成熟的利用技术相结合，推动形成种类多样化、附加值较高的终端商业产品；把握2030—2035年碳捕集、利用与封存技术电厂改造的最佳改造
+  - L3: {"instruction": "How does Shenzhen Kaifa Technology Co., Ltd. demonstrate commitment to environmental protection and green practices?", "input": "培训覆盖率守法合规深科技多年
+- results/ablation/expert_count/expert_count_5.jsonl
+  - L1: {"instruction": "沃顿科技如何在其乡村振兴战略中实现产业与生态的双重振兴？", "input": "沃顿科技严格按照中车集团、中车产投、贵州省国有资产监督管理委员会等上级党委的规划要求执行落实乡村振兴战略，通过分析区域特色与资源优势，制定《乡村振兴帮扶工作方案》，高度重视乡村振兴工作的研究、部署、调度与
+  - L2: {"instruction": "什么是碳捕集、利用与封存技术，以及如何推动其发展？", "input": "应用于高浓度排放源，并与地质、化工、生物等较为成熟的利用技术相结合，推动形成种类多样化、附加值较高的终端商业产品；把握2030—2035年碳捕集、利用与封存技术电厂改造的最佳改造窗口期，争取最大减排效益；按照改
+  - L3: {"instruction": "In which areas does Shenzhen Kaifa Technology Co., Ltd. emphasize legal compliance and ESG standards, and how does the company ensure adherence
+- results/ablation/expert_count/expert_count_3.jsonl
+  - L1: {"instruction": "沃顿科技如何执行乡村振兴战略？", "input": "沃顿科技严格按照中车集团、中车产投、贵州省国有资产监督管理委员会等上级党委的规划要求执行落实乡村振兴战略，通过分析区域特色与资源优势，制定《乡村振兴帮扶工作方案》，高度重视乡村振兴工作的研究、部署、调度与具体工作的开展, 成立以公
+  - L2: {"instruction": "如何加强碳捕集、利用与封存（CCUS）技术的研究能力和基础设施建设布局？", "input": "应用于高浓度排放源，并与地质、化工、生物等较为成熟的利用技术相结合，推动形成种类多样化、附加值较高的终端商业产品；把握2030—2035年碳捕集、利用与封存技术电厂改造的最佳改造窗口期，争
+  - L3: {"instruction": "How does Shenzhen Kaifa Technology Co., Ltd. ensure comprehensive legal compliance in various operational areas, and what measures have they ta
+- results/ablation/expert_count/expert_count_2.jsonl
+  - L1: {"instruction": "沃顿科技如何落实乡村振兴战略并支持社区可持续发展？", "input": "沃顿科技严格按照中车集团、中车产投、贵州省国有资产监督管理委员会等上级党委的规划要求执行落实乡村振兴战略，通过分析区域特色与资源优势，制定《乡村振兴帮扶工作方案》，高度重视乡村振兴工作的研究、部署、调度与具体工
+  - L2: {"instruction": "什么是碳捕集、利用与封存技术，以及如何推动其商业化应用？", "input": "应用于高浓度排放源，并与地质、化工、生物等较为成熟的利用技术相结合，推动形成种类多样化、附加值较高的终端商业产品；把握2030—2035年碳捕集、利用与封存技术电厂改造的最佳改造窗口期，争取最大减排效益；
+  - L3: {"instruction": "What specific measures does Shenzhen Kaifa Technology Co., Ltd. implement under each compliance area to ensure adherence to laws and regulation
+- results/ablation/expert_count/expert_count_1.jsonl
+  - L1: {"instruction": "Analyze the following ESG-related content", "input": "沃顿科技严格按照中车集团、中车产投、贵州省国有资产监督管理委员会等上级党委的规划要求执行落实乡村振兴战略，通过分析区域特色与资源优势，制定《乡村振兴帮扶工作方案》，高度重视乡村振
+  - L2: {"instruction": "What strategies can be employed to enhance the development and implementation of carbon capture, utilization, and storage (CCUS) technologies i
+  - L3: {"instruction": "What are the key areas of compliance that Shenzhen Kaifa Technology Co., Ltd. focuses on to ensure ethical business operations and adherence to
+- results/ablation/knowledge/knowledge_on.jsonl
+  - L1: {"instruction": "Analyze the following ESG-related content", "input": "沃顿科技严格按照中车集团、中车产投、贵州省国有资产监督管理委员会等上级党委的规划要求执行落实乡村振兴战略，通过分析区域特色与资源优势，制定《乡村振兴帮扶工作方案》，高度重视乡村振
+  - L2: {"instruction": "什么是碳捕集、利用与封存技术，以及如何推动其商业化应用？", "input": "应用于高浓度排放源，并与地质、化工、生物等较为成熟的利用技术相结合，推动形成种类多样化、附加值较高的终端商业产品；把握2030—2035年碳捕集、利用与封存技术电厂改造的最佳改造窗口期，争取最大减排效益；
+  - L3: {"instruction": "What are the key areas of compliance that Shenzhen Kaifa Technology Co., Ltd. focuses on to ensure ethical business operations and uphold the p
+- results/ablation/knowledge/knowledge_off.jsonl
+  - L1: {"instruction": "沃顿科技如何执行乡村振兴战略并支持社区发展？", "input": "沃顿科技严格按照中车集团、中车产投、贵州省国有资产监督管理委员会等上级党委的规划要求执行落实乡村振兴战略，通过分析区域特色与资源优势，制定《乡村振兴帮扶工作方案》，高度重视乡村振兴工作的研究、部署、调度与具体工作的开
+  - L2: {"instruction": "在推动碳捕集、利用与封存技术发展的过程中，如何加强研究能力和基础设施建设？", "input": "应用于高浓度排放源，并与地质、化工、生物等较为成熟的利用技术相结合，推动形成种类多样化、附加值较高的终端商业产品；把握2030—2035年碳捕集、利用与封存技术电厂改造的最佳改造窗口期，
+  - L3: {"instruction": "What are the main areas of compliance that Shenzhen Kaifa Technology focuses on to ensure ethical business operations and adherence to laws and
+- results/ablation/collaboration/collab_none.jsonl
+  - L1: {"instruction": "沃顿科技如何执行乡村振兴战略？", "input": "沃顿科技严格按照中车集团、中车产投、贵州省国有资产监督管理委员会等上级党委的规划要求执行落实乡村振兴战略，通过分析区域特色与资源优势，制定《乡村振兴帮扶工作方案》，高度重视乡村振兴工作的研究、部署、调度与具体工作的开展, 成立以公
+  - L2: {"instruction": "What strategies can be employed to enhance the development and application of Carbon Capture, Utilization, and Storage (CCUS) technologies in C
+  - L3: {"instruction": "What are the key areas of compliance that Shenzhen Kaifa Technology Co., Ltd. focuses on to ensure ethical business operations and ESG standard
+- results/ablation/collaboration/collab_parallel.jsonl
+  - L1: {"instruction": "沃顿科技在乡村振兴战略中的角色和贡献是什么？", "input": "沃顿科技严格按照中车集团、中车产投、贵州省国有资产监督管理委员会等上级党委的规划要求执行落实乡村振兴战略，通过分析区域特色与资源优势，制定《乡村振兴帮扶工作方案》，高度重视乡村振兴工作的研究、部署、调度与具体工作的开
+  - L2: {"instruction": "什么是碳捕集、利用与封存技术，以及如何推动其发展？", "input": "应用于高浓度排放源，并与地质、化工、生物等较为成熟的利用技术相结合，推动形成种类多样化、附加值较高的终端商业产品；把握2030—2035年碳捕集、利用与封存技术电厂改造的最佳改造窗口期，争取最大减排效益；按照改
+  - L3: {"instruction": "What are the main areas of compliance that Shenzhen Kaifa Technology focuses on to ensure ethical business operations and adherence to laws and
+- results/ablation/collaboration/collab_sequential.jsonl
+  - L1: {"instruction": "沃顿科技在乡村振兴战略中的角色是什么？特别是在产业和生态振兴方面，他们采取了哪些具体的措施？", "input": "沃顿科技严格按照中车集团、中车产投、贵州省国有资产监督管理委员会等上级党委的规划要求执行落实乡村振兴战略，通过分析区域特色与资源优势，制定《乡村振兴帮扶工作方案》，高度
+  - L2: {"instruction": "什么是碳捕集、利用与封存技术，以及如何促进其发展？", "input": "应用于高浓度排放源，并与地质、化工、生物等较为成熟的利用技术相结合，推动形成种类多样化、附加值较高的终端商业产品；把握2030—2035年碳捕集、利用与封存技术电厂改造的最佳改造窗口期，争取最大减排效益；按照改
+  - L3: {"instruction": "In which specific areas does Shenzhen Kaifa Technology Co., Ltd. demonstrate its commitment to compliance and ethical business practices?", "in
+- data/processed_corpus/chunks_sampled_20000_by_year.jsonl
+  - L1: {"doc_id": "第一层_二_（繁）香港交易所环境、社会及管制框架下气候信息披露的实施指引 (1)", "chunk_id": "第一层_二_（繁）香港交易所环境、社会及管制框架下气候信息披露的实施指引 (1)_chunk_153", "text": "及关系，例如物料和服务采购以及产品和服务销售及交付；以及实体
+  - L2: {"doc_id": "第三层_1_绿色金融模式下ESG指数助推经济可持续发展研究_汪洋", "chunk_id": "第三层_1_绿色金融模式下ESG指数助推经济可持续发展研究_汪洋_chunk_0", "text": "专 栏Special Column绿色金融模式下 ESG 指数助推经济可持续发展研究◎汪洋 高宇
+  - L3: {"doc_id": "第三层_2_2024年中国可持续消费报告", "chunk_id": "第三层_2_2024年中国可持续消费报告_chunk_21", "text": "以下城市的消费者群体更能感知到 低碳生活与消费，对于二三线城市消费者的气候变化意极端天气全球变暖台风气候变化，这也与一线城市及新一线城市的先行
+- data/instructions/qa_pairs_complete_v3_1.5w.jsonl
+  - L1: {"question": "生成关于中航西安飞机工业集团股份有限公司ESG表现，尤其是碳排放相关策略和措施，以及其对长期可持续性影响的摘要。对比过往报告，评估公司在碳减排目标设定与实现方面的进展，探讨变化原因及未来趋势。", "answer": "000768），位于陕西省西安市阎良区，是一家在深圳证券交易所上市的企业
+  - L2: {"question": "根据《中航西安飞机工业集团股份有限公司2024年度环境、社会与治理（ESG）报告》，验证公司碳排放管理方面的声明与过往报告、行业标准的一致性，特别关注碳减排目标设定与实现情况，评估碳足迹变化趋势，分析披露的碳策略是否存有漂绿嫌疑，并基于当前实践预测未来碳表现。", "answer": "从报
+  - L3: {"question": "生成关于公司2024年碳排放表现、科技创新影响、产业结构调整、碳减排承诺合理性及未来实现可能性的摘要，同时考虑潜在的漂绿行为。", "answer": "本摘要旨在分析公司2024年的碳排放情况及其与过去三年的对比，重点关注科技创新和产业结构调整对公司碳排放表现的影响。公司将习近平新时代中国
+- data/instructions/qa_pairs_complete_v3_2w.jsonl
+  - L1: {"question": "分析文本中关于环境的部分，特别关注任何与碳排放、碳足迹或碳中和目标相关的陈述。评估这些声明的可信度，检查是否存在漂绿现象，并基于现有信息预测公司在接下来五年内实现其碳承诺的可能性。同时，对比公司过去五年的碳排放数据，评估趋势是改善还是恶化，并批判性思考导致这种变化的原因。", "answer
+  - L2: {"question": "分析并摘要文章中关于ESG指数如何影响企业碳表现的论述，特别关注绿色金融模式下企业向低碳转型的趋势与成效，同时评估这些措施是否可能导致“漂绿”现象，以及它们对长期碳减排目标的潜在贡献。", "answer": "本文探讨了ESG指数在绿色金融模式下对企业碳表现的影响，强调了ESG指数作为衡量
+  - L3: {"question": "检测《2024中国可持续消费报告》中有关一线城市与二三线城市消费者气候变化意识的数据一致性，分析Z世代群体参与低碳活动的数据与整体碳排放意识提升趋势的吻合度，以及报告中特定低碳活动参与率数据的连贯性，确保数据能准确反映企业在碳承诺方面的实际进展。", "answer": "根据报告摘要，一线
+- data/raw_corpus/CORPUS_MANIFEST.md
+  - L14: | 1 | 一/GRI 1：基础 2021 - Simplified Chinese.pdf | 1.9 MB | PDF |
+  - L15: | 2 | 一/GRI 2：一般披露 2021 - Simplified Chinese.pdf | 1.9 MB | PDF |
+  - L16: | 3 | 一/GRI 3：实质性议题 2021 - Simplified Chinese.pdf | 1.8 MB | PDF |
+- data/raw_corpus/Layer2/samples/说明.txt
+  - L1: 绝大部分企业每年只发布一个社会责任报告（无论企业管它叫CSR、ESG还是可持续）。对于这种情况，统一存放在“社会责任报告（去重）”文件夹中。一般而言，如果做文本分析，直接使用这个文件夹中的内容即可。
+  - L3: 但是，也存在发布了不止一个报告的情况（例如既发布了CSR报告，又发布了ESG报告的）。对于这种情况，优先在此文件夹中存放社会责任报告，而将另一个报告放在“企业发布的其他报告”文件夹中。
+  - L5: 部分特殊企业需要披露“环境报告书”。对于这种独特的报告，单独存放在“附送：环境报告书”文件夹中，不和其他任何类型的社会责任报告混在一块。
+- data/instruction_datasets/train.jsonl
+  - L1: {"instruction": "", "input": "流程图输入或开始开始1.反馈上报信息安全事件2.判断事件等级5.组织相关方讨论和确认应急处置措施3.分析事件发生原因7.分析问题发生的根本原因并进行进一步处置4.核实处置6.应急处置各部门-员工,外部-监管机构各部门-相关责任人输出信息安全工作组-组长结束国家
+  - L2: {"instruction": "", "input": "动实现“35kV 级TSC 型SVC”及“500kV 级串补装置”的自主知识产权可控及整机出口顾新梅苏州贯龙公司总工程师，全国电气绝缘材料与绝缘系统评定标准化技术委员会(SAC/TC301) 委员、第十七届苏州市人大代表、江苏省劳动模范、常熟市“十佳创新能手”
+  - L3: {"instruction": "", "input": "学性、系统性的认识宝胜股份坚定不移地贯彻可持续发展理念，将绿色环保理念融入公司发展的脉络，将绿色化转型纳入公司“11366”发展规划公司积极推行节能减排行动，从生产环节的技术革新，到日常办公的细节优化，全方位降低能耗通过引入节能设备，实时监测能耗数据并动态调控
+- scripts/generate_paper_results.py
+  - L69:     "环境", "社会", "治理", "ESG", "CSR", "可持续发展",
+  - L70:     "碳排放", "碳中和", "碳达峰", "环保", "社会责任", "公司治理",
+  - L71:     "员工", "培训", "供应链", "合规", "风险", "创新", "质量", "安全",
+- scripts/select_chunks_by_year.py
+  - L20:         r'(\d{4})年',
+- scripts/migrate_layer_names_in_jsonl.py
+  - L12:     ("第一层", "Layer1"),
+  - L13:     ("第二层", "Layer2"),
+  - L14:     ("第三层", "Layer3"),
+- scripts/rename_raw_corpus_layers.py
+  - L2: """Rename raw_corpus layer folders from Chinese to English: 第一层->Layer1, etc."""
+  - L13:         ("第一层", "Layer1"),
+  - L14:         ("第二层", "Layer2"),
+- scripts/build_evaluation_benchmark.py
+  - L30:                         esg_keywords = ["环境", "社会", "治理", "ESG", "CSR", "可持续发展",
+  - L31:                                        "碳排放", "员工", "培训", "供应链", "合规"]
+- src/data_processing/document_parser_01_02.py
+  - L369:         noise_keywords = ['免责声明', '版权', 'copyright', 'disclaimer', '版权所有', '本报告', '本文件仅供']
+  - L383:         text = re.sub(r"第\s*\d+\s*页\s*[/\\]\s*共\s*\d+\s*页", "", text, flags=re.IGNORECASE)
+  - L385:         text = re.sub(r"\[图片\]|\[图\d+\]|\[Image\]|\[Figure\s+\d+\]", "", text, flags=re.IGNORECASE)
+- src/instruction_generation/expert_selector_02_01.py
+  - L190:         entity_keywords = ["公司", "企业", "碳排放", "员工", "培训", "环保", "治理"]
+  - L196:         question_keywords = ["什么", "如何", "为什么", "哪些", "多少", "是否"]
+  - L209:             "环境", "社会", "治理", "ESG", "CSR", "可持续发展",
+- src/instruction_generation/baseline_experiments_02_07.py
+  - L215:             if line.startswith("指令：") or line.startswith("指令:") or line.lower().startswith("instruction:"):
+  - L217:             elif line.startswith("回答：") or line.startswith("回答:") or line.lower().startswith("answer:"):
+- src/instruction_generation/baseline_local_03_01.py
+  - L91:         for prefix in ("Instruction:", "Instruction：", "指令:", "指令：",
+  - L92:                         "Question:", "Question：", "问题:", "问题："):
+  - L99:                         "回答:", "回答：", "答案:", "答案："):
+- src/instruction_generation/instruction_generator_02_05.py
+  - L157:                     if "治理" in doc_id:
+  - L159:                     elif "员工" in doc_id or "社会" in doc_id:
+  - L161:                     elif "环境" in doc_id:
+- src/instruction_generation/expert_agents_02_04.py
+  - L337:             if line.startswith("问题：") or line.startswith("问题:") or line.strip().lower().startswith("question:"):
+  - L339:             elif line.startswith("答案：") or line.startswith("答案:") or line.strip().lower().startswith("answer:"):
+  - L344:                 question = parts[0].replace("问题：", "").replace("问题:", "").strip()
+- src/instruction_generation/intrinsic_evaluation_03_03.py
+  - L36:         "环境", "社会", "治理", "ESG", "CSR", "可持续发展",
+  - L37:         "碳排放", "碳中和", "碳达峰", "环保", "社会责任", "公司治理",
+  - L38:         "员工", "培训", "供应链", "合规", "风险", "创新", "质量", "安全",
+- src/instruction_generation/dataset_statistics_03_04.py
+  - L104:                               "第一层", "第二层", "第三层", "第四层"]:
+  - L106:                         layer = lname.replace("第一层", "Layer1").replace(
+  - L107:                             "第二层", "Layer2").replace(
+- src/instruction_generation/domain_knowledge_02_02.py
+  - L21:         "环境": ["碳排放", "温室气体", "能源", "水资源", "废弃物", "污染", "环保", "绿色"],
+  - L22:         "社会": ["员工", "培训", "安全", "健康", "供应链", "社区", "公益", "社会责任"],
+  - L23:         "治理": ["公司治理", "合规", "风险", "内部控制", "董事会", "审计", "反腐败"]
+- src/instruction_generation/evaluation_metrics_02_06.py
+  - L157:                 "环境", "社会", "治理", "ESG", "CSR", "可持续发展",
+  - L158:                 "碳排放", "环保", "社会责任", "公司治理", "员工", "培训",
+  - L159:                 "供应链", "合规", "风险", "创新", "质量", "安全"
+- src/instruction_generation/meta_expert_02_09.py
+  - L77:             "碳排放", "碳中和", "碳达峰", "环境", "社会", "治理", "ESG", "CSR",
+  - L78:             "可持续发展", "环保", "社会责任", "公司治理", "员工", "培训",
+  - L79:             "供应链", "合规", "风险", "创新", "质量", "安全", "能源", "水资源"
