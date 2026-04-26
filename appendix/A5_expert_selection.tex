@@ -1,0 +1,26 @@
+Expert selection is performed by a rule-based feature extractor (\texttt{expert\_selector\_02\_01.py}) that scores each chunk against predefined feature patterns. No LLM is invoked during selection; the process is fully deterministic.
+
+\begin{enumerate}[noitemsep]
+    \item \textbf{Feature extraction.} The chunk is analyzed for:
+    \begin{itemize}[noitemsep]
+        \item Keyword presence (carbon, emission, energy, employee, training, governance, etc.)
+        \item Numerical data density (counts, percentages, monetary values)
+        \item Temporal markers (years, quarters, ``since'', ``by 20xx'')
+        \item Standard references (GRI, TCFD, SASB, ISO 14001, CDP)
+        \item Comparative language (``higher than'', ``below average'', ``ranked'')
+        \item Entity types (company names, plant locations, regulatory bodies)
+    \end{itemize}
+    
+    \item \textbf{Expert scoring.} Each of the 11 expert types defines a scoring function $s_i(chunk) \in [0,1]$ based on its target features. For example:
+    \begin{itemize}[noitemsep]
+        \item \textit{TemporalAnalysisExpert}: high score if temporal markers $\geq 2$ and numerical trends present.
+        \item \textit{GreenwashingDetectionExpert}: high score if vague-commitment keywords + selective-disclosure patterns detected.
+        \item \textit{KnowledgeGraphExpert}: high score if entity count $\geq 5$ and relation verbs present.
+    \end{itemize}
+    
+    \item \textbf{Thresholding.} Experts with $s_i \geq 0.5$ are selected. If no expert meets the threshold, the fallback \textit{QAExpert} is assigned.
+    
+    \item \textbf{Collaboration mode.} If $|\{s_i \geq 0.5\}| \geq 2$, parallel collaboration is used; otherwise sequential.
+\end{enumerate}
+
+\noindent\textbf{MetaExpert override.} After expert selection, the MetaExpert may dynamically adjust the assignment based on core topics extracted from the chunk. This override is rare ($<5\%$ of chunks) and logged in metadata.

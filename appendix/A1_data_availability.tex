@@ -1,0 +1,15 @@
+\noindent\textbf{Code.} The complete VeritasCarbon framework, evaluation scripts, and reproducibility instructions are available at \url{https://github.com/YihanJIANG-lab/VeritasCarbon-VLDB2027} under the MIT License.
+
+\noindent\textbf{Sample Data.} A representative 2,000-pair sample (\texttt{veritascarbon\_sample\_2000.jsonl}, 8.7~MB) is included in the GitHub repository. It is drawn with \texttt{random.seed(42)} from the full 35,009-pair pool and matches the evaluation protocol used in Table~2.
+
+\noindent\textbf{Full Dataset.} The complete VeritasCarbon-ESG-35K dataset (35,009 instruction--response pairs, $\sim$153~MB) is hosted on Hugging Face Datasets:
+\begin{center}
+\url{https://huggingface.co/datasets/Yihan-JIANG/VeritasCarbon-ESG-35K}
+\end{center}
+It can be loaded in one line:
+\begin{lstlisting}[language=Python]
+from datasets import load_dataset
+ds = load_dataset("Yihan-JIANG/VeritasCarbon-ESG-35K", split="train")
+\end{lstlisting}
+
+\noindent\textbf{Raw Corpus.} The source ESG documents ($\sim$2.7~GB, 17,721 files) contain copyrighted material and cannot be redistributed in full. Complete provenance metadata (document IDs, titles, source URLs, and chunk-to-document mappings) is provided in \texttt{data/raw\_corpus/CORPUS\_MANIFEST.md}.

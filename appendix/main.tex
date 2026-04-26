@@ -1,0 +1,104 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small VeritasCarbon --- Appendix Materials}
+\fancyhead[R]{\small VLDB 2027 Submission}
+\fancyfoot[C]{\small Page \thepage\ of \pageref{LastPage}}
+
+\lstset{
+    basicstyle=\small\ttfamily,
+    breaklines=true,
+    breakatwhitespace=true,
+    columns=flexible,
+    keepspaces=true,
+    showstringspaces=false,
+    frame=single,
+    rulecolor=\color{gray!40},
+    backgroundcolor=\color{gray!5},
+    xleftmargin=1em,
+    xrightmargin=1em,
+    aboveskip=0.5em,
+    belowskip=0.5em,
+}
+
+\newcommand{\promptbox}[1]{%
+    \begin{lstlisting}[breaklines]
+#1
+    \end{lstlisting}
+}
+
+\title{\textbf{VeritasCarbon: Appendix Materials}\\[0.3em]
+\large Supplementary Documentation for VLDB 2027 Submission}
+\author{Yihan Jiang et al.}
+\date{}
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+\tableofcontents
+\newpage
+
+% Dataset contribution paragraph for main paper
+\section*{Dataset as a Core Contribution}
+\addcontentsline{toc}{section}{Dataset as a Core Contribution}
+\input{dataset_contribution}
+
+\newpage
+\section*{A.1 Data and Code Availability}
+\addcontentsline{toc}{section}{A.1 Data and Code Availability}
+\input{A1_data_availability}
+
+\newpage
+\section*{A.2 Reproducibility Checklist}
+\addcontentsline{toc}{section}{A.2 Reproducibility Checklist}
+\input{A2_reproducibility_checklist}
+
+\newpage
+\section*{A.3 Prompt Templates}
+\addcontentsline{toc}{section}{A.3 Prompt Templates}
+\input{A3_prompt_templates}
+
+\newpage
+\section*{A.4 Hyperparameters}
+\addcontentsline{toc}{section}{A.4 Hyperparameters}
+\input{A4_hyperparameters}
+
+\newpage
+\section*{A.5 Expert Selection Logic}
+\addcontentsline{toc}{section}{A.5 Expert Selection Logic}
+\input{A5_expert_selection}
+
+\newpage
+\section*{A.6 Error Analysis}
+\addcontentsline{toc}{section}{A.6 Error Analysis}
+\input{A6_error_analysis}
+
+\newpage
+\section*{A.7 Dataset Schema}
+\addcontentsline{toc}{section}{A.7 Dataset Schema}
+\input{A7_schema}
+
+\newpage
+\section*{A.8 Latency and Cost Breakdown}
+\addcontentsline{toc}{section}{A.8 Latency and Cost Breakdown}
+\input{A8_latency}
+
+\end{document}

@@ -1,0 +1,10 @@
+In addition to the CoDE multi-agent framework, this paper makes a substantial dataset contribution by releasing \textbf{VeritasCarbon-ESG-35K}, the largest publicly available traceable ESG instruction dataset to date. The dataset contains 35,009 high-quality instruction--response pairs generated from 17,721 real-world ESG disclosure documents spanning four corpus layers (domain textbooks, CSR reports, regulatory guidelines, and industry analyses). Every pair is fully traceable to its source document chunk and includes rich generation metadata (quality score, selected experts, collaboration mode, knowledge injection count), enabling fine-grained analysis of data provenance and quality.
+
+Unlike existing ESG corpora that are limited to classification labels or short extracts, VeritasCarbon-ESG-35K provides \textit{task-oriented instructions} with diverse types (Q\&A, summarization, extraction, classification, analysis, temporal analysis, benchmark comparison, greenwashing detection, standard alignment, knowledge graph construction, and consistency verification). This makes it directly usable for instruction tuning of large language models in the ESG and sustainable-finance domains.
+
+The dataset is released under a tiered strategy to balance accessibility and copyright constraints:
+\begin{itemize}[noitemsep]
+    \item A representative 2,000-pair sample is included in the GitHub repository for immediate inspection and replication of the main evaluation (Table~2);
+    \item The full 35,009-pair dataset is hosted on Hugging Face Datasets (\url{https://huggingface.co/datasets/Yihan-JIANG/VeritasCarbon-ESG-35K}) under CC BY-SA~4.0;
+    \item Complete provenance metadata for all 17,721 source documents is provided in the repository, and the full dataset can be reproduced from source using the provided notebooks.
+\end{itemize}

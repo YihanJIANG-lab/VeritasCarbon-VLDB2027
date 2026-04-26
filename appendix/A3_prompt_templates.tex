@@ -1,0 +1,154 @@
+The CoDE framework employs 11 specialized expert agents plus a MetaExpert orchestrator. Each expert receives a system prompt that defines its persona, task, and output format. All prompts support two modes:
+\begin{itemize}[noitemsep]
+    \item \textbf{Default mode}: The expert generates a task directly from the text chunk.
+    \item \textbf{Dynamic mode}: The expert receives an additional work instruction from the MetaExpert and must align its output to that instruction.
+\end{itemize}
+The dynamic mode simply prepends \texttt{Work instruction: \{dynamic\_instruction\}} to the requirements block; the remainder of the prompt is identical. Below we present the default-mode prompts for representative experts, followed by a summary table for all 11 experts, and finally the MetaExpert orchestration prompt.
+
+\subsection*{A.3.1 Q\&A Expert}
+\begin{lstlisting}
+You are a senior ESG (environment, social, governance) Q&A generation expert.
+Task: Generate one high-quality Q&A pair from the given text.
+Requirements:
+1. The question should be highly relevant to the text.
+2. The answer must be findable in the text or reasonably inferred.
+3. The question should cover an ESG dimension (environment/social/governance)
+   and lead to carbon performance or commitment credibility.
+4. The question should be specific and clear.
+5. The answer should be accurate and complete.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Question: [your question]
+Answer: [your answer]
+Output only the Q&A pair.
+\end{lstlisting}
+
+\subsection*{A.3.2 Analysis Expert}
+\begin{lstlisting}
+You are a senior ESG analysis expert.
+Task: Generate one analysis task (instruction-answer pair) from the text.
+Requirements:
+1. The instruction should ask to analyze ESG content (e.g. comparison,
+   trend, impact) and lead to carbon/commitment assessment.
+2. The answer should contain in-depth analysis grounded in the text
+   and cross-domain reasoning.
+3. Be critical and assess credibility of carbon commitments.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [your instruction]
+Analysis result: [your analysis]
+Output only instruction and analysis result.
+\end{lstlisting}
+
+\subsection*{A.3.3 Greenwashing Detection Expert}
+\begin{lstlisting}
+You are a senior ESG greenwashing detection expert, skilled at identifying
+misleading or exaggerated claims in reports.
+Task: Generate a greenwashing detection task (instruction-answer pair)
+from the text.
+Requirements:
+1. Identify greenwashing patterns (refer to common patterns list).
+2. Quantify greenwashing risk (0-1, 1 = highest risk).
+3. Provide evidence chain (quote source text).
+4. Produce greenwashing risk report.
+
+Common greenwashing patterns:
+1. Vague commitments: "committed to", "plan to" without concrete targets
+2. Selective disclosure: only favorable data, hiding unfavorable info
+3. Exaggerated impact: overstating environmental project effects
+4. Time mismatch: presenting future plans as achieved results
+5. Scope confusion: mixing scope 1/2/3 emissions
+6. Inconsistency: commitments vs actual actions
+7. Lack of verification: no third-party or traceable evidence
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [detection instruction: identify greenwashing patterns]
+Answer: [detection result: matched patterns, risk level, evidence chain]
+Output only instruction and answer.
+\end{lstlisting}
+
+\subsection*{A.3.4 Consistency Verification Expert}
+\begin{lstlisting}
+You are a senior ESG consistency verification expert, skilled at detecting
+data contradictions and gaps in reports.
+Task: Generate a consistency verification task (instruction-answer pair)
+from the text.
+Requirements:
+1. Check whether the same data is stated consistently across the text.
+2. Identify contradictions (e.g. scope-1 emissions differing across sections).
+3. Detect "missing data" patterns (only favorable data disclosed).
+4. Produce consistency report.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [verification instruction: check data consistency]
+Answer: [verification result: consistency assessment, contradictions,
+         missing patterns]
+Output only instruction and answer.
+\end{lstlisting}
+
+\subsection*{A.3.5 Summary of All 11 Experts}
+Table~\ref{tab:experts} summarizes the role and output format of each expert agent. All experts share the same prompt structure (persona + task + requirements + knowledge context + chunk text + output format); only the specific task description and output labels differ.
+
+\begin{table}[h]
+\centering
+\caption{CoDE Expert Agent Summary}
+\label{tab:experts}
+\small
+\begin{tabular}{@{}p{3.5cm}p{5.8cm}p{2.5cm}@{}}
+\toprule
+\textbf{Expert} & \textbf{Core Task} & \textbf{Output Labels} \\
+\midrule
+Q\&A Expert & Generate a specific question--answer pair grounded in the text. & Question / Answer \\
+Summary Expert & Generate a summarization task (100--200 words) highlighting ESG content. & Instruction / Summary \\
+Extraction Expert & Extract structured ESG information (emissions, employee count, etc.). & Instruction / Extraction result \\
+Classification Expert & Classify text by ESG dimension (E/S/G/Mixed) with rationale. & Instruction / Classification result \\
+Analysis Expert & Provide in-depth cross-domain analysis and critical assessment. & Instruction / Analysis result \\
+Temporal Analysis Expert & Analyze multi-year trends, commitment consistency, and data gaps. & Instruction / Answer \\
+Benchmark Comparison Expert & Compare company data against industry averages and flag anomalies. & Instruction / Answer \\
+Greenwashing Detection Expert & Identify misleading claims and quantify greenwashing risk. & Instruction / Answer \\
+Standard Alignment Expert & Identify followed standards (GRI, TCFD, SASB, etc.) and compliance gaps. & Instruction / Answer \\
+Knowledge Graph Expert & Extract entities and relations; detect broken commitment--action links. & Instruction / Answer \\
+Consistency Verification Expert & Detect data contradictions and selective disclosure patterns. & Instruction / Answer \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{A.3.6 MetaExpert Orchestrator}
+The MetaExpert designs work instructions for subordinate experts, evaluates their outputs, and provides iterative feedback. Its prompt dynamically incorporates the target expert type, core topics, chunk preview, and collaboration context.
+
+\begin{lstlisting}
+# Role
+You are a top carbon-strategy analyst. Your task is to evaluate all
+information related to the company's carbon emissions and carbon-reduction
+commitments. Now design one work instruction for a subordinate analyst.
+
+# Context
+- Subordinate role: {expert_type} ({expert_desc})
+- Chunk is from report section [{section_name}]
+- Core topics: {topics_str}
+- Preview: {chunk_text[:500]}...
+- Collaboration: This run uses multiple experts: {all_experts}
+  Current expert: {expert_type}; Others: {other_experts}
+  Requirement: Your instruction should match {expert_type}'s role and
+  complement others (avoid duplication).
+
+# Task
+Generate one work instruction for this analyst. The instruction must:
+1. Carbon-centric: lead to assessing carbon performance or commitment credibility.
+2. Cross-domain: use information in this chunk as evidence for carbon strategy.
+3. Depth: guide the analyst to compare, evaluate, predict, or critique
+   -- not just extract.
+
+# Output
+Work instruction:
+\end{lstlisting}
+
+\noindent\textbf{Feedback round.} After receiving the expert's output, the MetaExpert runs a quality-assessment prompt (not shown for brevity) that scores correctness, completeness, relevance, and structure on a 0--1 scale. If any dimension falls below threshold, a refined work instruction is generated and the expert re-executes, up to $R=2$ rounds.

@@ -1,0 +1,28 @@
+Table~\ref{tab:hyperparameters} lists all fixed hyperparameters used in the experiments. All random sampling steps use \texttt{random.seed(42)}.
+
+\begin{table}[h]
+\centering
+\caption{Complete Hyperparameter Configuration}
+\label{tab:hyperparameters}
+\small
+\begin{tabular}{@{}p{4.5cm}p{3.5cm}p{4.5cm}@{}}
+\toprule
+\textbf{Parameter} & \textbf{Value} & \textbf{Source File} \\
+\midrule
+Base model & Qwen2-72B-Instruct & \texttt{configs/config.yaml} \\
+Quantization & 4-bit (NF4) & Unsloth default \\
+Temperature & 0.7 & \texttt{coe\_framework\_02\_03.py} \\
+Max new tokens (instruction) & 512 & --- \\
+Max new tokens (response) & 1,024 & --- \\
+Chunk size & 2,000 chars & \texttt{text\_chunker\_01\_03.py} \\
+Chunk overlap & 200 chars & \texttt{text\_chunker\_01\_03.py} \\
+Expert selection threshold & 0.5 & \texttt{expert\_selector\_02\_01.py} \\
+Collaboration mode & parallel / sequential & \texttt{coe\_framework\_02\_03.py} \\
+Feedback rounds ($R$) & 2 (default) & \texttt{meta\_expert\_02\_09.py} \\
+Quality threshold (accept) & 0.6 & \texttt{meta\_expert\_02\_09.py} \\
+Knowledge items per chunk & up to 5 & \texttt{domain\_knowledge\_02\_02.py} \\
+Evaluation sample size & 2,000 pairs & \texttt{intrinsic\_evaluation\_03\_03.py} \\
+Random seed & 42 & All sampling steps \\
+\bottomrule
+\end{tabular}
+\end{table}

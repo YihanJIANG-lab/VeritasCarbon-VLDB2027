@@ -1,0 +1,30 @@
+Table~\ref{tab:reproducibility} provides a 30-minute verification checklist for reviewers. All commands run on CPU; no GPU is required for verification.
+
+\begin{table}[h]
+\centering
+\caption{30-Minute Reproducibility Checklist}
+\label{tab:reproducibility}
+\small
+\begin{tabular}{@{}p{3.8cm}p{5.5cm}p{2.8cm}r@{}}
+\toprule
+\textbf{Claim} & \textbf{Verification Command} & \textbf{Expected Output} & \textbf{Time} \\
+\midrule
+Table~2: CoDE ROUGE-L & \texttt{cat results/outputs/intrinsic\_comparison.json} & 0.3380 & 30~s \\
+Table~2: CoDE BLEU-4 & same file & 0.1932 & --- \\
+Table~2: Domain Rel. & same file & 0.3637 & --- \\
+Table~2: FactCheck & same file & 0.9478 & --- \\
+Table~3: Ablation & \texttt{cat results/figures\_and\_tables/table3\_ablation.tex} & all 12 values & 30~s \\
+Fig~5: Quality dist. & \texttt{python scripts/generate\_paper\_results.py --figures} & PDF/PNG files & 2~min \\
+Dataset size: 35,009 & \texttt{cat results/figures\_and\_tables/table2\_qa\_statistics.json} & 35009 & 10~s \\
+Provenance: traceable & Inspect any record in \texttt{data/sample/*.jsonl} & \texttt{source\_chunk\_id} present & 1~min \\
+Evaluation pipeline & Run \texttt{intrinsic\_evaluation\_03\_03.py} on sample & metrics JSON & 10~min \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Notes.}
+\begin{itemize}[noitemsep]
+    \item Tracks A--B (rows 1--8) require only the GitHub repository ($\sim$10~MB download).
+    \item Track C (full regeneration) requires the raw corpus ($\sim$2.7~GB) and an A100 GPU; see \texttt{REPRODUCIBILITY.md} for details.
+    \item All random sampling uses \texttt{random.seed(42)}.
+\end{itemize}

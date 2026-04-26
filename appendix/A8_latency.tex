@@ -1,0 +1,31 @@
+Table~\ref{tab:latency} reports end-to-end latency measured on a single NVIDIA A100 (80~GB) with Qwen2-72B-Instruct 4-bit quantized via Unsloth. Batch size is 1; times are wall-clock averages over 100 records.
+
+\begin{table}[h]
+\centering
+\caption{Latency and Cost Breakdown}
+\label{tab:latency}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Pipeline Stage} & \textbf{Time / Record} & \textbf{Total (35K)} & \textbf{\% of Total} \\
+\midrule
+Document parsing & --- & $\sim$2~hrs & 4\% \\
+Semantic chunking & --- & $\sim$30~min & 1\% \\
+Expert selection & 0.02~s & $\sim$12~min & $<$1\% \\
+Knowledge retrieval & 0.15~s & $\sim$88~min & 3\% \\
+Parallel generation & 2.8~s & $\sim$27~hrs & 58\% \\
+MetaExpert feedback ($R=2$) & 1.9~s & $\sim$18~hrs & 38\% \\
+Quality scoring & 0.05~s & $\sim$29~min & 1\% \\
+\midrule
+\textbf{Total} & \textbf{$\sim$4.9~s} & \textbf{$\sim$46~hrs} & \textbf{100\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Notes.}
+\begin{itemize}[noitemsep]
+    \item Document parsing and chunking are I/O-bound and run on CPU; their times depend on PDF complexity.
+    \item Generation and feedback are GPU-bound and dominate the pipeline.
+    \item Parallel collaboration reduces per-record latency by invoking multiple experts in a single forward pass when possible.
+    \item The 46-hour total assumes sequential processing; with 4-way parallel chunk processing across 4 A100 GPUs, the wall-clock time drops to $\sim$12 hours.
+\end{itemize}

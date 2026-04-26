@@ -1,0 +1,44 @@
+To illustrate the quality spectrum of VeritasCarbon-ESG-35K, we present representative examples drawn from the 2,000-pair sample. The quality score is a composite metric (correctness 0.4, completeness 0.3, relevance 0.2, structure 0.1) assigned by the MetaExpert.
+
+\subsection*{A.6.1 High-Quality Example (Score 0.915)}
+
+\textbf{Assigned experts:} Summary Expert + Consistency Verification Expert\\
+\textbf{Instruction:} Generate a summary about the 2024--2025 A-share ESG fund issuance trends, listed companies' information disclosure quality, carbon-risk considerations in investment decisions, corporate carbon-emission management progress, ESG evaluation-system effectiveness, and the potential of China's ESG market to promote green transformation.
+
+\begin{lstlisting}[breaklines]
+Answer: Since 2024, A-share ESG public fund issuance has reached approximately 216 billion yuan. Although the issuance pace has slowed, 18 new funds were still issued from Q4 to Q3 of the following year. The industry's overall scale has rebounded against the trend, showing a structural shift from quantity expansion to quality improvement. Under the dual-wheel drive of policy and market, China's ESG market is gradually maturing, with carbon-risk considerations becoming an important factor in investment decisions.
+\end{lstlisting}
+
+\noindent\textbf{Why it scores high:} The instruction demands multi-faceted synthesis (funds, disclosure, carbon risk, evaluation systems), and the answer integrates quantitative evidence (216B yuan, 18 funds) with qualitative assessment (structural shift, maturing market). The Consistency Verification Expert cross-checks that fund-scale figures are internally coherent.
+
+\subsection*{A.6.2 Low-Quality Example (Score 0.000)}
+
+\textbf{Assigned experts:} Summary Expert\\
+\textbf{Instruction:} Generate a summary for the following text.
+
+\begin{lstlisting}[breaklines]
+Answer: This article aims to analyze how ESG information disclosure affects employees' green innovation efficiency and its role in promoting companies' real carbon-reduction commitments. Special attention is paid to identifying and criticizing potential "greenwashing" behavior, i.e., phenomena where companies superficially promote environmental measures without taking substantive action. In addition, the article...
+\end{lstlisting}
+
+\noindent\textbf{Why it scores low:} The output is a generic abstract of the source text rather than a task-oriented instruction--response pair. The ``instruction'' is merely ``generate a summary,'' and the ``answer'' restates the paper's purpose without concrete data or analysis. This pattern occurs when the MetaExpert's work instruction is too vague and no second expert is assigned to refine depth.
+
+\subsection*{A.6.3 Key Failure Patterns}
+
+Table~\ref{tab:failure} summarizes the most common failure modes observed in the bottom-decile records.
+
+\begin{table}[h]
+\centering
+\caption{Common Failure Patterns in Low-Quality Records}
+\label{tab:failure}
+\small
+\begin{tabular}{@{}p{3cm}p{5cm}p{4cm}@{}}
+\toprule
+\textbf{Pattern} & \textbf{Description} & \textbf{Typical Cause} \\
+\midrule
+Generic summary & Answer restates source abstract without task specificity. & Single Summary Expert, no dynamic instruction. \\
+Vague instruction & Instruction is a broad request (``analyze ESG''). & MetaExpert topics too generic. \\
+Missing evidence & Claims lack concrete numbers or source citations. & No Extraction/Benchmark Expert assigned. \\
+Self-reference & Answer refers to ``this article'' or ``the text.'' & Expert fails to rephrase into third-person response. \\
+\bottomrule
+\end{tabular}
+\end{table}
