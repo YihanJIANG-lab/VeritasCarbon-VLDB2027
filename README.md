@@ -2,11 +2,10 @@
 
 > **VeritasCarbon: A Scalable Multi-Agent Framework for Generating Traceable ESG Instruction Data**
 >
-> Accepted at **SIGMOD 2027** — Research Track (DI&DS Application)
+> **Submitted to VLDB 2027** — Research Track
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
-[![LFS](https://img.shields.io/badge/git--lfs-enabled-orange.svg)](https://git-lfs.com/)
 
 ## Overview
 
@@ -26,7 +25,7 @@ VeritasCarbon converts **17,721 ESG disclosure documents** into **35,009 traceab
 ## Repository Structure
 
 ```
-VeritasCarbon-SIGMOD2027/
+VeritasCarbon-VLDB2027/
 ├── configs/
 │   └── config.yaml              # Central configuration (model, CoDE, paths)
 ├── src/
@@ -80,10 +79,9 @@ VeritasCarbon-SIGMOD2027/
 ## Installation
 
 ```bash
-# Clone (requires git-lfs for data files)
-git lfs install
-git clone https://github.com/YihanJIANG-lab/VeritasCarbon-SIGMOD2027.git
-cd VeritasCarbon-SIGMOD2027
+# Clone
+git clone https://github.com/YihanJIANG-lab/VeritasCarbon-VLDB2027.git
+cd VeritasCarbon-VLDB2027
 
 # Create environment
 conda create -n VeritasCarbon python=3.10 -y

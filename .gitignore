@@ -53,3 +53,13 @@ open_source_release/
 # Allow sample dataset (small, representative)
 !data/sample/
 !data/sample/*.jsonl
+
+# Paper manuscripts and drafts (do not commit to public repo)
+paper/*.docx
+paper/*.pdf
+paper/appendix/*.docx
+paper/appendix/*.pdf
+paper/appendix/*.tex
+paper/appendix_vldb/*.docx
+paper/appendix_vldb/*.pdf
+paper/appendix_vldb/*.tex
