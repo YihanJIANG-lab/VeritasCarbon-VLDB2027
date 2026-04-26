@@ -55,13 +55,13 @@ VeritasCarbon-SIGMOD2027/
 │   │   └── CORPUS_MANIFEST.md   # Full listing of all 17,721 documents
 │   ├── processed_corpus/        # Semantically segmented chunks
 │   │   └── chunks_sampled_20000_by_year.jsonl
-│   ├── instructions/            # Generated QA pairs (full set reproducible via scripts)
+│   ├── instructions/            # Generated QA pairs (full set on Hugging Face)
 │   │   ├── qa_pairs_complete_v3_1.5w.jsonl  (15,000 pairs)
 │   │   └── qa_pairs_complete_v3_2w.jsonl    (20,000 pairs)
 │   ├── instruction_datasets/
 │   │   └── train.jsonl           # Final training set
-│   └── sample/                   # Representative 500-pair sample (in repo)
-│       └── veritascarbon_sample_500.jsonl
+│   └── sample/                   # Representative 2,000-pair sample (in repo)
+│       └── veritascarbon_sample_2000.jsonl
 ├── results/
 │   ├── baselines/               # Direct / Self-Instruct / WizardLM-Evol
 │   ├── ablation/                # Expert count / Collaboration / Feedback / Knowledge
@@ -155,9 +155,9 @@ The CoDE (Council of Domain Experts) framework operates in three stages:
 
 We release the dataset under a **tiered strategy** (see [`DATA_AVAILABILITY.md`](DATA_AVAILABILITY.md) for full details):
 
-- **Sample (500 pairs)**: Included directly in this repository (`data/sample/veritascarbon_sample_500.jsonl`). Drawn via `random.seed(42)` from the full pool; sufficient to inspect data quality, format, and metadata richness.
-- **Full dataset (35,009 pairs)**: Reproducible from source using the provided notebooks and scripts. The raw corpus (~2.7 GB) contains copyrighted material and cannot be redistributed in full; we provide `CORPUS_MANIFEST.md` with complete provenance.
-- **Pre-generated full data**: Available upon request via GitHub Issue or email (hosted externally due to size).
+- **Sample (2,000 pairs)**: Included directly in this repository (`data/sample/veritascarbon_sample_2000.jsonl`). Drawn via `random.seed(42)` from the full pool; matches the evaluation protocol in Table 2 and is sufficient to replicate the main comparison experiment.
+- **Full dataset (35,009 pairs)**: Hosted on [Hugging Face Datasets](https://huggingface.co/datasets/YihanJIANG-lab/VeritasCarbon-ESG-35K) (`~153 MB`). Loadable in one line: `load_dataset("YihanJIANG-lab/VeritasCarbon-ESG-35K")`.
+- **Reproducible from source**: The raw corpus (~2.7 GB) contains copyrighted material and cannot be redistributed in full; we provide `CORPUS_MANIFEST.md` with complete provenance. Running the provided notebooks regenerates the identical 35,009-pair dataset.
 
 **Format** (JSONL):
 ```json

@@ -8,22 +8,24 @@ We adopt a **tiered release strategy** that balances reproducibility, transparen
 
 | Tier | Content | Location | Size |
 |------|---------|----------|------|
-| **Tier 1** | Representative sample (500 QA pairs) | In this repository (`data/sample/`) | ~2.2 MB |
+| **Tier 1** | Representative sample (2,000 QA pairs) | In this repository (`data/sample/`) | ~8.7 MB |
 | **Tier 2** | Corpus metadata & provenance | In this repository (`data/raw_corpus/CORPUS_MANIFEST.md`) | ~4 KB |
-| **Tier 3** | Full dataset (35,009 QA pairs) | Generated via provided scripts | ~154 MB |
+| **Tier 3** | Full dataset (35,009 QA pairs) | [Hugging Face Datasets](https://huggingface.co/datasets/YihanJIANG-lab/VeritasCarbon-ESG-35K) | ~153 MB |
+
+The **2,000-pair sample size** is chosen to match the evaluation protocol in the paper (Table 2), enabling reviewers to directly replicate the main comparison experiment without downloading the full corpus.
 
 ---
 
 ## Tier 1: Sample Dataset (`data/sample/`)
 
-We provide a **statistically representative sample of 500 QA pairs** (`veritascarbon_sample_500.jsonl`) to enable immediate inspection of data quality, format, and provenance without downloading large files.
+We provide a **statistically representative sample of 2,000 QA pairs** (`veritascarbon_sample_2000.jsonl`) to enable immediate inspection of data quality, format, and provenance, **and** to directly replicate the main intrinsic evaluation (Table 2).
 
 - **Sampling method**: Simple random sampling (`random.seed(42)`) from the full 35,009-pair pool
 - **Schema**: Unified `instruction` / `input` / `output` / `source_chunk_id` / `metadata`
 - **Rich metadata**: Each record includes `quality_score`, `selected_experts`, `collaboration_mode`, `knowledge_items_count`, etc.
-- **Usage**: Load directly for qualitative analysis or as a sanity-check for the generation pipeline
-
-This sample is sufficient to verify all claims about data structure, traceability, and metadata richness.
+- **Usage**:
+  - **Qualitative inspection**: Load directly to review data format and quality distribution
+  - **Quantitative replication**: Run `src/instruction_generation/intrinsic_evaluation_03_03.py` with `--max_per_dataset 2000` on this sample to reproduce the CoDE column of Table 2
 
 ---
 
@@ -39,19 +41,30 @@ This ensures full **data provenance** even when the raw documents themselves can
 
 ---
 
-## Tier 3: Full Dataset
+## Tier 3: Full Dataset (Hugging Face)
 
-The complete **VeritasCarbon-ESG-35K** dataset (35,009 instruction–response pairs) is **reproducible from source** using the code and notebooks in this repository.
+The complete **VeritasCarbon-ESG-35K** dataset (35,009 instruction–response pairs) is hosted on **Hugging Face Datasets**:
 
-### Why not included directly?
+> **https://huggingface.co/datasets/YihanJIANG-lab/VeritasCarbon-ESG-35K**
 
-1. **Size**: The raw generated data totals ~154 MB of JSONL files. While manageable, the *raw corpus* (source PDFs/TXTs) is ~2.7 GB and contains copyrighted material (CSR reports, regulatory documents) that we are not authorized to redistribute.
-2. **Copyright**: Layer 2 (CSR reports) and Layer 3 (regulatory guidelines) documents are owned by their respective issuers. We provide sample excerpts under fair use but cannot distribute the full corpus.
-3. **Reproducibility priority**: The generation pipeline is fully deterministic (fixed `random.seed(42)` for sampling steps). Running the notebooks on the same corpus produces identical outputs.
+### Why not all in GitHub?
 
-### How to obtain the full dataset
+1. **Size**: The full generated data is ~153 MB. Combined with raw corpus metadata and code, this is manageable but better served by a dedicated data platform.
+2. **Copyright**: The *raw corpus* (source PDFs/TXTs, ~2.7 GB) contains copyrighted material (CSR reports, regulatory documents) that we are not authorized to redistribute. We provide sample excerpts under fair use but cannot distribute the full corpus.
+3. **Community standard**: Hugging Face Datasets is the de facto standard for releasing instruction-following datasets in the AI/ML community, offering persistent DOI-like identifiers and seamless `datasets` library integration.
 
-**Option A — Reproduce from scratch (recommended for reproducibility evaluation):**
+### How to access
+
+```python
+from datasets import load_dataset
+
+dataset = load_dataset("YihanJIANG-lab/VeritasCarbon-ESG-35K", split="train")
+print(len(dataset))  # 35009
+```
+
+Or download the JSONL directly from the repository's Files tab.
+
+### How to reproduce from scratch
 
 1. Obtain the raw ESG corpus (~2.7 GB). The manifest in `CORPUS_MANIFEST.md` lists all 17,721 documents with source information. Many Layer 2 CSR reports are publicly available from stock exchanges (e.g., CSMAR, CNINFO). Layer 1 textbooks and Layer 4 industry analyses can be sourced from publishers or open-access repositories.
 2. Run the notebooks in order:
@@ -60,10 +73,6 @@ The complete **VeritasCarbon-ESG-35K** dataset (35,009 instruction–response pa
    jupyter notebook notebooks/02_InstructionGeneration_v3.ipynb  # → 35,009 QA pairs
    ```
 3. The default configuration (`configs/config.yaml`) and all hyperparameters are fixed.
-
-**Option B — Request pre-generated data:**
-
-Due to GitHub storage and LFS quota constraints, we host the full `qa_pairs_complete_v3_*.jsonl` files via an external archival repository. Please open a GitHub Issue or contact the authors for a download link.
 
 ---
 

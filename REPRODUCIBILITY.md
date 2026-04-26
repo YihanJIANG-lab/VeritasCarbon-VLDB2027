@@ -1,0 +1,151 @@
+# Reproducibility Guide
+
+> **Goal**: Verify all key results in the paper within **30 minutes** on a standard machine (no GPU required for verification; GPU needed only for full regeneration).
+
+---
+
+## Prerequisites
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/YihanJIANG-lab/VeritasCarbon-VLDB2027.git
+cd VeritasCarbon-VLDB2027
+
+# 2. Install dependencies (Python 3.10+)
+pip install -r requirements.txt
+```
+
+**Expected time**: 2–3 minutes.
+
+---
+
+## Track A: Verify Pre-computed Results (10 minutes, no GPU)
+
+All paper tables and figures are already generated and stored in `results/`. You can verify them directly.
+
+### Table 2 — Main Comparison (Intrinsic Metrics)
+
+```bash
+python3 -c "
+import json
+with open('results/outputs/intrinsic_comparison.json') as f:
+    data = json.load(f)
+    code = data['CoDE (ours)']
+    print(f'ROUGE-L: {code[\"rouge_l\"]:.4f}')
+    print(f'BLEU-4:  {code[\"bleu_4\"]:.4f}')
+    print(f'DomainRel:{code[\"domain_rel\"]:.4f}')
+    print(f'FactCheck:{code[\"fact_check\"]:.4f}')
+"
+```
+
+**Expected output** (matching Table 2):
+```
+ROUGE-L: 0.3380
+BLEU-4:  0.1932
+DomainRel:0.3637
+FactCheck:0.9478
+```
+
+### Table 3 — Ablation Study
+
+```bash
+cat results/figures_and_tables/table3_ablation.tex
+```
+
+### Figure 5 — Quality Distribution
+
+The histogram data is embedded in `results/figures_and_tables/all_metrics.json`. To regenerate the figure:
+
+```bash
+python3 scripts/generate_paper_results.py --figures
+```
+
+*(This script reads pre-computed metrics; no model inference is performed.)*
+
+---
+
+## Track B: Replicate Evaluation on the 2,000-Pair Sample (15 minutes, no GPU)
+
+The repository includes a **2,000-pair representative sample** (`data/sample/veritascarbon_sample_2000.jsonl`) drawn with `seed=42`. You can run the canonical evaluator on this sample to verify the evaluation pipeline.
+
+```bash
+python3 src/instruction_generation/intrinsic_evaluation_03_03.py \
+  --coe_files data/sample/veritascarbon_sample_2000.jsonl \
+  --max_per_dataset 2000 \
+  --output_path results/outputs/sample_evaluation.json
+```
+
+**Expected behavior**:
+- Loads 2,000 records
+- Computes ROUGE-L, BLEU-4, Distinct-n, Domain Relevance, FactCheck, Structural Completeness
+- Writes `results/outputs/sample_evaluation.json`
+
+**Note**: Because this is a *sample* (not the full 35,009-pair pool), the absolute scores will differ slightly from Table 2. The purpose is to verify that the **evaluation pipeline** works correctly and produces consistent metric ranges.
+
+---
+
+## Track C: Full Regeneration (hours, requires GPU)
+
+To reproduce the **entire dataset from scratch** (35,009 pairs + all baselines + ablations):
+
+### Step 1: Obtain the raw corpus
+
+See `data/raw_corpus/CORPUS_MANIFEST.md` for the complete list of 17,721 source documents. Many are publicly available from:
+- **Layer 2 (CSR reports)**: CSMAR, CNINFO, individual company investor relations pages
+- **Layer 3 (regulations)**: State Council, CSRC, PBOC official portals
+- **Layer 1 & 4**: Publisher websites, open-access repositories
+
+Place documents according to the layer structure described in the manifest.
+
+### Step 2: Run the pipeline
+
+```bash
+# Notebook 1: Preprocess → chunks
+jupyter notebook notebooks/01_DataPreprocess.ipynb
+
+# Notebook 2: Generate 35,009 QA pairs via CoDE
+jupyter notebook notebooks/02_InstructionGeneration_v3.ipynb
+
+# Notebook 3: Run baselines, ablations, and evaluation
+jupyter notebook notebooks/03_SIGMOD_Experiments.ipynb
+```
+
+**Hardware**: The generation phase requires an A100 (80 GB) or equivalent for Qwen2-72B-Instruct 4-bit quantized via Unsloth. Evaluation (Tracks A & B) runs on CPU.
+
+**Determinism**: All random sampling uses `random.seed(42)`. Fixed hyperparameters are in `configs/config.yaml`.
+
+---
+
+## Quick Checklist for Reviewers
+
+| Claim in Paper | How to Verify | Time |
+|----------------|---------------|------|
+| Table 2: CoDE outperforms baselines | Read `results/outputs/intrinsic_comparison.json` | 1 min |
+| Table 3: Ablation results | Read `results/figures_and_tables/table3_ablation.tex` | 1 min |
+| Fig 5: Quality distribution | Run `scripts/generate_paper_results.py --figures` | 2 min |
+| Dataset size: 35,009 pairs | Check `results/figures_and_tables/table2_qa_statistics.json` | 1 min |
+| Data provenance: traceable chunks | Inspect any record in `data/sample/veritascarbon_sample_2000.jsonl` | 1 min |
+| Evaluation pipeline is sound | Run `intrinsic_evaluation_03_03.py` on sample (Track B) | 10 min |
+| Code quality & structure | Browse `src/` and `scripts/` | 5 min |
+
+**Total verification time**: < 30 minutes.
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| `ModuleNotFoundError: No module named 'rouge_score'` | `pip install rouge-score sacrebleu` |
+| Evaluation runs slowly | Expected; ROUGE-L and BLEU-4 operate on full text. The 2,000-pair evaluation takes ~5–10 min on a modern CPU. |
+| Baseline jsonl files missing | Baselines and ablations are in `results/` but excluded from GitHub due to size. They are generated by `notebooks/03_SIGMOD_Experiments.ipynb`. For verification-only, use pre-computed `intrinsic_comparison.json`. |
+| Want the full 35,009-pair dataset | Download from [Hugging Face](https://huggingface.co/datasets/YihanJIANG-lab/VeritasCarbon-ESG-35K) or reproduce via notebooks. |
+
+---
+
+## Contact
+
+If you encounter any issues during reproduction, please open a GitHub Issue with:
+1. The command you ran
+2. The error message (if any)
+3. Your environment (`python --version`, OS, CPU/GPU)
