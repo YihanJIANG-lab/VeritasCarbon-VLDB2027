@@ -107,7 +107,7 @@ Each record contains:
 ```python
 from datasets import load_dataset
 
-dataset = load_dataset("YihanJIANG-lab/VeritasCarbon-ESG-35K", split="train")
+dataset = load_dataset("Yihan-JIANG/VeritasCarbon-ESG-35K", split="train")
 
 # Inspect a sample
 print(dataset[0]["instruction"])

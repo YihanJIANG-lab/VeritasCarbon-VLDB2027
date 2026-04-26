@@ -22,7 +22,7 @@ from pathlib import Path
 from datasets import Dataset
 from huggingface_hub import HfApi, login
 
-REPO_ID = "YihanJIANG-lab/VeritasCarbon-ESG-35K"
+REPO_ID = "Yihan-JIANG/VeritasCarbon-ESG-35K"
 JSONL_PATH = Path("hf_dataset/veritascarbon_esg_35k.jsonl")
 README_PATH = Path("hf_dataset/README.md")
 

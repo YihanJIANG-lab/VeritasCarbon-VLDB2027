@@ -10,7 +10,7 @@ We adopt a **tiered release strategy** that balances reproducibility, transparen
 |------|---------|----------|------|
 | **Tier 1** | Representative sample (2,000 QA pairs) | In this repository (`data/sample/`) | ~8.7 MB |
 | **Tier 2** | Corpus metadata & provenance | In this repository (`data/raw_corpus/CORPUS_MANIFEST.md`) | ~4 KB |
-| **Tier 3** | Full dataset (35,009 QA pairs) | [Hugging Face Datasets](https://huggingface.co/datasets/YihanJIANG-lab/VeritasCarbon-ESG-35K) | ~153 MB |
+| **Tier 3** | Full dataset (35,009 QA pairs) | [Hugging Face Datasets](https://huggingface.co/datasets/Yihan-JIANG/VeritasCarbon-ESG-35K) | ~153 MB |
 
 The **2,000-pair sample size** is chosen to match the evaluation protocol in the paper (Table 2), enabling reviewers to directly replicate the main comparison experiment without downloading the full corpus.
 
@@ -45,7 +45,7 @@ This ensures full **data provenance** even when the raw documents themselves can
 
 The complete **VeritasCarbon-ESG-35K** dataset (35,009 instruction–response pairs) is hosted on **Hugging Face Datasets**:
 
-> **https://huggingface.co/datasets/YihanJIANG-lab/VeritasCarbon-ESG-35K**
+> **https://huggingface.co/datasets/Yihan-JIANG/VeritasCarbon-ESG-35K**
 
 ### Why not all in GitHub?
 
@@ -58,7 +58,7 @@ The complete **VeritasCarbon-ESG-35K** dataset (35,009 instruction–response pa
 ```python
 from datasets import load_dataset
 
-dataset = load_dataset("YihanJIANG-lab/VeritasCarbon-ESG-35K", split="train")
+dataset = load_dataset("Yihan-JIANG/VeritasCarbon-ESG-35K", split="train")
 print(len(dataset))  # 35009
 ```
 

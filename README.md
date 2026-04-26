@@ -156,7 +156,7 @@ The CoDE (Council of Domain Experts) framework operates in three stages:
 We release the dataset under a **tiered strategy** (see [`DATA_AVAILABILITY.md`](DATA_AVAILABILITY.md) for full details):
 
 - **Sample (2,000 pairs)**: Included directly in this repository (`data/sample/veritascarbon_sample_2000.jsonl`). Drawn via `random.seed(42)` from the full pool; matches the evaluation protocol in Table 2 and is sufficient to replicate the main comparison experiment.
-- **Full dataset (35,009 pairs)**: Hosted on [Hugging Face Datasets](https://huggingface.co/datasets/YihanJIANG-lab/VeritasCarbon-ESG-35K) (`~153 MB`). Loadable in one line: `load_dataset("YihanJIANG-lab/VeritasCarbon-ESG-35K")`.
+- **Full dataset (35,009 pairs)**: Hosted on [Hugging Face Datasets](https://huggingface.co/datasets/Yihan-JIANG/VeritasCarbon-ESG-35K) (`~153 MB`). Loadable in one line: `load_dataset("Yihan-JIANG/VeritasCarbon-ESG-35K")`.
 - **Reproducible from source**: The raw corpus (~2.7 GB) contains copyrighted material and cannot be redistributed in full; we provide `CORPUS_MANIFEST.md` with complete provenance. Running the provided notebooks regenerates the identical 35,009-pair dataset.
 
 **Format** (JSONL):
