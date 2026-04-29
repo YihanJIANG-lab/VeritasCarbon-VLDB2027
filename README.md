@@ -246,7 +246,7 @@ See `data/raw_corpus/CORPUS_MANIFEST.md` for the complete file listing.
 ```bibtex
 @misc{jiang2026veritascarbon,
   title     = {VeritasCarbon: Traceable Instruction Data Generation for ESG Domain via a Council of Domain Experts},
-  author    = {Jiang, Yihan and Zhang, Wenrui and Woon, Kok-Sin and Shi, Qi},
+  author    = {Jiang, Yihan and Peng, Fei and Woon, Kok Sin and Ren, Qianping and Xu, Yichang and Yang, Yujing},
   howpublished = {Under review at PVLDB Vol. 20 (VLDB 2027)},
   year      = {2026}
 }
