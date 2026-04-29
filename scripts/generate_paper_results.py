@@ -760,7 +760,7 @@ def analyze_findings(results):
 if __name__ == "__main__":
     print("=" * 60)
     print(" VeritasCarbon — Paper Results Generator")
-    print(" SIGMOD 2027")
+    print(" VLDB 2027")
     print("=" * 60)
 
     # Step 1: Compute metrics

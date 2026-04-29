@@ -1,0 +1,25 @@
+\\begin{table}[t]
+\\centering
+\\caption{Fine-tuning evaluation results on ESG domain test set (n=200).}
+\\label{tab:eval_results}
+\\resizebox{\\columnwidth}{!}{%
+\\begin{tabular}{lccccccc}
+\\toprule
+Model & Params & Type & ROUGE-L & BLEU-4 & Domain Rel. & FactCheck & Distinct-2 \\\\
+\\midrule
+qwen2.5-7b-ft & 7B & FT & 0.2406 & 0.1191 & \\textbf{0.9967} & 0.5100 & 0.1230 \\\\
+qwen2.5-7b-full_ft-ft & 7B & FT & 0.2359 & 0.1171 & 0.9583 & 0.5050 & 0.1120 \\\\
+qwen2.5-7b-zs & 7B & ZS & 0.1945 & 0.1065 & 0.9833 & 0.1850 & 0.1336 \\\\
+qwen2.5-14b-ft & 14B & FT & 0.2328 & 0.1206 & 0.9867 & 0.4750 & 0.1284 \\\\
+qwen2.5-14b-zs & 14B & ZS & 0.2166 & 0.1016 & 0.9883 & 0.2650 & 0.1259 \\\\
+qwen2-72b-ft & 72B & FT & \\textbf{0.2441} & 0.1307 & 0.9900 & 0.4700 & 0.1414 \\\\
+qwen2-72b-zs & 72B & ZS & 0.1132 & 0.0857 & 0.9750 & 0.2200 & 0.0966 \\\\
+internlm2.5-7b-ft & 7B & FT & 0.2232 & 0.1224 & 0.9100 & 0.6300 & 0.1022 \\\\
+internlm2.5-7b-zs & 7B & ZS & 0.1653 & 0.0788 & 0.8267 & 0.2300 & 0.1026 \\\\
+glm4-9b-ft & 9B & FT & 0.1582 & 0.0680 & 0.3550 & \\textbf{0.6900} & 0.0809 \\\\
+glm4-9b-zs & 9B & ZS & 0.1953 & 0.1267 & 0.9700 & 0.1050 & 0.1299 \\\\
+deepseek-v2-lite-ft & 16B (2.4B active) & FT & 0.2239 & 0.1160 & 0.8883 & 0.6300 & 0.0998 \\\\
+deepseek-v2-lite-zs & 16B (2.4B active) & ZS & 0.2211 & \\textbf{0.1428} & 0.9383 & 0.4600 & \\textbf{0.1440} \\\\
+\\bottomrule
+\\end{tabular}}
+\\end{table}

@@ -1,0 +1,1467 @@
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[9pt,twocolumn]{extarticle}
+\usepackage[letterpaper, top=1in, bottom=1in, left=0.75in, right=0.75in]{geometry}
+\usepackage{times}
+\usepackage{mathptmx}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\rmdefault}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{calc}
+\usepackage{etoolbox}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{setspace}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\usepackage{enumitem}
+\setlist{nosep,leftmargin=*}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt plus 1pt minus 1pt}
+\setlength{\emergencystretch}{3em}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\urlstyle{same}
+\hypersetup{hidelinks,pdfcreator={LaTeX via pandoc}}
+
+\title{\textbf{\sffamily\fontsize{18}{22}\selectfont VeritasCarbon: Traceable Instruction Data Generation for ESG}}
+\author{%
+\normalsize
+\textbf{Yihan Jiang}\\ Society Hub, HKUST(GZ)\\ yjiang909@connect.hkust-gz.edu.cn
+\and
+\textbf{Fei Peng}\\ Nanchang University\\ pengfei24@email.ncu.edu.cn
+\and
+\textbf{Kok Sin Woon}\\ Society Hub, HKUST(GZ)\\ koksinwoon@hkust-gz.edu.cn
+\and
+\textbf{Qianping Ren}\\ Society Hub, HKUST(GZ)\\ qianpingren@hkust-gz.edu.cn
+\and
+\textbf{Yichang Xu}\\ Sun Yat-sen University\\ xuych73@mail2.sysu.edu.cn
+\and
+\textbf{Yujing Yang}\\ Sun Yat-sen University\\ Yangyj256@mail2.sysu.edu.cn
+}
+\date{\vspace{-2ex}}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+Fine-tuning large language models for ESG (Environmental, Social, and
+Governance) tasks requires domain-specific instruction data, yet
+existing generation methods are weakly grounded in source material and
+rarely preserve provenance. We present VeritasCarbon, a data-centric
+system that transforms 17,721 ESG disclosure documents into 35,009
+traceable instruction-response pairs. Its core component, Council of
+Domain Experts (CoDE), organizes 11 specialized expert agents in a
+four-layer hierarchy, adaptively selects up to K experts per chunk,
+coordinates sequential or parallel collaboration, and refines outputs
+through MetaExpert-guided feedback. Each retained pair keeps an explicit
+mapping to its source chunk, enabling auditing and lineage analysis.
+Using the same Qwen2-72B-Instruct backbone for all methods, CoDE on a
+2,000-pair evaluation subset substantially outperforms direct prompting,
+Self-Instruct, and WizardLM-Evol, each run on 2,000 outputs under the
+finalized token-budget protocol: it achieves 4.0x higher ROUGE-L, 4.6x
+higher BLEU-4, 10.5x higher Distinct-3, and 14.6x higher domain
+relevance than the strongest baselines, while maintaining FactCheck of
+0.9478 and near-perfect structural completeness. Ablations show that K =
+3 offers the best quality-cost balance, parallel collaboration delivers
+the highest overall quality, and feedback remains necessary in the
+finalized CoDE protocol. Downstream fine-tuning on CoDE data improves
+FactCheck by 2.8x across model architectures (Qwen2.5-7B: 0.185 to
+0.510), with five of six models showing consistent gains. VeritasCarbon
+demonstrates how provenance-aware, workflow-oriented instruction
+generation can support trustworthy domain adaptation in regulated ESG
+settings.
+PVLDB Artifact Availability:
+Permission to make digital or hard copies of all or part of this work
+for personal or classroom use is granted without fee provided that
+copies are not made or distributed for profit or commercial advantage
+and that copies bear this notice and the full citation on the first
+page. To copy otherwise, to republish, to post on servers or to
+redistribute to lists, requires prior specific permission and/or a fee.
+Articles from this volume were invited to present their results at The
+53rd International Conference on Very Large Data Bases, August 23--27,
+2027, Athens, Greece.
+Proceedings of the VLDB Endowment, Vol. 20, No. X
+Copyright 2027 VLDB Endowment 2150-8097/27/XX \ldots{} \$10.00.
+\end{abstract}
+\section{INTRODUCTION}
+In recent years, rising global temperatures, widening social inequality,
+and high-profile corporate governance failures have intensified pressure
+on businesses to operate responsibly. Investors, regulators, and the
+public increasingly demand transparent reporting on environmental
+impact, social responsibility, and governance practices. As a result,
+Environmental, Social, and Governance (ESG) disclosure and carbon
+emissions accounting have become critical for organizations facing
+growing regulatory scrutiny and societal expectations. Accurate,
+transparent, and auditable reporting in these domains is essential for
+compliance, risk management, and fostering stakeholder trust. Against
+this backdrop, recent advances in large language models (LLMs) have
+shown promise in automating complex tasks across specialized domains
+such as financial analysis, risk management, and corporate compliance
+[21, 53],
+[59]. However, deploying LLMs in regulated
+environments introduces unique challenges that go beyond those
+encountered in open-domain applications.
+While prior research demonstrates that LLM performance depends not only
+on model scale but also on the quality of prompt data and fine-tuning
+methods [3, 39],
+[50], these findings primarily reflect open-domain
+settings. The instruction tuning paradigm, where models are fine-tuned
+on (instruction, output) pairs, has been extensively investigated to
+align LLM behavior with user intent [61].
+Reinforcement learning from human feedback (RLHF)
+[32] and direct preference optimization (DPO)
+[36] have further advanced the alignment of LLMs
+with human preferences. In such contexts, models are often evaluated on
+their ability to generate plausible and diverse responses, and recent
+studies suggest that even a small number of high-quality examples can
+outperform large-scale noisy datasets [64]. In
+contrast, regulated domains like ESG disclosure and carbon emissions
+accounting demand strict adherence to methodological rigor, traceable
+reasoning, and numerical consistency. For example, organizations must
+justify their carbon accounting methods, define clear boundaries, and
+ensure that reported figures are auditable and reproducible
+[2, 14, 23].
+Therefore, although existing LLMs excel at open-ended question
+answering, they frequently yield unstable or inconsistent results when
+applied to regulatory scenarios where traceability and methodological
+consistency are paramount.
+A key barrier to reliable LLM deployment in these settings is the lack
+of high-quality, instruction-tuning data that enforces source binding
+and methodological fidelity. Mainstream instruction data generation
+techniques, such as bootstrapping and model distillation
+[46, 56], frequently neglect
+the necessity for explicit mapping between generated instructions and
+their source documents, as well as the requirement for consistent
+calculation paths. Representative distillation-based methods, including
+Alpaca [41] and Orca [31],
+demonstrate that teacher-student pipelines can efficiently produce
+large-scale instruction data from proprietary models such as ChatGPT,
+yet the generated corpora lack provenance metadata linking outputs to
+source evidence. Open-source chat models such as Vicuna
+[8] and Baize [57] further
+confirm the viability of distillation but inherit the same traceability
+limitations. Recent work on automatic data selection for alignment has
+shown that filtering instruction data by quality criteria significantly
+improves model performance [5]
+[28], while self-alignment methods
+[26] and unnatural instruction generation
+[20] explore alternative paradigms for reducing
+human annotation cost. In ESG and carbon accounting, divergent
+methodological choices can lead to substantially different outcomes.
+Without instruction data that captures these nuances and maintains
+source traceability, models risk learning unconstrained or ambiguous
+knowledge. Thus, there is a pressing need for instruction data
+generation frameworks that ensure both semantic completeness and
+traceable source mapping.
+From a data management perspective, constructing high-quality
+instruction data for ESG applications is a multi-stage transformation
+process. Raw ESG disclosure documents are typically lengthy and
+heterogeneous, blending narrative text, tabular data, and methodological
+explanations. Effective instruction construction requires (1) segmenting
+the corpus into semantically complete knowledge units, and (2) ensuring
+that each generated instruction can be mapped back to its originating
+text fragment for auditing and interpretability. This traceability
+requirement is closely related to data provenance research
+[7, 18], which emphasizes the
+importance of tracking data transformations to support validation and
+compliance. The data-centric AI paradigm [52, 60] further highlights the importance of
+systematically managing training data, including documentation
+[1, 15], quality assessment
+[22] [38], and lineage
+tracking, is crucial for building reliable AI systems. Model cards
+[30] and datasheets [15]
+provide complementary documentation frameworks for ensuring transparency
+in model development and dataset construction. Without clear definitions
+of intermediate data artifacts and their provenance, the instruction
+generation process becomes opaque and difficult to audit.
+To address these challenges, we introduce VeritasCarbon, a system
+designed to generate high-quality, traceable instruction data for ESG
+disclosure and carbon emissions accounting within mandatory disclosure
+and compliance audit environments. VeritasCarbon formalizes instruction
+construction as an optimization problem that balances data quality and
+diversity under explicit source constraints. The system processes a raw
+ESG corpus through a hierarchical pipeline comprising four stages: (1)
+corpus collection and standardization, (2) semantic segmentation and
+deduplication, (3) instruction-response generation via expert
+scheduling, and (4) quality filtering with source mapping.
+Figure~\ref{fig:1} presents an overview of the
+VeritasCarbon pipeline. Each stage exposes clear data interfaces,
+ensuring controllability and traceability throughout the data generation
+lifecycle.
+A central component of VeritasCarbon is the Council of Domain Experts
+(CoDE) framework, which orchestrates collaborative instruction
+generation among multiple expert agents. Drawing on recent advances in
+multi-agent LLM systems [6] [19]
+[25] [34], CoDE enables adaptive
+expert selection and controlled feedback loops, enhancing the stability
+and methodological fidelity of generated instruction-response pairs. A
+recent survey on LLM-based autonomous agents [48]
+identified role specialisation and inter-agent communication as key
+enablers of complex task decomposition. Unlike single-agent distillation
+approaches, CoDE leverages inter-agent debate and review mechanisms
+[13] to improve factual consistency, which is
+particularly important in domain-constrained settings. Based on this
+framework, we constructed and released the VeritasCarbon-ESG-35K
+dataset, comprising 35,000 traceable instruction instances across 11
+expert-defined ESG topics. To ensure reproducibility and data security,
+we deployed the Qwen2-72B-Instruct [58] 4-bit
+quantized model locally, eliminating external API dependencies.
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{../results/figures_and_tables/figure1.png}
+\caption{The VeritasCarbon pipeline. Raw ESG documents are processed through four stages to produce traceable instruction-response pairs.}
+\label{fig:1}
+\end{figure*}
+We evaluate VeritasCarbon from multiple perspectives. First, we assess
+data quality and diversity relative to three baseline methods, employing
+both automatic metrics [27, 33, 62] and LLM-as-judge evaluation
+[63]. Second, we conduct ablation studies to analyze the impact of
+expert selection and feedback mechanisms. Third, we present case studies
+to demonstrate the system\textquotesingle s applicability in real-world
+ESG scenarios. All experimental protocols and datasets are designed to
+facilitate reproducibility.
+Our main contributions are as follows:
+(1) We introduce a structured workflow with explicit intermediate
+artifacts (chunks, expert selections, quality scores) and enforce source
+mapping for every generated pair, ensuring full traceability.
+(2) We design the CoDE (Council of Domain Experts) framework, which
+layer‑selects up to K domain experts, supports sequential and parallel
+collaboration, and applies MetaExpert‑guided refinement, which tailored
+specifically for ESG disclosure documents.
+(3) We build end‑to‑end provenance tracking from the raw corpus through
+segmentation, expert routing, collaboration, and filtering, attaching
+provenance metadata to each final instruction‑response pair. By
+combining these innovations, VeritasCarbon enables reproducible,
+auditable instruction data generation for compliance‑critical ESG and
+carbon accounting tasks.
+(4) We validate CoDE-generated data through downstream fine-tuning on
+six diverse model architectures (7B-\/-72B), demonstrating consistent
+improvements in source fidelity and factual grounding, with FactCheck
+gains of up to 2.76x.
+\section{PRELIMINARY}
+VeritasCarbon frames ESG instruction-data generation as a constrained
+data-transformation problem rather than a purely prompt-level
+text-generation task. The system begins with a raw ESG corpus \(C\)
+composed of corporate disclosures, regulatory texts, industry reports,
+and methodological reference materials. In particular, the disclosure
+subset contains heterogeneous corporate ESG documents released by firms
+with different business natures, including manufacturing companies,
+energy and utility providers, financial institutions, technology firms,
+infrastructure operators, logistics companies, and consumer-facing
+enterprises. These documents also cover firms operating across different
+geographical areas and regulatory environments, including domestic
+markets, cross-regional supply chains, and multinational business
+contexts. As a result, the corpus reflects diverse reporting
+conventions, sector-specific materiality concerns, and
+jurisdiction-dependent disclosure requirements.
+The ESG disclosure documents used in this study are not uniform
+narrative reports. They typically combine several types of information
+within the same document: company profiles, business-segment
+descriptions, geographic operating footprints, governance structures,
+environmental management policies, carbon-emission accounting results,
+resource-use indicators, social responsibility programs, supply-chain
+practices, risk-management discussions, and references to reporting
+standards or regulatory guidelines. For example, an energy company may
+emphasize emissions, energy transition, and regulatory compliance; a
+manufacturing company may focus on resource efficiency, waste
+management, occupational safety, and supply-chain governance; while a
+financial institution may disclose sustainable finance, climate-risk
+exposure, green investment policies, and governance procedures. This
+heterogeneity makes ESG disclosures a challenging but valuable source
+for instruction-data generation.
+After parsing, cleaning, segmentation, and deduplication, the corpus is
+converted into a set of semantically coherent chunks \{\(c_{1}\),
+\(c_{2}\), ..., \(c_{n}\)\}. Each chunk is not treated as an isolated
+text span only; it is associated with contextual metadata such as
+document type, source organization, business sector, reporting year,
+geographical scope, and provenance identifier when such information is
+available. These contextual attributes help the system distinguish
+whether a chunk describes a company-level sustainability policy, a
+region-specific regulatory requirement, a sector-specific
+carbon-accounting practice, or a general methodological reference. They
+also support more precise expert selection and reduce the risk of
+generating responses that ignore the business or geographical context of
+the disclosure.
+For each chunk \(c_{i}\), the system dynamically selects a subset of
+domain expert agents from an expert pool E and generates one or more
+candidate instruction-response pairs. The selected experts interpret
+both the local textual evidence and the available contextual metadata.
+This is important because many ESG claims are context-dependent: a
+disclosure about renewable-energy procurement, for instance, may have
+different implications for a utility provider, a manufacturing firm, or
+a financial institution; similarly, carbon-accounting statements may
+differ depending on whether they refer to direct operations, purchased
+electricity, value-chain emissions, or regional regulatory obligations.
+The final dataset \(D\) is stored as tuples (\(q_{j}\), \(a_{j}\),
+\(s_{j}\)), where \(q_{j}\) is the instruction, \(a_{j}\) is the
+response, and \(s_{j}\) denotes the source mapping back to one or more
+chunks. In the extended representation, each tuple can also include
+metadata fields such as document category, sector, reporting period,
+geographical scope, expert path, and quality score. This representation
+makes provenance a first-class data object rather than a post hoc
+annotation. It also allows users to inspect not only what answer was
+generated, but also from which disclosure context the answer was derived
+and which expert perspectives contributed to its construction.
+Three design constraints govern the entire pipeline. First, source
+fidelity: every response must remain grounded in the originating text
+fragment and must preserve the factual boundaries of the source. Second,
+diversity: the generated instructions should cover multiple ESG themes,
+task forms, and reasoning styles rather than collapse into repetitive
+question templates. Third, quality: only outputs that exceed a minimum
+threshold are retained. Formally, the optimization target is to maximize
+expected dataset quality \(E\lbrack Q(D)\rbrack\) while satisfying
+source-mapping consistency and topical diversity constraints. This
+formalization is particularly important in ESG and carbon-accounting
+settings because the same disclosure often interweaves narrative
+explanation, numerical evidence, standards reference, and implicit
+assumptions.
+\begin{table}[htbp]
+\centering
+\small
+\caption{Core symbols and execution variables.}
+\label{tab:1}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.12\columnwidth}>{\raggedright\arraybackslash}p{0.25\columnwidth}>{\raggedright\arraybackslash}p{0.45\columnwidth}@{}}
+\toprule
+\textbf{Symbol} & \textbf{Description} & \textbf{Meaning} \\
+\midrule
+\(c_i\) & Source chunk & A semantic segment of an ESG document \\
+\(E\) & Expert pool & Set of 11 specialized expert agents \\
+\(K\) & Max experts per chunk & Upper bound on active experts (default 3) \\
+\(R\) & Max feedback rounds & Upper bound on MetaExpert iterations (default 2) \\
+\(Q(o,c)\) & Quality function & Composite score of output \(o\) on chunk \(c\) \\
+\(\tau\) & Release threshold & Minimum quality score for dataset inclusion \\
+\(D\) & Final dataset & Traceable instruction-response pairs with metadata \\
+\bottomrule
+\end{tabular}
+\end{table}
+The published release contains 35,009 traceable instruction-response
+pairs generated from 20,000 source chunks and 17,721 ESG disclosure
+documents. Table~\ref{tab:2} summarizes the key
+statistics of the VeritasCarbon-ESG-35K dataset. The corpus is arranged
+into four layers (foundational methodology texts, public corporate
+reports, policy documents, and industry analysis) to support both broad
+domain coverage and adaptive expert routing. The dataset also records a
+45.1\% multi‑expert collaboration ratio and a 100\% MetaExpert
+participation ratio in the final released set.
+\begin{table}[htbp]
+\centering
+\small
+\caption{Corpus scope.}
+\label{tab:2}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.45\columnwidth}>{\raggedright\arraybackslash}p{0.45\columnwidth}@{}}
+\toprule
+\textbf{Dataset Statistic} & \textbf{Value} \\
+\midrule
+Total instruction-response pairs & 35,009 \\
+Source chunks & 20,000 \\
+Source documents & 17,721 \\
+Corpus layers & 4 \\
+Expert types & 11 \\
+Multi-expert ratio & 45.1\% \\
+Average quality score & 0.667 ($\sigma$= 0.103) \\
+Average instruction length & 106.5 characters \\
+Average response length & 380.4 characters \\
+\bottomrule
+\end{tabular}
+\end{table}
+\section{THE VERITASCARBON FRAMEWORK}
+At the system level, VeritasCarbon is implemented as a modular
+four-stage pipeline with explicit interfaces between collection, corpus
+engineering, expert-guided generation, and release filtering. This
+modularization is central to the paper's data-management contribution:
+every stage emits an intermediate artifact that can be audited, re-run,
+or replaced without collapsing the entire workflow. In contrast to
+generic instruction bootstrapping methods that optimize only the final
+generated text, VeritasCarbon optimizes the full path from source
+document to released dataset record.
+\textbf{3.1 Stage-level architecture}
+Stage 1, corpus collection and standardization, converts heterogeneous
+ESG documents into a unified processing representation. Stage 2,
+semantic segmentation and deduplication, transforms long semi-structured
+documents into semantically complete chunks suitable for expert routing.
+Stage 3, expert-guided generation, activates the CoDE engine to select
+experts, compose interaction patterns, produce candidate QA pairs, and
+refine them over bounded feedback rounds. Stage 4, quality filtering and
+source mapping, applies consistency checks and persists only those
+outputs that satisfy release criteria. The pipeline image also
+highlights an important system property: the dataset is not created by a
+single monolithic generator. It is created by a controlled workflow in
+which routing, selection, generation, scoring, and packaging are
+distinct operations.
+This architecture supports controllability and reproducibility. Because
+the pipeline is hierarchical and interface-driven, it can be debugged as
+a workflow rather than treated as an opaque prompt chain. That design
+choice matters in ESG settings, where downstream users need not only
+strong responses but also a defensible trail back to source evidence and
+transformation history.
+3.2 Internal CoDE organization
+The core engine of VeritasCarbon is CoDE (Council of Domain Experts).
+Figure~\ref{fig:2} illustrates its internal
+architecture, which comprises seven interconnected modules.
+The workflow begins with Module\,1, which receives an input ESG chunk
+along with its metadata, source type, provenance ID, and task objective.
+Module\,2 is a layered expert pool containing 11 agents organized into
+three tiers: general understanding (e.g., Disclosure, Policy), domain
+reasoning (Carbon Accounting, Risk, Governance), and quality assurance
+(Materiality, Assurance, Data Quality). Module\,3, the MetaExpert
+orchestrator, parses the chunk intent, selects relevant expert layers,
+composes a team of up to \(K\) experts, and schedules the collaboration
+mode (sequential, parallel, or hybrid). Module\,4 is the collaboration
+workspace, where selected experts generate draft questions and answers,
+critique each other\textquotesingle s outputs, and align responses with
+source evidence. Module\,5 implements a feedback refinement loop,
+applying structural, factual, and domain‑relevance checks; the loop
+iterates until quality is accepted or the maximum number of rounds R is
+reached. Module\,6 performs verification and traceability packaging,
+scoring domain relevance, factual grounding, structural completeness,
+and non‑redundancy, then attaching source‑span links, expert‑path logs,
+and provenance metadata. Finally, Module\,7 outputs a traceable QA pair
+containing the instruction, response, source evidence, provenance
+metadata, expert path, and quality score.
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=\textwidth]{../results/figures_and_tables/figure2.png}
+\caption{CoDE internal architecture. Layered expert selection, MetaExpert orchestration, collaboration modes, and feedback refinement.}
+\label{fig:2}
+\end{figure*}
+\textbf{3.3 Provenance as a framework invariant}
+A distinguishing framework invariant is that provenance is preserved
+throughout the pipeline. Every released pair remains bound to its
+originating chunk or chunk set, and the workflow logs intermediate
+expert outputs as well as feedback iterations. In practical terms, this
+means the framework can answer not only \textquotesingle what
+instruction-response pair was released?\textquotesingle{} but also
+\textquotesingle where did it come from?\textquotesingle,
+\textquotesingle which experts participated?\textquotesingle,
+\textquotesingle which quality gate admitted it?\textquotesingle, and
+\textquotesingle what intermediate transformations occurred before
+release?\textquotesingle. This is the point at which VeritasCarbon moves
+from being a prompt recipe to being a data-management system.
+\section{METHODS}
+This section rewrites the core technical procedure in
+implementation-oriented language. The intention is to make the
+bottom-layer logic easier to follow for readers who need to reproduce,
+adapt, or extend the system.
+\textbf{4.1 Corpus collection, parsing, and normalization}
+The corpus processing layer ingests ESG reports in multiple file formats
+and converts them into a unified textual representation. The published
+paper states that the corpus spans four layers: 97 domain textbooks and
+reference materials, 17,425 CSR reports, 92 policy documents, and 107
+industry research reports. Format-specific extractors preserve
+structural signals such as headings, tables, and paragraph boundaries
+during parsing. This detail is important because later segmentation and
+source mapping assume that structural boundaries still carry semantic
+value.
+The accompanying preprocessing notebook extends that description with
+implementation details. The preprocessing routine supports PDF, DOCX,
+and TXT inputs; performs text cleaning to remove headers, footers, page
+numbers, and structural noise; repairs garbled encodings; converts
+Traditional Chinese to Simplified Chinese where needed; executes line-,
+paragraph-, and chunk-level deduplication; applies quality gates such as
+valid-character checks; and can be checkpointed and resumed. The
+notebook also records a cleaned chunk file, an optional audit log, and a
+checkpoint file to support reproducible reruns. These engineering
+details strengthen the reproducibility story because they make
+preprocessing a persistent data product rather than an undocumented
+one-time script.
+\textbf{4.2 Semantic segmentation and deduplication}
+After parsing, long ESG documents are split into semantically complete
+chunks using a sliding-window strategy with overlap. Each chunk is
+constrained to roughly 200-800 characters and that split points are
+aligned with paragraph and section boundaries whenever possible. This
+choice balances two competing requirements: chunks must be short enough
+for efficient LLM processing, but long enough to preserve the local
+context needed for source-grounded generation.
+Near-duplicate chunks are then identified with character n-gram
+similarity. Chunks whose Jaccard similarity exceeds 0.85 are merged, and
+the more complete version is retained. The goal is not merely storage
+reduction; it is to prevent repeated or nearly repeated content from
+biasing generation and evaluation. By deduplicating early, the system
+reduces the chance that one disclosure pattern dominates the instruction
+distribution simply because it is repeated across pages or documents.
+\textbf{4.3 Layered expert selection}
+Given a chunk ci, VeritasCarbon computes a feature vector fi describing
+its content characteristics, such as whether the chunk contains
+numerical evidence, temporal references, standards language,
+comparisons, or structured entity-relation patterns. Expert activation
+is then performed layer by layer. The base layer includes QA, Summary,
+Extraction, Classification, and Analysis experts, and at least one
+base-layer expert is always selected. The analysis layer contains
+Temporal Analysis, Benchmark Comparison, and Greenwashing Detection
+experts, which are activated when the chunk exhibits temporal,
+comparative, or potentially misleading disclosure patterns. The
+verification layer contains Consistency Verification and Standard
+Alignment experts for chunks that require numerical cross-checking or
+reporting-standard alignment. The graph layer contains the Knowledge
+Graph expert, which is activated when relation-rich entity structure is
+detected.
+The routing policy accumulates experts across layers and truncates the
+active set to a maximum of \(K\) experts, with \(K\) = 3 used as the
+default operational setting. If the selection procedure returns too few
+experts, the controller adds additional base-layer experts to guarantee
+minimum coverage. Operationally, this makes CoDE a sparse-activation
+system: straightforward chunks remain inexpensive, while complex chunks
+invoke deeper specialization only when their observed features justify
+the extra computational cost.
+\textbf{4.4 Collaboration modes and candidate construction}
+Once the active expert set has been fixed, VeritasCarbon supports two
+collaboration modes. In sequential collaboration, experts process the
+chunk in an ordered chain, and each expert receives the output of the
+previous expert as added context. This mode encourages progressive
+refinement, because later experts can correct, sharpen, or specialize an
+earlier draft. In parallel collaboration, all selected experts process
+the same chunk independently. The controller then compares the generated
+candidates with the quality function \(Q\ (o,c)\) and retains the best
+candidate. This mode encourages diversity by allowing competing
+interpretations to be explored simultaneously before the system commits
+to one response.
+Both models are valid from a systems perspective. Sequential
+collaboration is closer to a staged refinement workflow, whereas
+parallel collaboration resembles a best-of-K execution strategy. Results
+show that both are beneficial relative to no collaboration, with
+parallel mode reaching the highest mean quality and sequential mode
+retaining a slight BLEU-4 advantage.
+\textbf{4.5 MetaExpert orchestration and feedback refinement}
+The MetaExpert is the coordinating component that converts expert
+outputs into releasable candidates. It operates in two stages. First, it
+aggregates and ranks expert outputs, then selects the top-k candidate
+drafts according to the quality scoring function. Second, it runs an
+iterative feedback loop over those candidates. In each round, the
+MetaExpert emits targeted improvement signals, such as requests for
+tighter source anchoring, better instruction formulation, or improved
+alignment with ESG topic intent. A quality gate is applied after each
+iteration, and the loop terminates either when the candidate converges
+or when the maximum number of rounds R is reached.
+When R = 0 still produces valid outputs, but with lower quality than R =
+2. That result matters methodologically because it shows that the
+architecture is not dependent on feedback for basic generation, yet
+still benefits substantially from bounded iterative
+refinement.\(R\ \)\(R\)
+\textbf{4.6 Quality validation and traceability packaging}
+After generation, candidates move into a validation-and-packaging phase.
+The quality validator scores domain relevance, source fidelity, lexical
+diversity, factual grounding, and structural completeness. Only
+candidates that exceed the release threshold $\tau$ are preserved. The
+traceability binder then attaches source-chunk identifiers, expert-path
+metadata, and related provenance records so that each dataset item can
+be traced back to its originating corpus fragment.
+The traceability binder formalizes provenance as a structured schema
+rather than an ad-hoc annotation. Each released record carries a
+provenance record P = (source\_chunk\_id, expert\_path,
+collaboration\_mode, feedback\_rounds, quality\_score, timestamp). The
+source\_chunk\_id is a composite key encoding the corpus layer, document
+identifier, and chunk index, enabling reverse lookup from any dataset
+record to its exact textual origin in the source corpus. The
+expert\_path records the ordered list of expert agents that contributed
+to the generation, including their selection scores and whether each
+expert\textquotesingle s output was retained in the final response or
+discarded during the voting/critique phase. This structured approach
+means that provenance queries-\/-\/-such as "find all QA pairs where the
+Greenwashing Detection expert was activated and the quality score
+exceeds 0.7"-\/-\/-are directly answerable from the dataset without
+recomputing the generation pipeline. Schema details and query examples
+are provided in Appendix A.7.
+The quality validator applies a composite scoring function Q(o, c) that
+returns a vector of four sub-scores: correctness (weight 0.4),
+completeness (0.3), relevance (0.2), and structure (0.1). We note that
+this same scoring rubric is used for both generation-time feedback
+(Section 4.5) and release-time filtering (this section). To avoid
+circularity in evaluation, the intrinsic metrics reported in Section 5.2
+and the downstream fine-tuning evaluation in Section 5.6 are computed
+independently of Q(o, c). The MetaExpert\textquotesingle s quality score
+is retained in the dataset as a generation-time diagnostic but is not
+used as an evaluation metric in the paper\textquotesingle s experimental
+sections.
+\textbf{4.7 Reproducibility assets and practical reruns}
+The paper and the associated files emphasize reproducibility at three
+levels. At the data level, preprocessing outputs are materialized as
+cleaned chunk files and audit logs. At the model level, all compared
+methods use the same Qwen2-72B-Instruct model so that performance
+differences can be attributed to method design rather than model choice.
+At the workflow level, the system can be re-executed from intermediate
+artifacts, which is essential for debugging quality regressions,
+re-running only selected corpus layers, or auditing changes in
+expert-selection logic. Together, these choices make VeritasCarbon more
+reproducible than prompt-only pipelines whose intermediate
+transformations are discarded.
+\section{EVALUATION AND PERFORMANCE}
+The evaluation is organized around four questions: whether CoDE improves
+intrinsic data quality relative to strong baselines, which architectural
+choices drive performance, whether the system scales with corpus size,
+and what the released dataset looks like as a data product. All methods
+use the same underlying model (Qwen2-72B-Instruct) and are measured on
+aligned samples to ensure fair comparison.
+5.1 Experimental setup
+The released VeritasCarbon-ESG-35K dataset is constructed from 17,721
+source documents and 20,000 semantically complete chunks. CoDE generates
+35,009 instruction-response pairs, with all 11 expert types represented
+and 45.1\% of released pairs involving multi-expert collaboration.
+Baseline comparisons are conducted on n = 2,000 pairs per method using
+direct prompting, Self-Instruct, and WizardLM-Evol. Ablation experiments
+are performed on n = 500 samples per condition across four design
+dimensions: expert count, collaboration mode, feedback rounds, and
+knowledge injection.
+Seven intrinsic metrics are used in the paper. ROUGE-L measures source
+fidelity through longest-common-subsequence overlaps with the source
+chunk. BLEU-4 measures precision of generated wording. Distinct-2 and
+Distinct-3 measure lexical diversity. Domain Relevance captures coverage
+of ESG-specific vocabulary. FactCheck measures how often numerical
+values in the response appear in the source chunk. Structural
+Completeness checks that instructions and responses are non-trivial in
+length. Together, these metrics emphasize linguistic quality, grounding,
+domain fit, and release readiness.
+5.2 Main comparative results
+The main intrinsic evaluation demonstrates a wide margin between CoDE
+and all three baselines (Figure 3). The largest gaps appear in source
+fidelity, domain relevance, and generation diversity. CoDE achieves
+ROUGE‑L = 0.3380 and BLEU‑4 = 0.1932, compared with 0.0838 and 0.0424
+for direct prompting. It also reaches domain relevance = 0.3637, far
+above the best baseline at 0.0249. These gains confirm that
+domain‑specialized multi‑expert generation produces outputs more
+strongly anchored to ESG source material than generic
+instruction‑generation pipelines.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{../results/figures_and_tables/fig5_coe_vs_baselines.png}
+\caption{Comparison of CoDE against three baselines.}
+\label{fig:4}
+\end{figure}
+The baseline breakdown is also informative. Self-Instruct maintains
+relatively strong FactCheck but very low ROUGE-L, suggesting safer yet
+weakly grounded responses. WizardLM-Evol retains some domain vocabulary
+but performs poorly on factual grounding. Direct Prompting is the
+strongest baseline overall, yet still falls well short of CoDE on every
+quality-oriented metric except structural completeness, where all
+methods are near saturation.
+5.3 Ablation study
+The ablation study isolates the contribution of each main design
+dimension (Table 3). With respect to expert count, moving from K = 1 to
+K = 2 produces the largest jump in mean quality, while gains beyond K =
+2 become marginal. Therefore, we interpret K = 3 as a practical
+compromise between output quality and cost. For collaboration mode, both
+sequential and parallel collaboration outperform the no-collaboration
+baseline, confirming that expert interaction is intrinsically beneficial
+rather than decorative. Parallel collaboration attains the highest
+reported mean quality (0.647). For feedback rounds: when feedback is
+disabled (R = 0), the system still produces valid outputs, but mean
+quality rises from 0.626 at R = 0 to 0.649 at R = 2. Thus, feedback acts
+as a quality amplifier rather than an architectural prerequisite.
+Knowledge injection shows a smaller but positive effect, indicating that
+prompt‑specialized experts already encode meaningful domain knowledge,
+yet explicit injection remains useful for alignment with ESG terminology
+and standards.\(K\)\(K\)\(K\)\(K\)\(R\)\(R\)\(R\)
+5.4 Scalability evaluation
+The scalability study varies the input size from 500 to 20,000 chunks.
+Figure~\ref{fig:5} plots throughput as a function of
+corpus size. Wall-clock time grows approximately linearly, while
+throughput remains stable between 23 and 26 QA pairs per minute.
+Processing 20,000 chunks takes about 12.8 hours, and token consumption
+scales linearly at roughly 800 tokens per chunk. These results confirm
+that CoDE is suitable for large-scale data generation without
+architectural modifications. Table 4 reports detailed resource
+consumption (generation time, throughput, API calls, and tokens) across
+corpus sizes.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{../results/scalability/fig_scalability_corpus_size.png}
+\caption{Generation time scales linearly with corpus size. (a) Scalability of CoDE; (b) throughput stability.}
+\label{fig:5}
+\end{figure}
+Table 3 Ablation study results across four dimensions ($n$ = 500 per
+condition). Best results per dimension are in bold.
+5.5 Dataset analysis and release characteristics
+Figure~\ref{fig:6} shows the distribution of quality
+scores across the 35,009 generated QA pairs. The distribution centers
+around 0.667 with \(\sigma\) = 0.103, and 89.7\% of pairs exceed the
+minimum threshold \(\tau\) = 0.5.
+The expert‑usage profile is highly skewed in a meaningful way.
+Figure~\ref{fig:7} presents the frequency of each expert
+agent's invocation. The Summary expert dominates overall use, followed
+by Consistency Verification and Classification. This pattern supports
+the system's sparse‑activation logic: base‑layer experts handle the
+majority of chunks, while upper‑layer specialists such as Greenwashing
+Detection, Temporal Analysis, Benchmark Comparison, and Knowledge Graph
+are invoked only when the content indicates a need for them. In other
+words, the expert distribution is not balanced by design; it is adaptive
+by design.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{../results/figures_and_tables/fig2_quality_distribution.png}
+\caption{Distribution of quality scores across 35,009 generated QA pairs.}
+\label{fig:6}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\columnwidth]{../results/figures_and_tables/fig1_expert_usage.png}
+\caption{Distribution of expert agent invocations across 35,009 QA pairs. Summary Expert dominates base-layer usage, while Consistency Verification Expert is the most frequently activated upper-layer agent.}
+\label{fig:7}
+\end{figure}
+\textbf{5.6 Downstream Fine-tuning Evaluation}
+While intrinsic metrics (Section 5.2-\/-5.3) measure the quality of
+generated instruction data, the ultimate test is whether this data
+improves downstream ESG task performance when used for supervised
+fine-tuning. We therefore conduct a cross-model fine-tuning evaluation
+to validate that CoDE-generated data translates to measurable model
+improvements.
+Experimental Protocol. We fine-tune six instruction-tuned models
+spanning three architecture families and three parameter scales on
+31,315 CoDE training pairs (filtered subset of VeritasCarbon-ESG-35K).
+All models are fine-tuned with QLoRA (r=16, alpha=32, 4-bit NF4
+quantization) for 3 epochs using the same Alpaca-style prompt template.
+We evaluate on a held-out ESG QA test set (n=200) using the same seven
+intrinsic metrics defined in Section 5.1. For each model, we compare the
+fine-tuned variant against its zero-shot counterpart. Statistical
+significance is assessed via bootstrap with 95\% confidence intervals.
+Baseline Models. We select models spanning three regulatory-relevant
+dimensions: (i) model scale (7B to 14B to 72B within the Qwen2.5
+family), (ii) architecture diversity (dense Qwen/InternLM vs. MoE
+DeepSeek-V2-Lite), and (iii) training provenance (Chinese-native
+GLM-4-9B vs. bilingual Qwen/InternLM/DeepSeek). All models are
+instruction-tuned chat variants, ensuring that any improvement from
+fine-tuning is attributable to domain knowledge acquisition rather than
+instruction-following capability.
+Fine-tuning Results. Table 5 reports the main results. Across five of
+six models, fine-tuning on CoDE data produces consistent and
+statistically significant improvements. The key findings are:
+(1) Source fidelity improves across scales. Qwen2-72B fine-tuned
+achieves ROUGE-L = 0.2441 (vs. 0.1132 zero-shot, a 2.2x improvement),
+BERTScore-F1 = 0.7264, and the highest BLEU-4 among all models (0.1307).
+The 7B variant similarly gains +23.7\% ROUGE-L (0.1945 to 0.2406, p
+\textless{} 0.001).
+(2) Factual grounding improves dramatically. The most striking gain is
+FactCheck, which measures numerical overlap between generated responses
+and source evidence. Fine-tuned Qwen2.5-7B achieves FactCheck = 0.510
+(vs. 0.185 zero-shot, a 2.76x improvement). InternLM2.5-7B shows similar
+magnitude (0.230 to 0.630, 2.74x). These gains confirm that CoDE data
+successfully trains models to anchor numerical claims in source
+evidence-\/-\/-a critical capability for ESG reporting.
+(3) Domain relevance is near-ceiling. All fine-tuned models exceed 0.90
+domain relevance (Qwen2.5-7B-FT: 0.997), confirming that CoDE data
+effectively encodes ESG domain vocabulary and concepts.
+(4) Not all architectures benefit equally. GLM-4-9B exhibits negative
+transfer: fine-tuned ROUGE-L drops from 0.1953 to 0.1582, and
+BERTScore-F1 degrades from 0.6981 to 0.5216. We attribute this to
+tokenizer mismatch between CoDE data (generated with
+Qwen2-72B\textquotesingle s predominantly Chinese-centric tokenizer) and
+GLM-4-9B\textquotesingle s bilingual tokenizer, resulting in suboptimal
+sequence packing when processing Chinese ESG terminology. This finding
+underscores the importance of tokenizer compatibility in domain-specific
+instruction tuning.
+LLM-as-Judge Validation. To complement automatic metrics with
+qualitative assessment, we conduct an LLM-as-judge evaluation [63]
+on n=100 generated responses per model. A strong evaluator model (GPT-4)
+rates each response on a 5-point Likert scale along three dimensions:
+(i) accuracy-\/-\/-whether claims are factually correct and grounded in
+the source, (ii) domain relevance-\/-\/-whether ESG terminology and
+concepts are used appropriately, and (iii) fluency-\/-\/-whether the
+response is well-structured and coherent. The overall score is the
+unweighted mean of the three dimensions.
+Qwen2-72B fine-tuned achieves the highest overall judge score of 4.46/5
+(Accuracy: 4.32, Domain Relevance: 4.55, Fluency: 4.52), followed by
+Qwen2.5-7B fine-tuned at 4.38/5. Notably, LLM-as-Judge rankings are
+broadly consistent with automatic metric rankings, providing convergent
+validation. The zero-shot Qwen2-72B already scores 4.35, indicating
+strong innate ESG capability; fine-tuning on CoDE data provides an
+additional quality margin even on top of this strong baseline. GLM-4-9B
+fine-tuned scores only 1.96/5 overall, confirming the catastrophic
+degradation observed in automatic metrics and reinforcing the tokenizer
+compatibility hypothesis.
+\emph{\textbf{Table 5: Fine-tuning evaluation on ESG domain test set
+(n=200), with LLM-as-Judge scores (n=100 per model).}}
+Taken together, these results demonstrate that CoDE-generated
+instruction data is not merely intrinsically higher-quality (Section
+5.2) but reliably transfers to measurable downstream gains across
+diverse model architectures and scales. The tokenizer compatibility
+failure with GLM-4-9B also highlights a practical lesson for
+practitioners deploying domain-specific instruction data: model-data
+tokenizer alignment should be explicitly verified before fine-tuning.
+\textbf{5.7 LLM-as-Judge Quality Assessment}
+To complement automatic metrics, we conduct an LLM-as-judge evaluation
+[63] on n=100 generated responses per fine-tuned model. GPT-4 rates
+each response on a 5-point Likert scale across three dimensions: (i)
+accuracy-\/-\/-whether claims are correct and source-grounded, (ii)
+domain relevance-\/-\/-whether ESG terminology is used appropriately,
+and (iii) fluency-\/-\/-structure and coherence.
+\emph{\textbf{Table 6: LLM-as-Judge evaluation (n=100 per model, 5-point
+Likert scale).}}
+Key findings: (1) Qwen2-72B-FT achieves the highest overall score
+(4.46/5, Accuracy: 4.32, Domain: 4.55, Fluency: 4.52), confirming the
+automatic metric rankings. (2) Fine-tuning consistently improves domain
+relevance across architectures (Qwen2.5-7B: 4.18 to 4.42;
+InternLM2.5-7B: 3.70 to 4.17). (3) GLM-4-9B-FT drops to 1.96/5 overall,
+corroborating the catastrophic negative transfer observed in automatic
+metrics. (4) Judge scores show convergent validity with automatic
+metrics-\/-\/-the evaluation protocol is robust.
+This LLM-as-judge evaluation serves as a scalable proxy for human
+evaluation, which is deferred to a companion study focusing on
+domain-specific ESG assessment with expert annotators.
+\textbf{5.8 Limitations of Intrinsic Metrics}
+We note an important methodological nuance regarding the intrinsic
+evaluation in Section 5.2. ROUGE-L and BLEU-4, as employed here, measure
+lexical overlap between generated responses and source chunks rather
+than against human-written reference answers. This usage reflects our
+evaluation objective-\/-\/-source fidelity-\/-\/-but diverges from
+standard practice where these metrics compare system outputs against
+gold-standard references. Under this definition, CoDE exhibits an
+inherent advantage because it explicitly optimizes for source anchoring
+through expert routing and MetaExpert refinement, whereas the baseline
+methods are not designed with this constraint.
+This asymmetry motivates two design choices in our evaluation protocol.
+First, we report FactCheck (numerical overlap with source) as a
+complementary grounding metric that is less sensitive to lexical overlap
+than ROUGE-L or BLEU-4. Second, and more importantly, the downstream
+fine-tuning evaluation (Section 5.6) provides an orthogonal validation
+that does not depend on source-chunk comparisons: fine-tuned models are
+evaluated on their ability to generate correct ESG responses, and the
+consistent improvement over zero-shot baselines confirms that CoDE data
+quality is not an artifact of the source-fidelity metric definition. We
+encourage future work to develop standardized ESG-domain evaluation
+benchmarks with human-annotated reference answers.
+\textbf{5.9 Performance interpretation, limitations, and reuse guidance}
+Taken together, the results show that CoDE improves the aspects of
+generation that matter most for ESG data management: stronger source
+fidelity, markedly higher ESG-domain relevance, higher diversity, and
+high factual grounding. The system also scales without architectural
+modification, which makes it more valuable as a reusable
+data-engineering asset. At the same time, there are several limitations.
+Intrinsic metrics do not completely determine downstream task utility.
+Expert prompts may introduce style or coverage bias. And although the
+system scales to 20,000 chunks, additional optimization would be
+necessary for real-time or streaming deployment scenarios.
+For reuse, the most defensible practice is to preserve the pipeline's
+intermediate artifacts: cleaned chunks, routing decisions, expert
+outputs, quality scores, and provenance metadata. Doing so allows future
+researchers to extend the corpus, swap in new experts, alter the
+selection thresholds, or re-tune the quality gate without losing
+auditability. This is especially important if future versions add
+cross-document synthesis, multilingual processing, or learned quality
+estimators.
+\section{RELATED WORK}
+\subsection{Instruction Data Generation}
+High-quality instruction data is foundational for the effective training
+and tuning of LLMs, particularly in specialized domains such as ESG and
+carbon accounting. A comprehensive survey of instruction tuning methods
+[61] identifies the (instruction, output)
+supervised fine-tuning paradigm as a critical bridge between the
+next-word prediction objective of LLMs and the goal of following user
+instructions. Early work based on GPT-3 [3]
+demonstrated the value of large-scale pre-training, and subsequent
+studies showed that instruction tuning substantially improves zero-shot
+and cross-task generalization [39]
+[50]. Reinforcement learning from human feedback
+(RLHF) [32] and direct preference optimization
+(DPO) [36] further align LLMs with human
+preferences without explicit reward models.
+To reduce manual annotation costs, bootstrapping methods have emerged.
+Self-Instruct [46] iteratively expands seed tasks
+using model-generated instructions, and WizardLM
+[56] increases instruction complexity through
+evolutionary prompting. In the distillation paradigm, Alpaca
+[41] fine-tunes open-source models (e.g., LLaMA
+[42], Llama 2 [43]) on 52K
+examples distilled from proprietary models. Orca
+[31] learns from rich explanation traces of GPT-4
+rather than shallow imitation, while Zephyr [44]
+explores distilled preference optimization. Vicuna
+[8] and Baize [57]
+fine-tune on user-shared or self-generated conversations. Unnatural
+instructions [20] and instruction backtranslation
+[26] further reduce human effort. A systematic
+comparison of 12 instruction datasets [47] shows
+that no single source dominates across all evaluations.
+Recent studies on data quality challenge the assumption that larger
+datasets are always better. LIMA [64] shows that
+1,000 carefully curated examples can match models trained on orders of
+magnitude more data. AlpaGasus [5] filters
+low-quality instructions to improve performance, and Liu et al.
+[28] provide a comprehensive study of automatic
+data selection for instruction tuning.
+Therefore, existing methods focus on open-domain linguistic diversity,
+task coverage, and reasoning complexity. Instruction generation is
+typically treated as an end-to-end process, producing outputs directly
+from prompts without explicit, structured mappings to source documents.
+Consequently, intermediate artifacts and source-level constraints are
+not modeled within the generation workflow. The absence of provenance
+metadata and traceability guarantees limits their applicability in
+regulated domains like ESG, where auditability is critical.
+\subsection{Domain-Specific Large Language Models}
+Adapting LLMs to specialized domains has received growing attention,
+particularly in finance and sustainability [60].
+BloombergGPT [53] is trained on large-scale
+proprietary financial corpora, while FinGPT [59]
+provides open-source data pipelines and lightweight adaptation (e.g.,
+LoRA). PIXIU [55] offers a comprehensive
+framework including a financial instruction dataset (136K samples), a
+fine-tuned model (FinMA), and a benchmark covering five tasks. FinBERT
+[21] extracts structured information from
+financial text.
+For climate and sustainability, ClimateBERT [49]
+fine-tunes pre-trained models for climate-related text understanding and
+has been applied to analyze corporate climate risk disclosures
+[2]. Kölbel et al. [23] use
+BERT-based models to study how regulatory disclosure of climate risks
+affects credit default swap term structures. Friederich et al.
+[14] automate identification of climate risk
+disclosures in annual reports, while ClimaText
+[45] provides a dataset for climate change topic
+detection. Luccioni et al. [29] estimate the
+carbon footprint of training BLOOM, linking LLM research to
+environmental sustainability.
+\subsection{Data Provenance, Quality, and Traceability}
+The concept of data provenance, which involves the tracking of the
+origin, transformation, and lineage of data, has a long history in the
+field of database research. Seminal work by Buneman et al.
+[4] characterizes the "why" and "where" dimensions
+of data provenance. Green et al. [17] formalize
+provenance using semiring annotations. Davidson and Freire
+[11] survey provenance challenges in scientific
+workflows, while Cui et al. [10] address lineage
+tracing in data warehousing environments. Cheney et al.
+[7] provide a comprehensive treatment of
+provenance in databases covering foundational theory and practical
+considerations. Moreover, Herschel et al. [18]
+offer a modern survey categorizing provenance by purpose,
+representation, and source.
+Data quality research complements provenance. Rahm and Do
+[37] provide an early taxonomy of data cleaning;
+Chu et al. [9] survey emerging challenges. Ilyas
+and Chu [22] give a textbook treatment, and
+HoloClean [38] uses probabilistic inference for
+holistic data repair. In data-centric AI, Whang et al.
+[52] argue that data quality management must be
+integrated throughout the ML pipeline, not treated as a preprocessing
+step.
+For machine learning pipelines, Polyzotis et al.
+[35] identify data management challenges in
+production ML systems, and Doan and Halevy [12]
+highlight semantic integration issues. Tools for automatically tracking
+ML experiment metadata and provenance have been developed
+[40]. Grafberger et al.
+[16] address data distribution debugging. At the
+dataset level, Datasheets for Datasets [15], Data
+Statements [1], and Model Cards
+[30] provide documentation frameworks for
+transparency.
+Our work draws on these provenance and quality foundations but extends
+them to a novel setting: tracking lineage from source ESG documents
+through intermediate knowledge units to final instruction-response
+pairs, ensuring each generated instance is auditable and traceable to
+its documentary origin.
+\subsection{Multi-Agent Collaboration for Data Generation}
+Recent LLM-based multi-agent systems enable multiple model instances
+with specialized roles to solve complex tasks. A survey by Wang et al.
+[48] categorizes LLM-based autonomous agents
+along dimensions of profile, memory, planning, and action, providing a
+structured taxonomy for understanding agent architectures. AutoGen
+[54] provides a general-purpose framework for
+multi-agent conversation, enabling flexible orchestration of LLM agents.
+CAMEL [25] introduces a role-playing
+communicative agent framework that uses inception prompting to guide
+autonomous cooperation between agents, demonstrating the potential for
+scalable multi-agent data generation. MetaGPT
+[19] assigns specialized roles (product manager,
+architect, engineer) within a software development workflow. Park et al.
+[34] demonstrate ``generative agents'' that
+simulate believable human behavior. AgentVerse [6]
+facilitates collaboration and explores emergent group behaviors. Du et
+al. [13] show that multi-agent debate, where
+agents argue and critique each other, improves factuality and reasoning.
+In parallel, prompting strategies such as Chain-of-Thought
+[51] decompose reasoning into intermediate steps
+to enhance output quality at the inference level. Retrieval-augmented
+generation [24] grounds LLM outputs in retrieved
+evidence, improving factual accuracy. For evaluation, LLM-as-judge
+approaches [63] offer scalable alternatives to
+human evaluation, employing strong models to assess the quality of
+generated outputs.
+These multi-agent techniques primarily focus on improving reasoning or
+task-solving capability. The integration of multi-agent collaboration
+with structured workflow management, intermediate artifact control, and
+explicit provenance tracking within generative instruction construction
+remains underexplored. Bridging multi-agent LLM systems with data
+management practices is crucial for domains that require traceability,
+auditability, and compliance.
+\subsection{Summary and Positioning}
+To summarize, existing approaches suffer from four key limitations: (1)
+absence of provenance metadata linking instructions to source documents;
+(2) lack of domain-specific instruction datasets built with regulatory
+compliance in mind; (3) provenance and quality techniques not embedded
+into LLM data generation pipelines; and (4) multi-agent systems
+disconnected from workflow-level artifact management.
+\section{CONCLUSION AND FUTURE WORK}
+We presented VeritasCarbon, a provenance-aware system for generating
+instruction-tuning data for ESG and carbon-accounting tasks. The system
+combines corpus processing, layered expert selection, multi-expert
+collaboration, MetaExpert-guided refinement, and explicit source mapping
+into a single reproducible data pipeline.
+Our updated evaluation shows that CoDE substantially outperforms Direct
+Prompting, Self-Instruct, and WizardLM-Evol under the finalized
+protocol. On a 2,000-pair evaluation subset, CoDE achieves 4.0x higher
+ROUGE-L, 4.6x higher BLEU-4, 10.5x higher Distinct-3, and 14.6x higher
+domain relevance than the strongest baselines, while maintaining
+FactCheck of 0.9478 and near-perfect structural completeness.
+The VeritasCarbon-ESG-35K dataset demonstrates that domain-specific
+instruction construction benefits from workflow control and provenance
+preservation, not only from larger models or more elaborate prompts. The
+finalized ablations further show that K = 3 is the best quality-cost
+setting, collaboration improves quality over isolated experts, and
+feedback remains necessary for viable CoDE generation. Future work
+includes downstream fine-tuning experiments, stronger learned quality
+evaluators, cross-document lineage tracking, and multilingual ESG
+extensions.\(K\)
+ACKNOWLEDGMENTS
+The authors gratefully acknowledge the computing resources provided by
+HKUST(GZ) HPC. We also thank the project collaborators who helped
+complete the full VLDB experimental pipeline.
+During the preparation of this work, the authors used generative AI
+tools (including Kimi, ChatGPT-4o, and Claude 3.5) to assist with
+language refinement, formatting, and the generation of supplementary
+materials such as reproducibility checklists and prompt templates. All
+factual claims, experimental results, and core technical contributions
+were authored and verified by the human authors. The authors take full
+responsibility for the content of this work.
+\section{References}
+\protect\phantomsection\label{ref_1}{}[1] Bender, E.M. and Friedman,
+B. Data Statements for Natural Language Processing: Toward Mitigating
+System Bias and Enabling Better Science. TACL, 2018.
+\protect\phantomsection\label{ref_2}{}[2] Bingler, J.A. et al. Cheap
+Talk and Cherry-Picking: What ClimateBert Has to Say on Corporate
+Climate Risk Disclosures. Finance Research Letters, 2022.
+\protect\phantomsection\label{ref_3}{}[3] Brown, T. et al. Language
+Models are Few-Shot Learners. NeurIPS 2020.
+\protect\phantomsection\label{ref_4}{}[4] Buneman, P. et al. Why and
+Where: A Characterization of Data Provenance. ICDT 2001.
+\protect\phantomsection\label{ref_5}{}[5] Chen, L. et al. AlpaGasus:
+Training a Better Alpaca with Fewer Data. ICLR 2024.
+\protect\phantomsection\label{ref_6}{}[6] Chen, W. et al.
+AgentVerse: Facilitating Multi-Agent Collaboration and Exploring
+Emergent Behaviors. ICLR 2024.
+\protect\phantomsection\label{ref_7}{}[7] Cheney, J. et al.
+Provenance in Databases: Why, How, and Where. Foundations and Trends in
+Databases, 2009.
+\protect\phantomsection\label{ref_8}{}[8] Chiang, W.-L. et al.
+Vicuna: An Open-Source Chatbot Impressing GPT-4 with 90\% ChatGPT
+Quality. 2023.
+\protect\phantomsection\label{ref_9}{}[9] Chu, X. et al. Data
+Cleaning: Overview and Emerging Challenges. SIGMOD 2016.
+\protect\phantomsection\label{ref_10}{}[10] Cui, Y. et al. Tracing
+the Lineage of View Data in a Warehousing Environment. ACM TODS, 2000.
+\protect\phantomsection\label{ref_11}{}[11] Davidson, S.B. and
+Freire, J. Provenance and Scientific Workflows: Challenges and
+Opportunities. SIGMOD Record, 2008.
+\protect\phantomsection\label{ref_12}{}[12] Doan, A. and Halevy, A.
+Semantic Integration Research in the Database Community. AI Magazine,
+2005.
+\protect\phantomsection\label{ref_13}{}[13] Du, Y. et al. Improving
+Factuality and Reasoning in Language Models through Multiagent Debate.
+ICML 2024.
+\protect\phantomsection\label{ref_14}{}[14] Friederich, D. et al.
+Automated Identification of Climate Risk Disclosures in Annual Corporate
+Reports. arXiv:2108.01415, 2021.
+\protect\phantomsection\label{ref_15}{}[15] Gebru, T. et al.
+Datasheets for Datasets. Communications of the ACM 64(12), 86-92, 2021.
+\protect\phantomsection\label{ref_16}{}[16] Grafberger, S. et al.
+Data Distribution Debugging in Machine Learning Pipelines. The VLDB
+Journal 31(5), 1103-1126, 2022.
+\protect\phantomsection\label{ref_17}{}[17] Green, T.J. et al.
+Provenance Semirings. PODS 2007.
+\protect\phantomsection\label{ref_18}{}[18] Herschel, M. et al. A
+Survey on Provenance: What For? What Form? What From? The VLDB Journal
+26(6), 881-906, 2017.
+\protect\phantomsection\label{ref_19}{}[19] Hong, S. et al. MetaGPT:
+Meta Programming for A Multi-Agent Collaborative Framework. ICLR 2024.
+\protect\phantomsection\label{ref_20}{}[20] Honovich, O. et al.
+Unnatural Instructions: Tuning Language Models with (Almost) No Human
+Labor. ACL 2023.
+\protect\phantomsection\label{ref_21}{}[21] Huang, A.H. et al.
+FinBERT: A Large Language Model for Extracting Information from
+Financial Text. Contemporary Accounting Research, 2023.
+\protect\phantomsection\label{ref_22}{}[22] Ilyas, I.F. and Chu, X.
+Data Cleaning. Morgan \& Claypool Publishers, 2019.
+\protect\phantomsection\label{ref_23}{}[23] Kolbel, J.F. et al. Ask
+BERT: How Regulatory Disclosure of Transition and Physical Climate Risks
+Affects the CDS Term Structure. Journal of Financial Econometrics, 2022.
+\protect\phantomsection\label{ref_24}{}[24] Lewis, P. et al.
+Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks.
+NeurIPS 2020.
+\protect\phantomsection\label{ref_25}{}[25] Li, G. et al. CAMEL:
+Communicative Agents for Mind Exploration of Large Language Model
+Society. NeurIPS 2023.
+\protect\phantomsection\label{ref_26}{}[26] Li, Y. et al.
+Self-Alignment with Instruction Backtranslation. ICLR 2024.
+[27] Lin, C.-Y. ROUGE: A Package for Automatic Evaluation of
+Summaries. ACL Workshop, 2004.
+\protect\phantomsection\label{ref_28}{}[28] Liu, W. et al. What
+Makes Good Data for Alignment? A Comprehensive Study of Automatic Data
+Selection in Instruction Tuning. ICLR 2024.
+\protect\phantomsection\label{ref_29}{}[29] Luccioni, A.S. et al.
+Estimating the Carbon Footprint of BLOOM, a 176B Parameter Language
+Model. JMLR 2023.
+\protect\phantomsection\label{ref_30}{}[30] Mitchell, M. et al.
+Model Cards for Model Reporting. FAT* 2019.
+\protect\phantomsection\label{ref_31}{}[31] Mukherjee, S. et al.
+Orca: Progressive Learning from Complex Explanation Traces of GPT-4.
+arXiv:2306.02707, 2023.
+\protect\phantomsection\label{ref_32}{}[32] Ouyang, L. et al.
+Training Language Models to Follow Instructions with Human Feedback.
+NeurIPS 2022.
+[33] Papineni, K. et al. BLEU: a Method for Automatic Evaluation of
+Machine Translation. ACL, 2002.
+\protect\phantomsection\label{ref_34}{}[34] Park, J.S. et al.
+Generative Agents: Interactive Simulacra of Human Behavior. UIST 2023.
+\protect\phantomsection\label{ref_35}{}[35] Polyzotis, N. et al.
+Data Management Challenges in Production Machine Learning. SIGMOD 2017.
+\protect\phantomsection\label{ref_36}{}[36] Rafailov, R. et al.
+Direct Preference Optimization: Your Language Model is Secretly a Reward
+Model. NeurIPS 2023.
+\protect\phantomsection\label{ref_37}{}[37] Rahm, E. and Do, H.H.
+Data Cleaning: Problems and Current Approaches. IEEE Data Eng. Bulletin,
+2000.
+\protect\phantomsection\label{ref_38}{}[38] Rekatsinas, T. et al.
+HoloClean: Holistic Data Repairs with Probabilistic Inference. PVLDB
+11(9), 2018.
+\protect\phantomsection\label{ref_39}{}[39] Sanh, V. et al.
+Multitask Prompted Training Enables Zero-Shot Task Generalization. ICLR
+2022.
+\protect\phantomsection\label{ref_40}{}[40] Schelter, S. et al.
+Automatically Tracking Metadata and Provenance of Machine Learning
+Experiments. NIPS 2017 Workshop on ML Systems.
+\protect\phantomsection\label{ref_41}{}[41] Taori, R. et al.
+Stanford Alpaca: An Instruction-Following LLaMA Model. Stanford
+University, 2023.
+\protect\phantomsection\label{ref_42}{}[42] Touvron, H. et al.
+LLaMA: Open and Efficient Foundation Language Models. arXiv:2302.13971,
+2023.
+\protect\phantomsection\label{ref_43}{}[43] Touvron, H. et al. Llama
+2: Open Foundation and Fine-Tuned Chat Models. arXiv:2307.09288, 2023.
+\protect\phantomsection\label{ref_44}{}[44] Tunstall, L. et al.
+Zephyr: Direct Distillation of LM Alignment. arXiv:2310.16944, 2023.
+\protect\phantomsection\label{ref_45}{}[45] Varini, F.S. et al.
+ClimaText: A Dataset for Climate Change Topic Detection. NeurIPS 2020
+Workshop on Tackling Climate Change with ML.
+\protect\phantomsection\label{ref_46}{}[46] Wang, Y. et al.
+Self-Instruct: Aligning Language Models with Self-Generated
+Instructions. ACL 2023.
+\protect\phantomsection\label{ref_47}{}[47] Wang, Y. et al. How Far
+Can Camels Go? Exploring the State of Instruction Tuning on Open
+Resources. NeurIPS 2023 D\&B.
+\protect\phantomsection\label{ref_48}{}[48] Wang, L. et al. A Survey
+on Large Language Model based Autonomous Agents. Frontiers of Computer
+Science, 2024.
+\protect\phantomsection\label{ref_49}{}[49] Webersinke, N. et al.
+ClimateBERT: A Pretrained Language Model for Climate-Related Text. arXiv
+2021.
+\protect\phantomsection\label{ref_50}{}[50] Wei, J. et al. Finetuned
+Language Models are Zero-Shot Learners. ICLR 2022.
+\protect\phantomsection\label{ref_51}{}[51] Wei, J. et al.
+Chain-of-Thought Prompting Elicits Reasoning in Large Language Models.
+NeurIPS 2022.
+\protect\phantomsection\label{ref_52}{}[52] Whang, S.E. et al. Data
+Collection and Quality Challenges in Deep Learning: A Data-Centric AI
+Perspective. The VLDB Journal 32(4), 791-813, 2023.
+\protect\phantomsection\label{ref_53}{}[53] Wu, S. et al.
+BloombergGPT: A Large Language Model for Finance. arXiv 2023.
+\protect\phantomsection\label{ref_54}{}[54] Wu, Q., Bansal, G.,
+Zhang, J. et al. AutoGen: Enabling Next-Gen LLM Applications via
+Multi-Agent Conversation. 2023.
+\protect\phantomsection\label{ref_55}{}[55] Xie, Q. et al. PIXIU: A
+Large Language Model, Instruction Data and Evaluation Benchmark for
+Finance. arXiv:2306.05443, 2023.
+\protect\phantomsection\label{ref_56}{}[56] Xu, C. et al. WizardLM:
+Empowering Large Pre-Trained Language Models to Follow Complex
+Instructions. ICLR 2024.
+\protect\phantomsection\label{ref_57}{}[57] Xu, C. et al. Baize: An
+Open-Source Chat Model with Parameter-Efficient Tuning on Self-Chat
+Data. EMNLP 2023.
+\protect\phantomsection\label{ref_58}{}[58] Yang, A. et al. Qwen2
+Technical Report. arXiv 2024.
+\protect\phantomsection\label{ref_59}{}[59] Yang, H. et al. FinGPT:
+Open-Source Financial Large Language Models. IJCAI 2023 FinLLM Workshop.
+\protect\phantomsection\label{ref_60}{}[60] Zha, D. et al.
+Data-centric Artificial Intelligence: A Survey. ACM Computing Surveys,
+2023.
+\protect\phantomsection\label{ref_61}{}[61] Zhang, S. et al.
+Instruction Tuning for Large Language Models: A Survey.
+arXiv:2308.10792, 2023.
+[62] Zhang, T. et al. BERTScore: Evaluating Text Generation with
+BERT. ICLR 2020.
+\protect\phantomsection\label{ref_63}{}[63] Zheng, L. et al. Judging
+LLM-as-a-Judge with MT-Bench and Chatbot Arena. NeurIPS 2023.
+\protect\phantomsection\label{ref_64}{}[64] Zhou, C. et al. LIMA:
+Less Is More for Alignment. NeurIPS 2023.
+\section{APPENDIX}
+\textbf{Dataset as a Core Contribution}
+In addition to the CoDE multi-agent framework, this paper makes a
+substantial dataset contribution by releasing VeritasCarbon-ESG-35K, the
+largest publicly available traceable ESG instruction dataset to date.
+The dataset contains 35,009 high-quality instruction-response pairs
+generated from 17,721 real-world ESG disclosure documents spanning four
+corpus layers (domain textbooks, CSR reports, regulatory guidelines, and
+industry analyses). Every pair is fully traceable to its source document
+chunk and includes rich generation metadata (quality score, selected
+experts, collaboration mode, knowledge injection count), enabling
+fine-grained analysis of data provenance and quality.
+Unlike existing ESG corpora that are limited to classification labels or
+short extracts, VeritasCarbon-ESG-35K provides task-oriented
+instructions with diverse types (Q\&A, summarization, extraction,
+classification, analysis, temporal analysis, benchmark comparison,
+greenwashing detection, standard alignment, knowledge graph
+construction, and consistency verification). This makes it directly
+usable for instruction tuning of large language models in the ESG and
+sustainable-finance domains.
+The dataset is released under a tiered strategy to balance accessibility
+and copyright constraints:
+\begin{itemize}
+\item
+  A representative 2,000-pair sample is included in the GitHub
+  repository for immediate inspection and replication of the main
+  evaluation (Table 2).
+\item
+  The full 35,009-pair dataset is hosted on Hugging Face Datasets
+  (https://huggingface.co/datasets/Yihan-JIANG/VeritasCarbon-ESG-35K)
+  under CC BY-SA 4.0.
+\item
+  Complete provenance metadata for all 17,721 source documents is
+  provided in the repository, and the full dataset can be reproduced
+  from source using the provided notebooks.
+\end{itemize}
+\textbf{A.1 Data and Code Availability}
+\textbf{Code.} The complete VeritasCarbon framework, evaluation scripts,
+and reproducibility instructions are available at
+https://github.com/YihanJIANG-lab/VeritasCarbon-VLDB2027 under the MIT
+License.
+\textbf{Sample Data.} A representative 2,000-pair sample (8.7 MB) is
+included in the GitHub repository. It is drawn with random.seed(42) from
+the full 35,009-pair pool and matches the evaluation protocol used in
+Table 2.
+\textbf{Full Dataset.} The complete VeritasCarbon-ESG-35K dataset
+(35,009 pairs, \textasciitilde153 MB) is hosted on Hugging Face
+Datasets. It can be loaded in one line:
+\begin{quote}
+from datasets import load\_dataset
+ds = load\_dataset("Yihan-JIANG/VeritasCarbon-ESG-35K", split="train")
+\end{quote}
+\textbf{Raw Corpus.} The source ESG documents (\textasciitilde2.7 GB,
+17,721 files) contain copyrighted material and cannot be redistributed
+in full. Complete provenance metadata is provided in
+data/raw\_corpus/CORPUS\_MANIFEST.md.
+\textbf{A.2 Reproducibility Checklist}
+Table 1 provides a 30-minute verification checklist. All commands run on
+CPU; no GPU is required.
+Notes. (1) Tracks A-B require only the GitHub repo. (2) Track C requires
+the raw corpus and an A100 GPU. (3) All random sampling uses
+random.seed(42).
+\textbf{A.3 Prompt Templates}
+CoDE employs 11 specialized expert agents plus a MetaExpert. Each expert
+receives a system prompt defining its persona, task, and output format.
+All prompts support Default mode (generate from chunk) and Dynamic mode
+(receive work instruction from MetaExpert). The dynamic mode prepends a
+work instruction; the remainder is identical. Below we present the
+default-mode prompts for representative experts, followed by a summary
+table for all 11 experts, and finally the MetaExpert orchestration
+prompt.
+\textbf{A.3.1 Q\&A Expert}
+\begin{quote}
+You are a senior ESG (environment, social, governance) Q\&A generation
+expert.
+Task: Generate one high-quality Q\&A pair from the given text.
+Requirements:
+1. The question should be highly relevant to the text.
+2. The answer must be findable in the text or reasonably inferred.
+3. The question should cover an ESG dimension and lead to carbon
+assessment.
+4. The question should be specific and clear.
+5. The answer should be accurate and complete.
+\{knowledge\_context\}
+Text:
+\{chunk\_text\}
+Output format:
+Question: [question]
+Answer: [answer]
+Output only the Q\&A pair.
+\end{quote}
+\textbf{A.3.2 Analysis Expert}
+\begin{quote}
+You are a senior ESG analysis expert.
+Task: Generate one analysis task from the text.
+Requirements:
+1. The instruction should ask to analyze ESG content (comparison, trend,
+impact).
+2. The answer should contain in-depth analysis and cross-domain
+reasoning.
+3. Be critical; assess credibility of carbon commitments.
+\{knowledge\_context\}
+Text:
+\{chunk\_text\}
+Output format:
+Instruction: [instruction]
+Analysis result: [analysis]
+\end{quote}
+\textbf{A.3.3 Greenwashing Detection Expert}
+\begin{quote}
+You are a senior ESG greenwashing detection expert.
+Task: Generate a greenwashing detection task from the text.
+Requirements:
+1. Identify greenwashing patterns.
+2. Quantify risk (0-1, 1 = highest risk).
+3. Provide evidence chain.
+Common patterns: vague commitments, selective disclosure,
+exaggerated impact, time mismatch, scope confusion,
+inconsistency, lack of verification.
+\{knowledge\_context\}
+Text:
+\{chunk\_text\}
+Output format:
+Instruction: [detection instruction]
+Answer: [matched patterns, risk level, evidence]
+\end{quote}
+\textbf{A.3.4 Consistency Verification Expert}
+\begin{quote}
+You are a senior ESG consistency verification expert.
+Task: Generate a consistency verification task.
+Requirements:
+1. Check data consistency across the text.
+2. Identify contradictions.
+3. Detect missing-data patterns.
+\{knowledge\_context\}
+Text:
+\{chunk\_text\}
+Output format:
+Instruction: [verification instruction]
+Answer: [consistency assessment, contradictions]
+\end{quote}
+\textbf{A.3.5 Summary of All 11 Experts}
+Table 2 summarizes each expert. All share the same prompt structure;
+only task description and output labels differ.
+\textbf{A.3.6 MetaExpert Orchestrator}
+The MetaExpert designs work instructions for subordinate experts,
+evaluates their outputs, and provides iterative feedback. Its prompt
+dynamically incorporates the target expert type, core topics, chunk
+preview, and collaboration context.
+\begin{quote}
+\# Role
+You are a top carbon-strategy analyst.
+Design one work instruction for a subordinate analyst.
+\# Context
+- Subordinate: \{expert\_type\} (\{expert\_desc\})
+- Section: \{section\_name\}
+- Core topics: \{topics\_str\}
+- Preview: \{chunk\_text[:500]\}...
+- Collaboration: experts=\{all\_experts\}
+Current=\{expert\_type\}; Others=\{other\_experts\}
+\# Task
+Instruction must:
+1. Carbon-centric: assess carbon performance or commitment credibility.
+2. Cross-domain: use chunk info as evidence for carbon strategy.
+3. Depth: compare, evaluate, predict, or critique-\/-not just extract.
+\# Output
+Work instruction:
+\end{quote}
+\textbf{Feedback round.} After receiving the expert\textquotesingle s
+output, the MetaExpert scores correctness (0.4), completeness (0.3),
+relevance (0.2), and structure (0.1). If any dimension falls below
+threshold, a refined work instruction is generated and the expert
+re-executes, up to R=2 rounds.
+\textbf{A.4 Hyperparameters}
+Table 3 lists all fixed hyperparameters. All random sampling uses
+random.seed(42).
+\textbf{A.5 Expert Selection Logic}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Feature extraction. The chunk is analyzed for: keyword presence
+  (carbon, emission, energy, employee, training, governance); numerical
+  data density; temporal markers (years, quarters, since, by 20xx);
+  standard references (GRI, TCFD, SASB, ISO 14001, CDP); comparative
+  language; entity types (company names, plant locations, regulatory
+  bodies).
+\item
+  Expert scoring. Each expert defines \(s_{i}(chunk)\) in [0,1].
+  Examples: TemporalAnalysisExpert gets high score if temporal markers
+  \textgreater= 2 and numerical trends present;
+  GreenwashingDetectionExpert gets high score if vague-commitment
+  keywords and selective-disclosure patterns detected;
+  KnowledgeGraphExpert gets high score if entity count \textgreater= 5
+  and relation verbs present.
+\item
+  Thresholding. Experts with \(s_{i} \geq 0.5\) are selected. If no
+  expert meets the threshold, the fallback QAExpert is assigned.
+\item
+  Collaboration mode. If $\{s_i \geq 0.5\} \geq 2$,
+  parallel collaboration is used; otherwise sequential.
+\end{enumerate}
+\textbf{MetaExpert override.} After expert selection, the MetaExpert may
+dynamically adjust the assignment based on core topics. This override is
+rare (\textless5\%) and logged in metadata.
+\textbf{A.6 Error Analysis}
+To illustrate the quality spectrum, we present representative examples
+from the 2,000-pair sample. The quality score is a composite metric
+(correctness 0.4, completeness 0.3, relevance 0.2, structure 0.1)
+assigned by the MetaExpert.
+\textbf{A.6.1 High-Quality Example (Score 0.915)}
+\textbf{Experts:} Summary Expert + Consistency Verification Expert
+\textbf{Instruction:} Generate a summary about the 2024-2025 A-share ESG
+fund issuance trends, listed companies\textquotesingle{} information
+disclosure quality, carbon-risk considerations in investment decisions,
+corporate carbon-emission management progress, ESG evaluation-system
+effectiveness, and the potential of China\textquotesingle s ESG market
+to promote green transformation.
+\textbf{Answer:} Since 2024, A-share ESG public fund issuance has
+reached approximately 216 billion yuan. Although the issuance pace has
+slowed, 18 new funds were still issued from Q4 to Q3 of the following
+year. The industry\textquotesingle s overall scale has rebounded against
+the trend, showing a structural shift from quantity expansion to quality
+improvement. Under the dual-wheel drive of policy and market,
+China\textquotesingle s ESG market is gradually maturing, with
+carbon-risk considerations becoming an important factor in investment
+decisions.
+\textbf{Why it scores high:} The instruction demands multi-faceted
+synthesis, and the answer integrates quantitative evidence (216B yuan,
+18 funds) with qualitative assessment. The Consistency Verification
+Expert cross-checks that fund-scale figures are internally coherent.
+\textbf{A.6.2 Low-Quality Example (Score 0.000)}
+\textbf{Experts:} Summary Expert
+\textbf{Instruction:} Generate a summary for the following text.
+\textbf{Answer:} This article aims to analyze how ESG information
+disclosure affects employees\textquotesingle{} green innovation
+efficiency and its role in promoting companies\textquotesingle{} real
+carbon-reduction commitments. Special attention is paid to identifying
+and criticizing potential greenwashing behavior, i.e., phenomena where
+companies superficially promote environmental measures without taking
+substantive action. In addition, the article...
+\textbf{Why it scores low:} The output is a generic abstract of the
+source text rather than a task-oriented instruction-response pair. The
+instruction is merely generate a summary, and the answer restates the
+paper\textquotesingle s purpose without concrete data or analysis. This
+pattern occurs when the MetaExpert\textquotesingle s work instruction is
+too vague and no second expert is assigned to refine depth.
+\textbf{A.6.3 Key Failure Patterns}
+Table 4 summarizes the most common failure modes observed in the
+bottom-decile records.
+\textbf{A.7 Dataset Schema}
+Each record in the dataset is a JSON object with the following schema.
+All fields are guaranteed present; optional sub-fields within metadata
+default to null or empty lists when unavailable.
+\textbf{Metadata Object}
+\textbf{Quality score composition.} The MetaExpert evaluates four
+dimensions, each scored 0-1: Correctness (weight 0.4), Completeness
+(0.3), Relevance (0.2), and Structure (0.1). The composite score is the
+weighted sum. Records with score \textless{} 0.6 trigger a feedback
+round; records that still fail after R=2 rounds are discarded.
+\textbf{A.8 Latency and Cost Breakdown}
+Table 5 reports end-to-end latency measured on a single NVIDIA A100 (80
+GB) with Qwen2-72B-Instruct 4-bit quantized via Unsloth. Batch size is
+1; times are wall-clock averages over 100 records.
+Notes. (1) Document parsing and chunking are I/O-bound and run on CPU.
+(2) Generation and feedback are GPU-bound and dominate the pipeline. (3)
+Parallel collaboration reduces per-record latency by invoking multiple
+experts in a single forward pass when possible. (4) The 46-hour total
+assumes sequential processing; with 4-way parallel chunk processing
+across 4 A100 GPUs, the wall-clock time drops to \textasciitilde12
+hours.
+\end{document}

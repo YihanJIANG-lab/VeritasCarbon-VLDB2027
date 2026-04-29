@@ -1,5 +1,5 @@
 """
-03-04 Dataset statistics and figure generation for SIGMOD paper.
+03-04 Dataset statistics and figure generation for VLDB 2027 paper.
 
 Produces:
   Table 1: Corpus statistics (per-layer doc count, chunk count, dedup rate)

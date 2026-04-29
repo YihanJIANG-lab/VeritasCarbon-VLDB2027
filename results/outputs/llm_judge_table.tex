@@ -1,0 +1,25 @@
+\begin{table}[t]
+\centering
+\caption{LLM-as-Judge evaluation (n=100 per model, 5-point Likert scale).}
+\label{tab:llm_judge}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+Model & Accuracy & Domain Rel. & Fluency & Overall \\
+\midrule
+qwen2-72b-ft & 4.32$\pm$0.57 & 4.55$\pm$0.61 & 4.52$\pm$0.59 & \textbf{4.46} \\
+qwen2.5-7b-ft & 4.19$\pm$0.65 & 4.42$\pm$0.67 & 4.53$\pm$0.52 & 4.38 \\
+qwen2-72b-zs & 4.14$\pm$0.64 & 4.45$\pm$0.61 & 4.47$\pm$0.50 & 4.35 \\
+qwen2.5-14b-ft & 4.21$\pm$0.69 & 4.47$\pm$0.70 & 4.37$\pm$0.77 & 4.35 \\
+deepseek-v2-lite-zs & 3.91$\pm$0.67 & 3.99$\pm$0.80 & 4.60$\pm$0.59 & 4.17 \\
+qwen2.5-14b-zs & 3.95$\pm$0.64 & 4.12$\pm$0.78 & 4.38$\pm$0.49 & 4.15 \\
+qwen2.5-7b-full\_ft-ft & 3.96$\pm$0.74 & 4.26$\pm$0.75 & 4.21$\pm$0.94 & 4.14 \\
+glm4-9b-zs & 3.89$\pm$0.60 & 4.03$\pm$0.64 & 4.38$\pm$0.66 & 4.10 \\
+qwen2.5-7b-zs & 3.94$\pm$0.60 & 4.18$\pm$0.73 & 4.16$\pm$0.51 & 4.09 \\
+internlm2.5-7b-ft & 3.88$\pm$0.81 & 4.17$\pm$0.82 & 4.05$\pm$1.18 & 4.03 \\
+internlm2.5-7b-zs & 3.66$\pm$0.82 & 3.70$\pm$0.96 & 3.98$\pm$0.92 & 3.78 \\
+deepseek-v2-lite-ft & 3.57$\pm$0.95 & 3.88$\pm$0.99 & 3.67$\pm$1.41 & 3.71 \\
+glm4-9b-ft & 1.95$\pm$1.42 & 2.03$\pm$1.54 & 1.90$\pm$1.51 & 1.96 \\
+\bottomrule
+\end{tabular}}
+\end{table}

@@ -1,5 +1,5 @@
 """
-Fix docx formatting to match SIGMOD interim-layout.docx template.
+Fix docx formatting to match VLDB 2027 template.
 Issues fixed:
 1. Margins: all sections → top=1500, right=1080, bottom=1600, left=1080, header=1080, footer=1080
 2. Footnote/copyright block (P7-P12): apply correct template styles

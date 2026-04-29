@@ -17,11 +17,11 @@
   "cn_content_count": 49,
   "cn_content_files": [
     {
-      "file": "docs/SIGMOD_PAPER_OUTLINE_v2.md",
+      "file": "docs/VLDB2027_PAPER_OUTLINE_v2.md",
       "lines": [
         [
           1,
-          "# VeritasCarbon SIGMOD 2027 — 论文大纲与合作者对接文档 (v2)"
+          "# VeritasCarbon VLDB 2027 — 论文大纲与合作者对接文档 (v2)"
         ],
         [
           3,
@@ -29,7 +29,7 @@
         ],
         [
           4,
-          "> **目标会议**: ACM SIGMOD 2027 — DI&DS Application Track  "
+          "> **目标会议**: ACM VLDB 2027 — DI&DS Application Track  "
         ]
       ]
     },
@@ -51,7 +51,7 @@
       ]
     },
     {
-      "file": "notebooks/03_SIGMOD_Experiments_output.ipynb",
+      "file": "notebooks/03_VLDB2027_Experiments_output.ipynb",
       "lines": [
         [
           704,
@@ -72,7 +72,7 @@
         ],
         [
           44,
-          "      \"📁 项目根目录: D:\\\\9_Projects\\\\Veritas\\\\VeritasCarbon_SIGMOD\\n\""
+          "      \"📁 项目根目录: D:\\\\9_Projects\\\\Veritas\\\\VeritasCarbon-VLDB2027\\n\""
         ],
         [
           96,
@@ -81,7 +81,7 @@
       ]
     },
     {
-      "file": "notebooks/03_SIGMOD_Experiments.ipynb",
+      "file": "notebooks/03_VLDB2027_Experiments.ipynb",
       "lines": [
         [
           281,
@@ -128,7 +128,7 @@
       ]
     },
     {
-      "file": "results/logs/03_SIGMOD_Experiments_output.ipynb",
+      "file": "results/logs/03_VLDB2027_Experiments_output.ipynb",
       "lines": [
         [
           704,

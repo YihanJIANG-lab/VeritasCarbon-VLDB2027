@@ -44,6 +44,11 @@ VeritasCarbon-VLDB2027/
 │   │   ├── intrinsic_evaluation_03_03.py # 7 intrinsic metrics
 │   │   └── dataset_statistics_03_04.py   # Tables & figures generation
 │   ├── evaluation/
+│   ├── training/                  # QLoRA fine-tuning and evaluation
+│   │   ├── data_loader_03_02.py
+│   │   ├── model_evaluator_03_04.py
+│   │   ├── model_registry_03_01.py
+│   │   └── qlora_trainer_03_03.py
 │   └── utils/
 ├── data/
 │   ├── raw_corpus/              # Sample ESG documents (full corpus: 17,721 docs)
@@ -69,7 +74,8 @@ VeritasCarbon-VLDB2027/
 ├── notebooks/
 │   ├── 01_DataPreprocess.ipynb
 │   ├── 02_InstructionGeneration_v3.ipynb
-│   └── 03_SIGMOD_Experiments.ipynb
+│   ├── 03_VLDB2027_Experiments.ipynb
+│   └── 03_VLDB2027_Experiments_output.ipynb
 ├── scripts/                     # Generation and monitoring utilities
 ├── paper/figures/               # Paper figures (cleaned)
 ├── requirements.txt
@@ -109,8 +115,20 @@ jupyter notebook notebooks/02_InstructionGeneration_v3.ipynb
 ### 3. Run Experiments
 ```bash
 # Baselines, ablation, intrinsic evaluation
-jupyter notebook notebooks/03_SIGMOD_Experiments.ipynb
+jupyter notebook notebooks/03_VLDB2027_Experiments.ipynb
 ```
+
+## Reproducibility & Artifact Evaluation
+
+This package supports three levels of reproducibility aligned with PVLDB / ACM artifact badging:
+
+| Track | Scope | Command / Path | Expected Time |
+|-------|-------|----------------|---------------|
+| **A – Results Replicated** | Reproduce main comparison (Table 2) and intrinsic metrics from the 2,000-pair sample | `notebooks/03_VLDB2027_Experiments.ipynb` (Section 1–2) | ~30 min on A100 |
+| **B – Full Evaluation** | Reproduce all tables and figures (1–6) using pre-computed results | `results/figures_and_tables/` + `results/outputs/` | ~5 min (rendering only) |
+| **C – Full Regeneration** | Re-run the entire pipeline from raw documents to 35,009 QA pairs | `notebooks/01_DataPreprocess.ipynb` → `02_InstructionGeneration_v3.ipynb` | ~13 h on A100 |
+
+All experiments use **random seed 42** and the same **Qwen2-72B-Instruct (4-bit)** model for fair comparison. See [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) for step-by-step instructions.
 
 ## CoDE Framework
 
@@ -226,11 +244,10 @@ See `data/raw_corpus/CORPUS_MANIFEST.md` for the complete file listing.
 ## Citation
 
 ```bibtex
-@inproceedings{jiang2026veritascarbon,
-  title     = {VeritasCarbon: A Scalable Multi-Agent Framework for Generating Traceable ESG Instruction Data},
-  author    = {Jiang, Yihan},
-  booktitle = {Proceedings of the ACM on Management of Data (PACMMOD)},
-  
+@misc{jiang2026veritascarbon,
+  title     = {VeritasCarbon: Traceable Instruction Data Generation for ESG Domain via a Council of Domain Experts},
+  author    = {Jiang, Yihan and Zhang, Wenrui and Woon, Kok-Sin and Shi, Qi},
+  howpublished = {Under review at PVLDB Vol. 20 (VLDB 2027)},
   year      = {2026}
 }
 ```

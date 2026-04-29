@@ -21,22 +21,22 @@
 - data/raw_corpus/Layer1/samples/【规范】ESG 信息披露细则.pdf
 
 ## Chinese content hits (sample lines)
-- docs/SIGMOD_PAPER_OUTLINE_v2.md
-  - L1: # VeritasCarbon SIGMOD 2027 — 论文大纲与合作者对接文档 (v2)
+- docs/VLDB2027_PAPER_OUTLINE_v2.md
+  - L1: # VeritasCarbon VLDB 2027 — 论文大纲与合作者对接文档 (v2)
   - L3: > **最后更新**: 2026-03-18  
-  - L4: > **目标会议**: ACM SIGMOD 2027 — DI&DS Application Track  
+  - L4: > **目标会议**: ACM VLDB 2027 — DI&DS Application Track  
 - notebooks/02_InstructionGeneration_v3.ipynb
   - L733:     "        \"\"\"Parse response into instruction and answer (supports Instruction:/Response: or 指令/回答).\"\"\"\n",
   - L739:     "        if \"指令\" in response and \"回答\" in response:\n",
   - L740:     "            parts = response.split(\"回答\")\n",
-- notebooks/03_SIGMOD_Experiments_output.ipynb
+- notebooks/03_VLDB2027_Experiments_output.ipynb
   - L704:     "            if line.lower().startswith('instruction:') or line.startswith('指令'):\n",
   - L706:     "            elif line.lower().startswith('response:') or line.lower().startswith('answer:') or line.startswith('回答'):\n",
 - notebooks/01_DataPreprocess.ipynb
   - L43:       "✅ 环境初始化完成\n",
-  - L44:       "📁 项目根目录: D:\\9_Projects\\Veritas\\VeritasCarbon_SIGMOD\n"
+  - L44:       "📁 项目根目录: D:\\9_Projects\\Veritas\\VeritasCarbon-VLDB2027\n"
   - L96:       "✅ 预处理器初始化完成\n",
-- notebooks/03_SIGMOD_Experiments.ipynb
+- notebooks/03_VLDB2027_Experiments.ipynb
   - L281:     "            if line.lower().startswith('instruction:') or line.startswith('指令'):\n",
   - L283:     "            elif line.lower().startswith('response:') or line.lower().startswith('answer:') or line.startswith('回答'):\n",
 - notebooks/02.5_QA_Inspection_and_COE_Architecture.ipynb
@@ -47,7 +47,7 @@
   - L2: 1,0.6588235294117647,extraction_expert|consistency_verification_expert,提取专家|一致性验证专家,第二层_社会责任报告（2006年-2024年）_社会责任报告（去重）_17082份_2024_002001_2024_#ESG_新和成_2024年度环境
   - L4: 然而，存在一个潜在的不一致性问题，即文本中先前提到的员工培训覆盖率为100%，而之后却出现了42.12小时的人均受训时长这一数据，理论上如果全员参与，人均受训时长应基于总受训时长和员工总数计算得出。如果没有员工总数的上下文信息，无法确定这个人均数字是否准确反映了全员参与的情况。此外，虽然提到了培训活动和员工发展路径，但
   - L6: 综上所述，虽然新和成展示了在员工培训方面的显著努力，但需要更多的具体数据和信息来证明这些培训如何直接贡献于ESG目标，特别是环境方面的目标，以及如何与公司的长期碳减排承诺相一致。为了增强ESG报告的一致性和透明度，建议公司在未来的报告中提供更详细的数据，如培训项目的环境影响评估、能效改进措施的具体案例，以及这些措施如何
-- results/logs/03_SIGMOD_Experiments_output.ipynb
+- results/logs/03_VLDB2027_Experiments_output.ipynb
   - L704:     "            if line.lower().startswith('instruction:') or line.startswith('指令'):\n",
   - L706:     "            elif line.lower().startswith('response:') or line.lower().startswith('answer:') or line.startswith('回答'):\n",
 - results/figures_and_tables/table2_qa_statistics.json
