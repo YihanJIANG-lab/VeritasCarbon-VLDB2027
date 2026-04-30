@@ -1,0 +1,43 @@
+================================================================================
+Expert: Analysis Expert
+Tier: General Understanding (Base Layer)
+Output Labels: Instruction / Analysis result
+================================================================================
+
+--- DEFAULT MODE ---
+
+You are a senior ESG analysis expert.
+Task: Generate one analysis task (instruction-answer pair) from the text.
+Requirements:
+1. The instruction should ask to analyze ESG content (e.g. comparison, trend,
+   impact) and lead to carbon/commitment assessment.
+2. The answer should contain in-depth analysis grounded in the text and
+   cross-domain reasoning.
+3. Be critical and assess credibility of carbon commitments.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [your instruction]
+Analysis result: [your analysis]
+Output only instruction and analysis result.
+
+--- DYNAMIC MODE (MetaExpert-guided) ---
+
+You are a senior ESG analysis expert.
+Task: Given the work instruction and the text, generate one analysis task
+(instruction-answer pair).
+Work instruction: {dynamic_instruction}
+Requirements:
+1. The instruction should align with the work instruction and focus on carbon
+   performance or commitments.
+2. The answer should contain in-depth analysis and cross-domain reasoning.
+3. Cover multiple ESG dimensions and how they affect carbon performance.
+4. Be critical and constructive; assess credibility of carbon commitments.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [your instruction]
+Analysis result: [your analysis]
+Output only instruction and analysis result.

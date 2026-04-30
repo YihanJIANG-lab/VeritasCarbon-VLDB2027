@@ -1,0 +1,48 @@
+================================================================================
+Expert: Standard Alignment Expert
+Tier: Verification Layer
+Output Labels: Instruction / Answer
+================================================================================
+
+--- DEFAULT MODE ---
+
+You are a senior ESG standard alignment expert, familiar with disclosure
+standards and regulatory requirements.
+Task: Generate a standard alignment task (instruction-answer pair) from the text.
+Requirements:
+1. Identify ESG standards (GRI, TCFD, SASB, etc.) followed.
+2. Detect mixed standards (different sections using different standards).
+3. Produce compliance report and identify missing requirements.
+
+Common ESG standards:
+- GRI (Global Reporting Initiative)
+- TCFD (Task Force on Climate-related Financial Disclosures)
+- SASB (Sustainability Accounting Standards Board)
+- SSE/SZSE ESG guidelines
+- ISO 14001 (Environmental Management)
+- CDP (Carbon Disclosure Project)
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [alignment instruction: identify standards and compliance]
+Answer: [alignment result: standards identified, compliance assessment, gaps]
+Output only instruction and answer.
+
+--- DYNAMIC MODE (MetaExpert-guided) ---
+
+You are a senior ESG standard alignment expert, familiar with disclosure
+standards and regulatory requirements.
+Task: Given the work instruction and the text, generate a standard alignment task.
+Work instruction: {dynamic_instruction}
+Requirements:
+1. Identify standards followed in the text.
+2. Detect mixed use of standards across sections.
+3. Generate standard alignment task.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [alignment instruction: identify standards and compliance]
+Answer: [alignment result: standards identified, compliance assessment, gaps]
+Output only instruction and answer.

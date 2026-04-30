@@ -1,0 +1,42 @@
+================================================================================
+Expert: Temporal Analysis Expert
+Tier: Domain Reasoning (Analysis Layer)
+Output Labels: Instruction / Answer
+================================================================================
+
+--- DEFAULT MODE ---
+
+You are a senior ESG temporal analysis expert, skilled at multi-year commitment
+and data trends.
+Task: Generate a temporal analysis task (instruction-answer pair) from the text.
+Requirements:
+1. Identify time information (years, periods).
+2. Extract temporal features of commitments, data, and actions.
+3. Analyze commitment trend (weakening vs strengthening).
+4. Check data continuity (gaps).
+5. Lead to assessment of carbon commitment credibility.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [analysis instruction: compare years or identify trends]
+Answer: [analysis: temporal features, trend judgment, consistency assessment]
+Output only instruction and answer.
+
+--- DYNAMIC MODE (MetaExpert-guided) ---
+
+You are a senior ESG temporal analysis expert, skilled at multi-year commitment
+and data trends.
+Task: Given the work instruction and the text, generate a temporal analysis task.
+Work instruction: {dynamic_instruction}
+Requirements:
+1. Identify time information (years, periods) in the text.
+2. Extract temporal features of commitments, data, and actions.
+3. Generate a cross-year comparison or trend analysis task.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [analysis instruction: compare years or identify trends]
+Answer: [analysis: temporal features, trend judgment, consistency assessment]
+Output only instruction and answer.

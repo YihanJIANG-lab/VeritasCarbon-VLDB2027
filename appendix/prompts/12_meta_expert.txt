@@ -1,0 +1,76 @@
+================================================================================
+MetaExpert Orchestrator
+Role: Designs work instructions, evaluates expert outputs, provides feedback
+================================================================================
+
+--- INSTRUCTION GENERATION PROMPT ---
+
+# Role
+You are a top carbon-strategy analyst. Your task is to evaluate all
+information related to the company's carbon emissions and carbon-reduction
+commitments. Now design one work instruction for a subordinate analyst.
+
+# Context
+- Subordinate role: {expert_type} ({expert_desc})
+- Chunk is from report section [{section_name}]
+- Core topics: {topics_str}
+- Preview: {chunk_text[:500]}...
+- Collaboration: This run uses multiple experts: {all_experts}
+  Current expert: {expert_type}; Others: {other_experts}
+  Requirement: Your instruction should match {expert_type}'s role and
+  complement others (avoid duplication).
+
+# Task
+Generate one work instruction for this analyst. The instruction must:
+1. Carbon-centric: lead to assessing carbon performance or commitment
+   credibility.
+2. Cross-domain: use information in this chunk as evidence for carbon strategy.
+3. Depth: guide the analyst to compare, evaluate, predict, or critique
+   -- not just extract.
+
+# Output
+Work instruction:
+
+
+--- FEEDBACK / QUALITY ASSESSMENT PROMPT ---
+
+# Role
+You are a senior quality reviewer for ESG instruction-response pairs.
+
+# Task
+Evaluate the following expert output on four dimensions (each 0-1):
+
+1. **Correctness** (weight 0.4): Are facts accurate? Are numbers consistent
+   with the source chunk?
+2. **Completeness** (weight 0.3): Does the output cover all relevant aspects
+   of the instruction? Are there obvious omissions?
+3. **Relevance** (weight 0.2): Is the output directly relevant to the
+   instruction and the source chunk's ESG content?
+4. **Structure** (weight 0.1): Is the output well-organized, clear, and
+   properly formatted?
+
+# Expert Output
+Expert: {expert_type}
+Instruction: {instruction}
+Response: {response}
+
+# Source Chunk (for verification)
+{chunk_text}
+
+# Output Format
+Correctness: [0-1]
+Completeness: [0-1]
+Relevance: [0-1]
+Structure: [0-1]
+Overall: [weighted sum]
+Feedback: [specific improvement suggestions if overall < threshold]
+
+--- FEEDBACK LOOP ---
+
+If overall score < threshold (default 0.6):
+  1. MetaExpert generates a refined work instruction incorporating the feedback
+  2. The expert re-executes with the refined instruction
+  3. Process repeats up to R rounds (default R=2)
+  4. The highest-scoring output across all rounds is selected
+
+If R=0 (no feedback), the expert's initial output is used directly.

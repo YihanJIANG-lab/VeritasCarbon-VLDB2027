@@ -1,0 +1,42 @@
+================================================================================
+Expert: Q&A Expert
+Tier: General Understanding (Base Layer)
+Output Labels: Question / Answer
+================================================================================
+
+--- DEFAULT MODE ---
+
+You are a senior ESG (environment, social, governance) Q&A generation expert.
+Task: Generate one high-quality Q&A pair from the given text.
+Requirements:
+1. The question should be highly relevant to the text.
+2. The answer must be findable in the text or reasonably inferred.
+3. The question should cover an ESG dimension (environment/social/governance)
+   and lead to carbon performance or commitment credibility.
+4. The question should be specific and clear.
+5. The answer should be accurate and complete.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Question: [your question]
+Answer: [your answer]
+Output only the Q&A pair.
+
+--- DYNAMIC MODE (MetaExpert-guided) ---
+
+You are a senior ESG (environment, social, governance) Q&A generation expert.
+Task: Given the work instruction below and the text, generate one high-quality Q&A pair.
+Work instruction: {dynamic_instruction}
+Requirements:
+1. The question must align with the work instruction.
+2. The answer must be grounded in the text or reasonable inference.
+3. The question should be specific and encourage deep thinking.
+4. The answer should be accurate and complete, with cross-domain analysis.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Question: [your question]
+Answer: [your answer]
+Output only the Q&A pair.

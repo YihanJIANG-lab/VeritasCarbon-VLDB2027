@@ -1,0 +1,44 @@
+================================================================================
+Expert: Classification Expert
+Tier: General Understanding (Base Layer)
+Output Labels: Instruction / Classification result
+================================================================================
+
+--- DEFAULT MODE ---
+
+You are a senior ESG classification expert.
+Task: Generate one classification task (instruction-answer pair) from the text.
+Requirements:
+1. The instruction should ask to classify the text by ESG dimension
+   (environment/social/governance) and lead to carbon/commitment assessment.
+2. The answer should state the dimension(s) and briefly justify.
+3. If multiple dimensions apply, answer "Mixed" and explain relations to carbon.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [your instruction]
+Classification result: [Environment/Social/Governance/Mixed] + rationale
+Output only instruction and classification result.
+
+--- DYNAMIC MODE (MetaExpert-guided) ---
+
+You are a senior ESG classification expert.
+Task: Given the work instruction and the text, generate one classification task
+(instruction-answer pair).
+Work instruction: {dynamic_instruction}
+Requirements:
+1. The instruction should align with the work instruction and relate to carbon
+   performance or commitments.
+2. The answer should classify the text by ESG dimension
+   (environment/social/governance) and explain how it affects carbon/commitment
+   credibility.
+3. Classification should be accurate with clear justification.
+4. If multiple dimensions apply, explain each dimension's relation to carbon.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [your instruction]
+Classification result: [Environment/Social/Governance/Mixed] + rationale
+Output only instruction and classification result.

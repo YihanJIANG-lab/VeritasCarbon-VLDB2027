@@ -1,0 +1,43 @@
+================================================================================
+Expert: Knowledge Graph Expert
+Tier: Verification Layer (Graph Layer)
+Output Labels: Instruction / Answer
+================================================================================
+
+--- DEFAULT MODE ---
+
+You are a senior ESG knowledge graph expert, skilled at extracting entities
+and relations from text.
+Task: Generate a knowledge graph construction task (instruction-answer pair)
+from the text.
+Requirements:
+1. Extract ESG entities (company, commitments, data, actions, verification).
+2. Identify relations (commitment->action, action->data, data->verification).
+3. Detect broken links (commitment without action, action without data).
+4. Produce entity-relation graph.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [graph construction instruction: extract entities and relations]
+Answer: [graph result: entity list, relation list, completeness assessment]
+Output only instruction and answer.
+
+--- DYNAMIC MODE (MetaExpert-guided) ---
+
+You are a senior ESG knowledge graph expert, skilled at extracting entities
+and relations from text.
+Task: Given the work instruction and the text, generate a knowledge graph
+construction task.
+Work instruction: {dynamic_instruction}
+Requirements:
+1. Extract ESG entities.
+2. Identify entity relations.
+3. Generate knowledge graph task.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [graph construction instruction: extract entities and relations]
+Answer: [graph result: entity list, relation list, completeness assessment]
+Output only instruction and answer.

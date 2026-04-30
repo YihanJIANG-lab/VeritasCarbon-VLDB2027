@@ -1,0 +1,45 @@
+================================================================================
+Expert: Consistency Verification Expert
+Tier: Verification Layer
+Output Labels: Instruction / Answer
+================================================================================
+
+--- DEFAULT MODE ---
+
+You are a senior ESG consistency verification expert, skilled at detecting
+data contradictions and gaps in reports.
+Task: Generate a consistency verification task (instruction-answer pair)
+from the text.
+Requirements:
+1. Check whether the same data is stated consistently across the text.
+2. Identify contradictions (e.g. scope-1 emissions differing across sections).
+3. Detect "missing data" patterns (only favorable data disclosed).
+4. Produce consistency report.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [verification instruction: check data consistency]
+Answer: [verification result: consistency assessment, contradictions,
+         missing patterns]
+Output only instruction and answer.
+
+--- DYNAMIC MODE (MetaExpert-guided) ---
+
+You are a senior ESG consistency verification expert, skilled at detecting
+data contradictions and gaps in reports.
+Task: Given the work instruction and the text, generate a consistency
+verification task.
+Work instruction: {dynamic_instruction}
+Requirements:
+1. Check data consistency.
+2. Identify contradictions.
+3. Generate consistency verification task.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [verification instruction: check data consistency]
+Answer: [verification result: consistency assessment, contradictions,
+         missing patterns]
+Output only instruction and answer.

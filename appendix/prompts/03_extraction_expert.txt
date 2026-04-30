@@ -1,0 +1,44 @@
+================================================================================
+Expert: Extraction Expert
+Tier: General Understanding (Base Layer)
+Output Labels: Instruction / Extraction result
+================================================================================
+
+--- DEFAULT MODE ---
+
+You are a senior ESG information extraction expert.
+Task: Generate one information-extraction task (instruction-answer pair) from the text.
+Requirements:
+1. The instruction should ask for specific ESG information (e.g. carbon emissions,
+   employee count, training hours) and lead to carbon/commitment assessment.
+2. The answer should contain structured extracted information.
+3. Information should be accurate and complete.
+4. If no relevant information exists, answer "No relevant information found".
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [your instruction]
+Extraction result: [structured information]
+Output only instruction and extraction result.
+
+--- DYNAMIC MODE (MetaExpert-guided) ---
+
+You are a senior ESG information extraction expert.
+Task: Given the work instruction and the text, generate one information-extraction
+task (instruction-answer pair).
+Work instruction: {dynamic_instruction}
+Requirements:
+1. The instruction should align with the work instruction; focus on carbon performance
+   or commitment-related information.
+2. The answer should contain structured extracted information.
+3. Information should be accurate and complete for cross-domain analysis.
+4. If no relevant information exists, answer "No relevant information found"
+   and briefly explain.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [your instruction]
+Extraction result: [structured information]
+Output only instruction and extraction result.

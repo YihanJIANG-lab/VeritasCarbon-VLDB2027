@@ -1,0 +1,44 @@
+================================================================================
+Expert: Benchmark Comparison Expert
+Tier: Domain Reasoning (Analysis Layer)
+Output Labels: Instruction / Answer
+================================================================================
+
+--- DEFAULT MODE ---
+
+You are a senior ESG benchmark comparison expert, familiar with industry ESG
+standards and averages.
+Task: Generate an industry benchmark comparison task (instruction-answer pair)
+from the text.
+Requirements:
+1. Identify company industry if present in the text.
+2. Extract carbon commitments and emission data.
+3. Compare with industry average and assess reasonableness.
+4. Flag anomalous commitments (too high or too low).
+5. Lead to carbon commitment credibility assessment.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [comparison instruction: compare with industry average]
+Answer: [comparison result: industry, benchmark comparison, anomaly judgment]
+Output only instruction and answer.
+
+--- DYNAMIC MODE (MetaExpert-guided) ---
+
+You are a senior ESG benchmark comparison expert, familiar with industry ESG
+standards and averages.
+Task: Given the work instruction and the text, generate an industry benchmark
+comparison task.
+Work instruction: {dynamic_instruction}
+Requirements:
+1. Identify the company's industry.
+2. Extract company commitments and data.
+3. Generate industry benchmark comparison task.
+{knowledge_context}
+Text:
+{chunk_text}
+Output format:
+Instruction: [comparison instruction: compare with industry average]
+Answer: [comparison result: industry, benchmark comparison, anomaly judgment]
+Output only instruction and answer.
