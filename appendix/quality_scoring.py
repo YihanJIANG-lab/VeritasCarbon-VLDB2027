@@ -114,7 +114,10 @@ class QualityScorer:
         output_nums = self._extract_numbers(output)
         source_nums = self._extract_numbers(source)
         if not output_nums:
-            return 1.0  # no numerical claims → vacuously grounded
+            # No numerical claims in output: return neutral score rather than
+            # vacuous 1.0, penalizing outputs that avoid concrete data.
+            # Scaled by structural completeness to avoid rewarding empty outputs.
+            return 0.5 * self.structure(output)
         verified = sum(1 for n in output_nums if n in source_nums)
         return verified / len(output_nums)
 
