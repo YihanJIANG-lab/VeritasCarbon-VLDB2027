@@ -47,11 +47,38 @@ Each file contains both **Default mode** and **Dynamic mode** prompt templates.
 scoring function defined in Section 2.3 of the paper:
 
 ```
-Q(o, c) = w_f * Fidelity(o,c) + w_r * Relevance(o,c) + w_g * Grounding(o,c)
-         + w_s * Structure(o) + w_d * Diversity(o)
+Q(o, c) = w_f · Fidelity(o,c) + w_r · Relevance(o,c) + w_g · Grounding(o,c)
+         + w_s · Structure(o) + w_d · Diversity(o)
 ```
 
 Default weights: `w_f=0.25, w_r=0.25, w_g=0.20, w_s=0.15, w_d=0.15`
+(calibrated via grid search on a held-out validation set of 500 chunks
+to maximize Kendall's rank correlation with expert judgments)
+
+### Sub-score Definitions
+
+| Component | Weight | Formula | Description |
+|---|---|---|---|
+| **Source Fidelity** | 0.25 | `ROUGE-L(o, c)` | Recall-oriented n-gram overlap between generated response and source chunk, ensuring factual anchoring |
+| **Domain Relevance** | 0.25 | `\|V_ESG(o) ∩ V_ESG(c)\| / \|V_ESG(c)\|` | Proportion of ESG vocabulary terms from the source chunk preserved in the output. The vocabulary covers 40+ terms across E/S/G dimensions and reporting standards (see `DEFAULT_ESG_VOCAB` in code) |
+| **Factual Grounding** | 0.20 | `(1/\|N(o)\|) Σ 𝟙[n ∈ N(c)]` | Fraction of numerical claims (percentages, dates, monetary values, emission figures) in the output that are verifiable in the source. Returns 0.5 × Structure(o) when no numerical claims are present |
+| **Structural Completeness** | 0.15 | `min(1, \|o\|/L_min) · 𝟙[\|o\| > L_trivial]` | Filters trivially short or degenerate outputs. L_min=50, L_trivial=20 characters |
+| **Lexical Diversity** | 0.15 | `(Distinct-2(o) + Distinct-3(o)) / 2` | Average ratio of unique bigrams and trigrams to total n-grams, discouraging repetitive or templated outputs |
+
+### Threshold Filtering
+
+Only candidates with `Q(o, c) >= τ` (default `τ = 0.5`) are retained in the released dataset.
+The dataset exhibits a quality distribution centered at μ=0.667 (σ=0.103), with 89.7% of pairs above τ.
+
+### Usage Example
+
+```python
+from quality_scoring import QualityScorer
+
+scorer = QualityScorer()
+breakdown = scorer.compute_breakdown(output_text, source_chunk)
+# Returns: {fidelity, relevance, grounding, structure, diversity, composite}
+```
 
 ## Feature Vector Computation
 
