@@ -46,6 +46,7 @@ open_source_release/
 # Keep small metadata
 !data/raw_corpus/CORPUS_MANIFEST.md
 !paper/figures/*.csv
+!paper/figures/*.png
 !results/**/*.json
 !results/**/*.csv
 !results/**/*.tex
