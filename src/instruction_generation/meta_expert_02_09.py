@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class TopicExtractor:
     """Extract core entities and topics from chunk text."""
-    def __init__(self, api_provider: str = "google", model_name: str = "gemini-3-flash-preview", **kwargs):
+    def __init__(self, api_provider: str = "openai", model_name: str = "gpt-4", **kwargs):
         """
         Args:
             api_provider: API provider
@@ -94,8 +94,8 @@ class MetaExpert:
     """Meta-Expert: dynamic instruction generator."""
     def __init__(
         self,
-        api_provider: str = "google",
-        model_name: str = "gemini-3-flash-preview",
+        api_provider: str = "openai",
+        model_name: str = "gpt-4",
         carbon_centric: bool = True,
         **kwargs
     ):

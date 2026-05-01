@@ -1,85 +1,85 @@
-﻿# VeritasCarbon
+# VeritasCarbon
 
-> **VeritasCarbon: A Scalable Multi-Agent Framework for Generating Traceable ESG Instruction Data**
+> **VeritasCarbon: Scalable and Traceable Instruction Data Generation for ESG Domains**
 >
-> **Submitted to VLDB 2027** 鈥?Research Track
+> **Submitted to VLDB 2027** — Scalable Data Science Track
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 
 ## Overview
 
-VeritasCarbon converts **17,721 ESG disclosure documents** into **35,009 traceable instruction鈥搑esponse pairs** through a multi-agent pipeline. At its core is **CoDE (Council of Domain Experts)**, a framework that organizes 11 specialized expert agents into a four-layer hierarchy, coordinating their generation through parallel or sequential collaboration with iterative MetaExpert feedback.
+VeritasCarbon converts **17,721 ESG disclosure documents** into **35,009 traceable instruction–response pairs** through a multi-agent pipeline. At its core is **CoDE (Council of Domain Experts)**, a framework that organizes 11 specialized expert agents into a four-layer hierarchy, coordinating their generation through parallel or sequential collaboration with iterative MetaExpert feedback.
 
 **Key Results:**
-- 4.0脳 higher ROUGE-L, 4.6脳 higher BLEU-4, 14.6脳 higher domain relevance vs. best baseline
+- 4.0× higher ROUGE-L, 4.6× higher BLEU-4, 14.6× higher domain relevance vs. best baseline
 - All experiments use the same Qwen2-72B-Instruct model (4-bit quantized, on-premises) for fair comparison
 - Every generated QA pair retains source mapping for full data provenance
 
 <p align="center">
   <img src="paper/figures/fig1_pipeline_clean.png" width="85%" alt="VeritasCarbon Pipeline"/>
   <br>
-  <em>Figure 1: The VeritasCarbon pipeline 鈥?from raw ESG documents to traceable instruction data.</em>
+  <em>Figure 1: The VeritasCarbon pipeline — from raw ESG documents to traceable instruction data.</em>
 </p>
 
 ## Repository Structure
 
 ```
 VeritasCarbon-VLDB2027/
-鈹溾攢鈹€ configs/
-鈹?  鈹斺攢鈹€ config.yaml              # Central configuration (model, CoDE, paths)
-鈹溾攢鈹€ src/
-鈹?  鈹溾攢鈹€ data_processing/         # Document parsing, chunking, quality check
-鈹?  鈹?  鈹溾攢鈹€ document_parser_01_02.py
-鈹?  鈹?  鈹溾攢鈹€ text_chunker_01_03.py
-鈹?  鈹?  鈹斺攢鈹€ data_quality_check_01_04.py
-鈹?  鈹溾攢鈹€ instruction_generation/  # CoDE framework and experiments
-鈹?  鈹?  鈹溾攢鈹€ expert_selector_02_01.py      # 4-layer expert selection
-鈹?  鈹?  鈹溾攢鈹€ domain_knowledge_02_02.py     # ESG knowledge injection
-鈹?  鈹?  鈹溾攢鈹€ coe_framework_02_03.py        # Multi-expert collaboration
-鈹?  鈹?  鈹溾攢鈹€ expert_agents_02_04.py        # 11 specialized expert types
-鈹?  鈹?  鈹溾攢鈹€ meta_expert_02_09.py          # MetaExpert orchestration
-鈹?  鈹?  鈹溾攢鈹€ baseline_local_03_01.py       # 3 baseline methods
-鈹?  鈹?  鈹溾攢鈹€ ablation_local_03_02.py       # 4-dimension ablation
-鈹?  鈹?  鈹溾攢鈹€ intrinsic_evaluation_03_03.py # 7 intrinsic metrics
-鈹?  鈹?  鈹斺攢鈹€ dataset_statistics_03_04.py   # Tables & figures generation
-鈹?  鈹溾攢鈹€ evaluation/
-鈹?  鈹溾攢鈹€ training/                  # QLoRA fine-tuning and evaluation
-鈹?  鈹?  鈹溾攢鈹€ data_loader_03_02.py
-鈹?  鈹?  鈹溾攢鈹€ model_evaluator_03_04.py
-鈹?  鈹?  鈹溾攢鈹€ model_registry_03_01.py
-鈹?  鈹?  鈹斺攢鈹€ qlora_trainer_03_03.py
-鈹?  鈹斺攢鈹€ utils/
-鈹溾攢鈹€ data/
-鈹?  鈹溾攢鈹€ raw_corpus/              # Sample ESG documents (full corpus: 17,721 docs)
-鈹?  鈹?  鈹溾攢鈹€ Layer1/samples/      # Domain textbooks (2 samples)
-鈹?  鈹?  鈹溾攢鈹€ Layer2/samples/      # CSR reports (2 samples + metadata)
-鈹?  鈹?  鈹溾攢鈹€ Layer3/samples/      # Regulatory guidelines (2 samples)
-鈹?  鈹?  鈹溾攢鈹€ Layer4/samples/      # Industry analyses (2 samples)
-鈹?  鈹?  鈹斺攢鈹€ CORPUS_MANIFEST.md   # Full listing of all 17,721 documents
-鈹?  鈹溾攢鈹€ processed_corpus/        # Semantically segmented chunks
-鈹?  鈹?  鈹斺攢鈹€ chunks_sampled_20000_by_year.jsonl
-鈹?  鈹溾攢鈹€ instructions/            # Generated QA pairs (full set on Hugging Face)
-鈹?  鈹?  鈹溾攢鈹€ qa_pairs_complete_v3_1.5w.jsonl  (15,000 pairs)
-鈹?  鈹?  鈹斺攢鈹€ qa_pairs_complete_v3_2w.jsonl    (20,000 pairs)
-鈹?  鈹溾攢鈹€ instruction_datasets/
-鈹?  鈹?  鈹斺攢鈹€ train.jsonl           # Final training set
-鈹?  鈹斺攢鈹€ sample/                   # Representative 2,000-pair sample (in repo)
-鈹?      鈹斺攢鈹€ veritascarbon_sample_2000.jsonl
-鈹溾攢鈹€ results/
-鈹?  鈹溾攢鈹€ baselines/               # Direct / Self-Instruct / WizardLM-Evol
-鈹?  鈹溾攢鈹€ ablation/                # Expert count / Collaboration / Feedback / Knowledge
-鈹?  鈹溾攢鈹€ figures_and_tables/      # Generated figures and LaTeX tables
-鈹?  鈹斺攢鈹€ outputs/                 # Intrinsic evaluation CSVs
-鈹溾攢鈹€ notebooks/
-鈹?  鈹溾攢鈹€ 01_DataPreprocess.ipynb
-鈹?  鈹溾攢鈹€ 02_InstructionGeneration_v3.ipynb
-鈹?  鈹溾攢鈹€ 03_VLDB2027_Experiments.ipynb
-鈹?  鈹斺攢鈹€ 03_VLDB2027_Experiments_output.ipynb
-鈹溾攢鈹€ scripts/                     # Generation and monitoring utilities
-鈹溾攢鈹€ paper/figures/               # Paper figures (cleaned)
-鈹溾攢鈹€ requirements.txt
-鈹斺攢鈹€ README.md
+├── configs/
+│   └── config.yaml              # Central configuration (model, CoDE, paths)
+├── src/
+│   ├── data_processing/         # Document parsing, chunking, quality check
+│   │   ├── document_parser_01_02.py
+│   │   ├── text_chunker_01_03.py
+│   │   └── data_quality_check_01_04.py
+│   ├── instruction_generation/  # CoDE framework and experiments
+│   │   ├── expert_selector_02_01.py      # 4-layer expert selection
+│   │   ├── domain_knowledge_02_02.py     # ESG knowledge injection
+│   │   ├── coe_framework_02_03.py        # Multi-expert collaboration
+│   │   ├── expert_agents_02_04.py        # 11 specialized expert types
+│   │   ├── meta_expert_02_09.py          # MetaExpert orchestration
+│   │   ├── baseline_local_03_01.py       # 3 baseline methods
+│   │   ├── ablation_local_03_02.py       # 4-dimension ablation
+│   │   ├── intrinsic_evaluation_03_03.py # 7 intrinsic metrics
+│   │   └── dataset_statistics_03_04.py   # Tables & figures generation
+│   ├── evaluation/
+│   ├── training/                  # QLoRA fine-tuning and evaluation
+│   │   ├── data_loader_03_02.py
+│   │   ├── model_evaluator_03_04.py
+│   │   ├── model_registry_03_01.py
+│   │   └── qlora_trainer_03_03.py
+│   └── utils/
+├── data/
+│   ├── raw_corpus/              # Sample ESG documents (full corpus: 17,721 docs)
+│   │   ├── Layer1/samples/      # Domain textbooks (2 samples)
+│   │   ├── Layer2/samples/      # CSR reports (2 samples + metadata)
+│   │   ├── Layer3/samples/      # Regulatory guidelines (2 samples)
+│   │   ├── Layer4/samples/      # Industry analyses (2 samples)
+│   │   └── CORPUS_MANIFEST.md   # Full listing of all 17,721 documents
+│   ├── processed_corpus/        # Semantically segmented chunks
+│   │   └── chunks_sampled_20000_by_year.jsonl
+│   ├── instructions/            # Generated QA pairs (full set on Hugging Face)
+│   │   ├── qa_pairs_complete_v3_1.5w.jsonl  (15,000 pairs)
+│   │   └── qa_pairs_complete_v3_2w.jsonl    (20,000 pairs)
+│   ├── instruction_datasets/
+│   │   └── train.jsonl           # Final training set
+│   └── sample/                   # Representative 2,000-pair sample (in repo)
+│       └── veritascarbon_sample_2000.jsonl
+├── results/
+│   ├── baselines/               # Direct / Self-Instruct / WizardLM-Evol
+│   ├── ablation/                # Expert count / Collaboration / Feedback / Knowledge
+│   ├── figures_and_tables/      # Generated figures and LaTeX tables
+│   └── outputs/                 # Intrinsic evaluation CSVs
+├── notebooks/
+│   ├── 01_DataPreprocess.ipynb
+│   ├── 02_InstructionGeneration_v3.ipynb
+│   ├── 03_VLDB2027_Experiments.ipynb
+│   └── 03_VLDB2027_Experiments_output.ipynb
+├── scripts/                     # Generation and monitoring utilities
+├── paper/figures/               # Paper figures (cleaned)
+├── requirements.txt
+└── README.md
 ```
 
 ## Installation
@@ -122,11 +122,11 @@ jupyter notebook notebooks/03_VLDB2027_Experiments.ipynb
 
 This package supports three levels of reproducibility aligned with PVLDB / ACM artifact badging:
 
-| Track | Scope | Command / Path | Expected Time |
-|-------|-------|----------------|---------------|
-| **A 鈥?Results Replicated** | Reproduce main comparison (Table 2) and intrinsic metrics from the 2,000-pair sample | `notebooks/03_VLDB2027_Experiments.ipynb` (Section 1鈥?) | ~30 min on A800 |
-| **B 鈥?Full Evaluation** | Reproduce all tables and figures (1鈥?) using pre-computed results | `results/figures_and_tables/` + `results/outputs/` | ~5 min (rendering only) |
-| **C 鈥?Full Regeneration** | Re-run the entire pipeline from raw documents to 35,009 QA pairs | `notebooks/01_DataPreprocess.ipynb` 鈫?`02_InstructionGeneration_v3.ipynb` | See Section 4.4 of the paper |
+| Track | Scope | Command / Path |
+|-------|-------|----------------|
+| **A – Results Replicated** | Reproduce main comparison (Table 2) and intrinsic metrics from the 2,000-pair sample | `notebooks/03_VLDB2027_Experiments.ipynb` (Section 1–2) |
+| **B – Full Evaluation** | Reproduce all tables and figures (1–6) using pre-computed results | `results/figures_and_tables/` + `results/outputs/` |
+| **C – Full Regeneration** | Re-run the entire pipeline from raw documents to 35,009 QA pairs | `notebooks/01_DataPreprocess.ipynb` → `02_InstructionGeneration_v3.ipynb` |
 
 All experiments use **random seed 42** and the same **Qwen2-72B-Instruct (4-bit)** model for fair comparison. See [`REPRODUCIBILITY.md`](REPRODUCIBILITY.md) for step-by-step instructions.
 
@@ -135,25 +135,25 @@ All experiments use **random seed 42** and the same **Qwen2-72B-Instruct (4-bit)
 <p align="center">
   <img src="paper/figures/fig2_code_arch_clean.png" width="85%" alt="CoDE Architecture"/>
   <br>
-  <em>Figure 2: CoDE internal architecture 鈥?(A) 4-layer expert hierarchy, (B) MetaExpert orchestration, (C) collaboration modes, (D) feedback loop.</em>
+  <em>Figure 2: CoDE internal architecture — (A) 4-layer expert hierarchy, (B) MetaExpert orchestration, (C) collaboration modes, (D) feedback loop.</em>
 </p>
 
 The CoDE (Council of Domain Experts) framework operates in three stages:
 
-1. **Layered Expert Selection**: 11 agents organized into 4 layers (Base 鈫?Analysis 鈫?Verification 鈫?Graph). For each chunk, a feature vector triggers layer-by-layer activation, truncated to K experts (default K=3).
+1. **Layered Expert Selection**: 11 agents organized into 4 layers (Base → Analysis → Verification → Graph). For each chunk, a feature vector triggers layer-by-layer activation, truncated to K experts (default K=3).
 
 2. **Multi-Expert Collaboration**: Selected experts collaborate in parallel (independent generation + voting) or sequential (context-passing chain) mode.
 
-3. **MetaExpert Feedback**: The MetaExpert extracts topics, synthesizes work instructions, and runs R feedback rounds (default R=2) with quality threshold 蟿=0.7.
+3. **MetaExpert Feedback**: The MetaExpert extracts topics, synthesizes work instructions, and runs R feedback rounds (default R=2) with quality threshold τ=0.7.
 
 ### Expert Types (11 Specialists)
 
 | Layer | Experts | Activation |
 |-------|---------|------------|
-| Base (Layer 1) | QA, Summary, Extraction, Classification, Analysis | Always 鈮? |
-| Analysis (Layer 2) | Temporal, Benchmark, Greenwashing | Feature 鈮?0.3 |
+| Base (Layer 1) | QA, Summary, Extraction, Classification, Analysis | Always ≥1 |
+| Analysis (Layer 2) | Temporal, Benchmark, Greenwashing | Feature ≥ 0.3 |
 | Verification (Layer 3) | Consistency, Standard Alignment | Numerical/standards |
-| Graph (Layer 4) | Knowledge Graph | Entity-relation 鈮?0.5 |
+| Graph (Layer 4) | Knowledge Graph | Entity-relation ≥ 0.5 |
 
 ## Dataset: VeritasCarbon-ESG-35K
 
@@ -165,7 +165,7 @@ The CoDE (Council of Domain Experts) framework operates in three stages:
 | Expert types | 11 |
 | Avg. instruction length | 106.5 chars |
 | Avg. response length | 380.4 chars |
-| Quality score (mean 卤 std) | 0.667 卤 0.103 |
+| Quality score (mean ± std) | 0.667 ± 0.103 |
 
 ### Data Availability
 
@@ -204,8 +204,8 @@ We release the dataset under a **tiered strategy** (see [`DATA_AVAILABILITY.md`]
 
 - **Expert Count**: K=3 optimal (quality 0.6453, +4.5% over K=1)
 - **Collaboration**: Parallel best (quality 0.6473, +4.8% over none)
-- **Feedback Rounds**: R=0 鈫?R=2 shows clear improvement (quality 0.6264 鈫?0.6494, +3.7%)
-- **Knowledge Injection**: +1.2% quality improvement (0.6273 鈫?0.6349)
+- **Feedback Rounds**: R=0 → R=2 shows clear improvement (quality 0.6264 → 0.6494, +3.7%)
+- **Knowledge Injection**: +1.2% quality improvement (0.6273 → 0.6349)
 
 ## Configuration
 
@@ -221,7 +221,7 @@ code:
   max_experts: 3          # K
   collaboration: parallel  # parallel | sequential
   feedback_rounds: 2       # R
-  quality_threshold: 0.7   # 蟿
+  quality_threshold: 0.7   # τ
 
 seed: 42
 ```
@@ -237,7 +237,7 @@ See `data/raw_corpus/CORPUS_MANIFEST.md` for the complete file listing.
 | Layer | Description | Documents | Chunks |
 |-------|-------------|-----------|--------|
 | Layer 1 | Domain textbooks | 97 | 8,877 |
-| Layer 2 | CSR reports (2006鈥?024) | 17,425 | 5,395 |
+| Layer 2 | CSR reports (2006–2024) | 17,425 | 5,395 |
 | Layer 3 | Regulatory guidelines | 92 | 3,237 |
 | Layer 4 | Industry analyses | 107 | 2,491 |
 
@@ -245,7 +245,7 @@ See `data/raw_corpus/CORPUS_MANIFEST.md` for the complete file listing.
 
 ```bibtex
 @misc{jiang2026veritascarbon,
-  title     = {VeritasCarbon: Traceable Instruction Data Generation for ESG Domain via a Council of Domain Experts},
+  title     = {VeritasCarbon: Scalable and Traceable Instruction Data Generation for ESG Domains},
   author    = {Jiang, Yihan and Peng, Fei and Woon, Kok Sin and Ren, Qianping and Xu, Yichang and Yang, Yujing},
   howpublished = {Under review at PVLDB Vol. 20 (VLDB 2027)},
   year      = {2026}

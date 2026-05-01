@@ -1,4 +1,4 @@
-#!/bin/bash
+﻿#!/bin/bash
 # Batch QA generation - process remaining chunks via papermill in background
 
 set -e
@@ -47,7 +47,7 @@ echo "Starting notebook (background)"
 echo "=========================================="
 echo ""
 echo "Process runs in background. Use tail -f ${LOG_FILE} for progress, kill <PID> to stop."
-echo "Estimated total time: ~2900h. Recommend batching 10k-50k chunks per run."
+echo "Recommend batching 10k-50k chunks per run."
 echo ""
 
 read -p "Continue? (y/n) " -n 1 -r

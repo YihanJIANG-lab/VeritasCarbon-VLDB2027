@@ -1,6 +1,6 @@
-﻿# Reproducibility Guide
+# Reproducibility Guide
 
-> **Goal**: Verify all key results in the paper within **30 minutes** on a standard machine (no GPU required for verification; GPU needed only for full regeneration).
+> **Goal**: Verify all key results in the paper on a standard machine (no GPU required for verification; GPU needed only for full regeneration).
 
 ---
 
@@ -19,7 +19,7 @@ pip install -r requirements.txt
 
 ---
 
-## Track A: Verify Pre-computed Results (10 minutes, no GPU)
+## Track A: Verify Pre-computed Results (no GPU)
 
 All paper tables and figures are already generated and stored in `results/`. You can verify them directly.
 
@@ -64,7 +64,7 @@ python3 scripts/generate_paper_results.py --figures
 
 ---
 
-## Track B: Replicate Evaluation on the 2,000-Pair Sample (15 minutes, no GPU)
+## Track B: Replicate Evaluation on the 2,000-Pair Sample (no GPU)
 
 The repository includes a **2,000-pair representative sample** (`data/sample/veritascarbon_sample_2000.jsonl`) drawn with `seed=42`. You can run the canonical evaluator on this sample to verify the evaluation pipeline.
 
@@ -84,7 +84,7 @@ python3 src/instruction_generation/intrinsic_evaluation_03_03.py \
 
 ---
 
-## Track C: Full Regeneration (hours, requires GPU)
+## Track C: Full Regeneration (requires GPU)
 
 To reproduce the **entire dataset from scratch** (35,009 pairs + all baselines + ablations):
 
@@ -118,17 +118,16 @@ jupyter notebook notebooks/03_VLDB2027_Experiments.ipynb
 
 ## Quick Checklist for Reviewers
 
-| Claim in Paper | How to Verify | Time |
-|----------------|---------------|------|
-| Table 2: CoDE outperforms baselines | Read `results/outputs/intrinsic_comparison.json` | 1 min |
-| Table 3: Ablation results | Read `results/figures_and_tables/table3_ablation.tex` | 1 min |
-| Fig 5: Quality distribution | Run `scripts/generate_paper_results.py --figures` | 2 min |
-| Dataset size: 35,009 pairs | Check `results/figures_and_tables/table2_qa_statistics.json` | 1 min |
-| Data provenance: traceable chunks | Inspect any record in `data/sample/veritascarbon_sample_2000.jsonl` | 1 min |
-| Evaluation pipeline is sound | Run `intrinsic_evaluation_03_03.py` on sample (Track B) | 10 min |
-| Code quality & structure | Browse `src/` and `scripts/` | 5 min |
+| Claim in Paper | How to Verify |
+|----------------|---------------|
+| Table 2: CoDE outperforms baselines | Read `results/outputs/intrinsic_comparison.json` |
+| Table 3: Ablation results | Read `results/figures_and_tables/table3_ablation.tex` |
+| Fig 5: Quality distribution | Run `scripts/generate_paper_results.py --figures` |
+| Dataset size: 35,009 pairs | Check `results/figures_and_tables/table2_qa_statistics.json` |
+| Data provenance: traceable chunks | Inspect any record in `data/sample/veritascarbon_sample_2000.jsonl` |
+| Evaluation pipeline is sound | Run `intrinsic_evaluation_03_03.py` on sample (Track B) |
+| Code quality & structure | Browse `src/` and `scripts/` |
 
-**Total verification time**: < 30 minutes.
 
 ---
 

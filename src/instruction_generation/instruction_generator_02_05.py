@@ -79,18 +79,18 @@ class InstructionGenerator:
             api_config = self.config.get("api", {})
             if not api_config:
                 api_config = {
-                    "provider": self.coe_config.get("api_provider", "google"),
-                    "model_name": self.coe_config.get("model_name", "gemini-3-flash-preview"),
+                    "provider": self.coe_config.get("api_provider", "openai"),
+                    "model_name": self.coe_config.get("model_name", "gpt-4"),
                     "api_key": None
                 }
             self.topic_extractor = TopicExtractor(
-                api_provider=api_config.get("provider", "google"),
-                model_name=api_config.get("model_name", "gemini-3-flash-preview"),
+                api_provider=api_config.get("provider", "openai"),
+                model_name=api_config.get("model_name", "gpt-4"),
                 api_key=api_config.get("api_key")
             )
             self.meta_expert = MetaExpert(
-                api_provider=api_config.get("provider", "google"),
-                model_name=api_config.get("model_name", "gemini-3-flash-preview"),
+                api_provider=api_config.get("provider", "openai"),
+                model_name=api_config.get("model_name", "gpt-4"),
                 carbon_centric=self.coe_config.get("carbon_centric", True),
                 api_key=api_config.get("api_key")
             )

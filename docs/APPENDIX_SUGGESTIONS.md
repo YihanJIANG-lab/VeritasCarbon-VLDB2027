@@ -1,4 +1,4 @@
-﻿# Appendix Content Suggestions (VLDB 2027)
+# Appendix Content Suggestions (VLDB 2027)
 
 Below is a ranked list of appendix materials that strengthen reproducibility, transparency, and reviewer confidence. Items marked 猸?are **high-impact** and strongly recommended.
 
@@ -22,7 +22,7 @@ A condensed version of `REPRODUCIBILITY.md` formatted as a table:
 | Table 2 CoDE ROUGE-L | `cat results/outputs/intrinsic_comparison.json` | 0.3380 | 30 sec |
 | ... | ... | ... | ... |
 
-This signals to reviewers: *"You can verify everything in under 30 minutes."*
+This signals to reviewers: *"All verification steps can be performed on a standard machine."*
 
 ### 猸?A.3 Prompt Templates for All 11 Expert Agents (2鈥? pages)
 
@@ -97,11 +97,11 @@ From `results/scalability/scalability_results.json`:
 
 | Stage | Avg Time / Record | Total (35K) |
 |-------|------------------|-------------|
-| Expert Selection | 0.02 s | ~12 min |
-| Knowledge Retrieval | 0.15 s | ~88 min |
-| Parallel Generation | 2.8 s | ~27 hrs |
-| MetaExpert Feedback (R=2) | 1.9 s | ~18 hrs |
-| **Total** | **~5 s** | **~46 hrs** |
+| Expert Selection | — | — |
+| Knowledge Retrieval | — | — |
+| Parallel Generation | — | — |
+| MetaExpert Feedback (R=2) | — | — |
+| **Total** | **—** | **—** |
 
 *Note: Times measured on A800 (80GB) with Unsloth 4-bit Qwen2-72B-Instruct.*
 

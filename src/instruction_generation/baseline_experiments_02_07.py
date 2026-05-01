@@ -2,6 +2,12 @@
 02-07 Baseline comparison experiments.
 
 Self-Instruct, Alpaca, WizardLM, GPT-4 direct, human (upper bound).
+
+NOTE: Paper baselines (Section 4.2) use local Qwen2-72B-Instruct
+(Section 4.2 states: "All methods use the same underlying model").
+This module defaults to OpenAI API for compatibility with original
+Self-Instruct/WizardLM implementations. To reproduce paper results
+with local models, use the LocalQwenExpertAdapter from notebook 03.
 """
 
 import json
