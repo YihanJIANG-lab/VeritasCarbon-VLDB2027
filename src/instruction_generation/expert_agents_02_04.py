@@ -70,7 +70,7 @@ class BaseExpert:
         """
         Args:
             name: Expert name
-            api_provider: API provider (openai, anthropic, zhipu, google)
+            api_provider: API provider (openai, anthropic)
             model_name: Model name
             temperature: Sampling temperature
             max_tokens: Max tokens
@@ -107,17 +107,6 @@ class BaseExpert:
                     logger.info(f"Anthropic API initialized (model: {self.model_name})")
             except ImportError:
                 logger.error("anthropic not installed; pip install anthropic")
-        elif self.api_provider == "zhipu":
-            try:
-                from zhipuai import ZhipuAI
-                api_key = os.getenv("ZHIPU_API_KEY")
-                if not api_key:
-                    logger.error("ZHIPU_API_KEY not set")
-                else:
-                    self.api_client = ZhipuAI(api_key=api_key)
-                    logger.info(f"Zhipu API initialized (model: {self.model_name})")
-            except ImportError:
-                logger.error("zhipuai not installed; pip install zhipuai")
         elif self.api_provider == "google":
             try:
                 from google import genai
@@ -137,7 +126,7 @@ class BaseExpert:
         if not self.api_client:
             error_msg = f"API client not initialized: {self.api_provider}"
             logger.error(error_msg)
-            logger.error("Check OPENAI_API_KEY, ANTHROPIC_API_KEY, ZHIPU_API_KEY, or GOOGLE_API_KEY")
+            logger.error("Check OPENAI_API_KEY or ANTHROPIC_API_KEY")
             raise ValueError(error_msg)
         if self.api_provider == "google":
             try:
@@ -173,17 +162,6 @@ class BaseExpert:
                     content = response.content[0].text
                     if not content:
                         logger.warning("Anthropic API returned empty content")
-                    return content or ""
-                elif self.api_provider == "zhipu":
-                    response = self.api_client.chat.completions.create(
-                        model=self.model_name,
-                        messages=[{"role": "user", "content": prompt}],
-                        temperature=self.temperature,
-                        max_tokens=self.max_tokens
-                    )
-                    content = response.choices[0].message.content
-                    if not content:
-                        logger.warning("Zhipu API returned empty content")
                     return content or ""
                 elif self.api_provider == "google":
                     response = self.api_client.models.generate_content(

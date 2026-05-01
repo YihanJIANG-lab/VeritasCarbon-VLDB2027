@@ -1,4 +1,4 @@
----
+﻿---
 dataset_info:
   features:
     - name: instruction
@@ -63,11 +63,11 @@ VeritasCarbon-ESG-35K contains **35,009 high-quality instruction-response pairs*
 | Layer | Description | Documents | Chunks |
 |-------|-------------|-----------|--------|
 | Layer 1 | Domain textbooks & standards | 97 | 8,877 |
-| Layer 2 | Corporate CSR/Sustainability reports (2006–2024) | 17,425 | 5,395 |
+| Layer 2 | Corporate CSR/Sustainability reports (2006鈥?024) | 17,425 | 5,395 |
 | Layer 3 | Regulatory guidelines & policies | 92 | 3,237 |
 | Layer 4 | Industry analyses & research papers | 107 | 2,491 |
 
-Every pair retains **full provenance** (source chunk ID, document ID, generation metadata) and a **quality score** (0–1) assigned by the CoDE MetaExpert.
+Every pair retains **full provenance** (source chunk ID, document ID, generation metadata) and a **quality score** (0鈥?) assigned by the CoDE MetaExpert.
 
 ## Dataset Composition
 
@@ -79,7 +79,7 @@ Every pair retains **full provenance** (source chunk ID, document ID, generation
 | Expert types | 11 |
 | Avg. instruction length | 106.5 chars |
 | Avg. response length | 380.4 chars |
-| Quality score (mean ± std) | 0.667 ± 0.103 |
+| Quality score (mean 卤 std) | 0.667 卤 0.103 |
 | Multi-expert involvement | 45.1% |
 
 ## Data Fields
@@ -94,7 +94,7 @@ Each record contains:
   - `quality_score`: Float in [0, 1] (MetaExpert assessment)
   - `selected_experts`: List of expert agents used (e.g., `["analysis_expert", "evaluation_expert"]`)
   - `collaboration_mode`: `"parallel"` or `"sequential"`
-  - `max_iterations`: Number of feedback rounds (0–2)
+  - `max_iterations`: Number of feedback rounds (0鈥?)
   - `knowledge_items_count`: Number of injected domain knowledge items
   - `core_topics`: Identified ESG sub-topics
   - `model`: Generator model (`"Qwen2-72B-Instruct"`)
@@ -145,10 +145,10 @@ The dataset was evaluated against three baselines (Direct Prompting, Self-Instru
 
 | Metric | CoDE (ours) | Best Baseline | Improvement |
 |--------|-------------|---------------|-------------|
-| ROUGE-L | 0.3380 | 0.0838 | **4.0×** |
-| BLEU-4 | 0.1932 | 0.0424 | **4.6×** |
-| Domain Relevance | 0.3637 | 0.0249 | **14.6×** |
-| FactCheck Score | 0.9478 | 0.9312 | — |
+| ROUGE-L | 0.3380 | 0.0838 | **4.0脳** |
+| BLEU-4 | 0.1932 | 0.0424 | **4.6脳** |
+| Domain Relevance | 0.3637 | 0.0249 | **14.6脳** |
+| FactCheck Score | 0.9478 | 0.9312 | 鈥?|
 
 Evaluation used a fixed 2,000-pair subset (`random.seed(42)`) for fair comparison.
 
@@ -170,9 +170,9 @@ Evaluation used a fixed 2,000-pair subset (`random.seed(42)`) for fair compariso
 
 - **Language**: Primarily Chinese; some responses may contain English terms common in ESG reporting
 - **Domain specificity**: Optimized for ESG/finance; transfer to other domains requires adaptation
-- **Temporal coverage**: Source documents span 2006–2024; regulations and standards evolve
+- **Temporal coverage**: Source documents span 2006鈥?024; regulations and standards evolve
 - **Copyright**: Source documents are copyrighted by their respective issuers; only generated instruction-response pairs and metadata are released
 
 ## Acknowledgments
 
-Generated using Qwen2-72B-Instruct (4-bit quantized via Unsloth) on on-premises A100 GPUs.
+Generated using Qwen2-72B-Instruct (4-bit quantized via Unsloth) on on-premises A800 GPUs.

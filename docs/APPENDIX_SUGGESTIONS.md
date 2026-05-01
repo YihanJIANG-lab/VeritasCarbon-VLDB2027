@@ -1,19 +1,19 @@
-# Appendix Content Suggestions (VLDB 2027)
+﻿# Appendix Content Suggestions (VLDB 2027)
 
-Below is a ranked list of appendix materials that strengthen reproducibility, transparency, and reviewer confidence. Items marked ⭐ are **high-impact** and strongly recommended.
+Below is a ranked list of appendix materials that strengthen reproducibility, transparency, and reviewer confidence. Items marked 猸?are **high-impact** and strongly recommended.
 
 ---
 
 ## Tier 1: Essential (Strongly Recommended)
 
-### ⭐ A.1 Data Availability Statement (1 page)
+### 猸?A.1 Data Availability Statement (1 page)
 
 Place the exact text from `DATA_AVAILABILITY.md` into the paper appendix. VLDB reviewers expect to see this explicitly.
 
 **Key sentence to include**:
 > *"The full VeritasCarbon-ESG-35K dataset (35,009 pairs) is available at [HF URL] under CC BY-SA 4.0. A representative 2,000-pair sample is included in the GitHub repository to replicate Table 2 without downloading the full corpus."*
 
-### ⭐ A.2 30-Minute Reproducibility Checklist (1 page)
+### 猸?A.2 30-Minute Reproducibility Checklist (1 page)
 
 A condensed version of `REPRODUCIBILITY.md` formatted as a table:
 
@@ -24,7 +24,7 @@ A condensed version of `REPRODUCIBILITY.md` formatted as a table:
 
 This signals to reviewers: *"You can verify everything in under 30 minutes."*
 
-### ⭐ A.3 Prompt Templates for All 11 Expert Agents (2–3 pages)
+### 猸?A.3 Prompt Templates for All 11 Expert Agents (2鈥? pages)
 
 This is **the single most requested artifact** in multi-agent LLM papers. Reviewers want to see:
 
@@ -47,13 +47,13 @@ This is **the single most requested artifact** in multi-agent LLM papers. Review
 | Model | Qwen2-72B-Instruct | `configs/config.yaml` |
 | Quantization | 4-bit (NF4) | Unsloth |
 | Temperature | 0.7 | `coe_framework_02_03.py` |
-| Max tokens (instruction) | 512 | — |
-| Max tokens (response) | 1024 | — |
+| Max tokens (instruction) | 512 | 鈥?|
+| Max tokens (response) | 1024 | 鈥?|
 | Chunk size | 2,000 chars | `text_chunker_01_03.py` |
-| Chunk overlap | 200 chars | — |
+| Chunk overlap | 200 chars | 鈥?|
 | Expert selection threshold | 0.5 | `expert_selector_02_01.py` |
 | Feedback rounds (default) | 2 | `meta_expert_02_09.py` |
-| Quality threshold (accept) | 0.6 | — |
+| Quality threshold (accept) | 0.6 | 鈥?|
 | Random seed | 42 | All sampling steps |
 
 ### A.5 Expert Selection Decision Logic (0.5 page)
@@ -62,13 +62,13 @@ Document the rule-based expert selector in pseudocode or flowchart form. Reviewe
 
 Example:
 ```
-IF chunk contains "carbon emission" AND "target" → assign [analysis_expert, evaluation_expert]
-IF chunk contains "employee" AND "training" → assign [extraction_expert, comparison_expert]
+IF chunk contains "carbon emission" AND "target" 鈫?assign [analysis_expert, evaluation_expert]
+IF chunk contains "employee" AND "training" 鈫?assign [extraction_expert, comparison_expert]
 ```
 
 ### A.6 Error Analysis: High-Quality vs. Low-Quality Examples (1 page)
 
-Pick 2–3 concrete examples from the dataset:
+Pick 2鈥? concrete examples from the dataset:
 - **High-quality** (quality_score > 0.8): Show what makes it good
 - **Low-quality** (quality_score < 0.5): Show failure modes and why MetaExpert couldn't fix it
 
@@ -103,7 +103,7 @@ From `results/scalability/scalability_results.json`:
 | MetaExpert Feedback (R=2) | 1.9 s | ~18 hrs |
 | **Total** | **~5 s** | **~46 hrs** |
 
-*Note: Times measured on A100 (80GB) with Unsloth 4-bit Qwen2-72B-Instruct.*
+*Note: Times measured on A800 (80GB) with Unsloth 4-bit Qwen2-72B-Instruct.*
 
 ### A.9 Corpus License & Copyright Declaration (0.3 page)
 
@@ -121,10 +121,10 @@ A small table positioning VeritasCarbon-ESG-35K against prior work:
 
 | Dataset | Size | Language | Traceable | Multi-task | Domain |
 |---------|------|----------|-----------|------------|--------|
-| ESG-BERT Corpus | 50K | EN | ❌ | ❌ | Classification |
-| FiQA | 17K | EN | ❌ | ✅ | Finance QA |
-| C-ESG | 8K | ZH | ❌ | ❌ | Classification |
-| **VeritasCarbon-ESG-35K** | **35K** | **ZH** | **✅** | **✅** | **Instruction** |
+| ESG-BERT Corpus | 50K | EN | 鉂?| 鉂?| Classification |
+| FiQA | 17K | EN | 鉂?| 鉁?| Finance QA |
+| C-ESG | 8K | ZH | 鉂?| 鉂?| Classification |
+| **VeritasCarbon-ESG-35K** | **35K** | **ZH** | **鉁?* | **鉁?* | **Instruction** |
 
 *(Use real datasets from your literature review.)*
 
@@ -138,16 +138,16 @@ If not already in the main paper, include a radar chart or bar chart showing the
 
 ### A.12 Generated vs. Human-Written Comparison
 
-If you have any human-written ESG QAs for comparison, show 1–2 examples highlighting where CoDE excels (e.g., multi-layer reasoning) or where humans still win (e.g., nuanced stakeholder analysis).
+If you have any human-written ESG QAs for comparison, show 1鈥? examples highlighting where CoDE excels (e.g., multi-layer reasoning) or where humans still win (e.g., nuanced stakeholder analysis).
 
 ---
 
 ## What NOT to Put in the Appendix
 
-- ❌ Raw JSONL dumps (use HF/GitHub links instead)
-- ❌ Full LaTeX tables that are already in the paper (redundant)
-- ❌ Code listings longer than 1 page (point to GitHub)
-- ❌ Excessive ablation dimensions beyond the 4 core ones (dilutes focus)
+- 鉂?Raw JSONL dumps (use HF/GitHub links instead)
+- 鉂?Full LaTeX tables that are already in the paper (redundant)
+- 鉂?Code listings longer than 1 page (point to GitHub)
+- 鉂?Excessive ablation dimensions beyond the 4 core ones (dilutes focus)
 
 ---
 
@@ -163,4 +163,4 @@ If you have any human-written ESG QAs for comparison, show 1–2 examples highli
 8. **A.8** Latency Breakdown *(optional)*
 9. **A.9** Copyright Declaration *(optional)*
 
-**Total estimated length**: 6–8 pages. This is well within typical VLDB appendix limits.
+**Total estimated length**: 6鈥? pages. This is well within typical VLDB appendix limits.

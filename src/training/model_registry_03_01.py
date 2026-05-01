@@ -1,8 +1,8 @@
-"""
+﻿"""
 03-01 Model Registry: Candidate models for VeritasCarbon fine-tuning.
 
 Maintains a registry of all candidate student models with their configurations,
-hardware requirements, and loading utilities. Supports the Teacher→Student
+hardware requirements, and loading utilities. Supports the Teacher鈫扴tudent
 knowledge distillation paradigm where Qwen2-72B is the teacher.
 
 Naming convention: filename_03_01.py (notebook 03, 1st module)
@@ -32,9 +32,9 @@ class Architecture(Enum):
     MOE = "moe"
 
 
-# ═══════════════════════════════════════════════════════════════════
+# 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?
 #  LOCAL MODEL STORAGE
-# ═══════════════════════════════════════════════════════════════════
+# 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?
 
 # Base directory for locally downloaded model weights.
 # All models are stored as: MODEL_BASE_DIR / <folder_name> /
@@ -45,7 +45,7 @@ MODEL_BASE_DIR = Path("/hpc2hdd/home/yjiang909/models")
 class ModelSpec:
     """Specification for a candidate fine-tuning model."""
 
-    # ── Identity ──
+    # 鈹€鈹€ Identity 鈹€鈹€
     model_id: str                    # HuggingFace model ID
     display_name: str                # Human-readable name for tables
     short_name: str                  # Short key for file naming
@@ -53,41 +53,41 @@ class ModelSpec:
     param_count: str                 # e.g., "7B", "14B"
     param_count_numeric: float       # In billions, for sorting
 
-    # ── Architecture ──
+    # 鈹€鈹€ Architecture 鈹€鈹€
     architecture: Architecture = Architecture.DENSE
     active_params: Optional[str] = None  # For MoE: active param count
 
-    # ── Capabilities ──
+    # 鈹€鈹€ Capabilities 鈹€鈹€
     chinese_capability: str = "excellent"   # excellent / good / fair
     max_context_length: int = 8192
     license_type: str = "Apache 2.0"
 
-    # ── Hardware ──
+    # 鈹€鈹€ Hardware 鈹€鈹€
     qlora_vram_gb: float = 16.0       # Estimated VRAM for QLoRA
     min_gpus: int = 1                  # Minimum GPU count
-    recommended_gpu: str = "A100-80G"
+    recommended_gpu: str = "A800-80G"
 
-    # ── Experiment ──
+    # 鈹€鈹€ Experiment 鈹€鈹€
     tier: ModelTier = ModelTier.PRIMARY
     experiment_role: str = ""          # Description of role in experiment
     rationale: str = ""                # Why this model is selected
 
-    # ── Local path ──
+    # 鈹€鈹€ Local path 鈹€鈹€
     local_dir_name: str = ""           # Folder name under MODEL_BASE_DIR
     disk_size_gb: float = 0.0          # Approximate download size
 
-    # ── QLoRA defaults (can be overridden per model) ──
+    # 鈹€鈹€ QLoRA defaults (can be overridden per model) 鈹€鈹€
     lora_r: int = 16
     lora_alpha: int = 32
     lora_dropout: float = 0.1
     lora_target_modules: List[str] = field(default_factory=lambda: ["q_proj", "v_proj"])
 
-    # ── Unsloth compatibility ──
+    # 鈹€鈹€ Unsloth compatibility 鈹€鈹€
     unsloth_compatible: bool = True  # False for models with known Unsloth bugs
     max_seq_length_override: int = 0  # Override max_seq_length for Unsloth (0 = use default)
     dtype_override: str = ""  # "float16" or "bfloat16" (empty = auto)
 
-    # ── Training defaults ──
+    # 鈹€鈹€ Training defaults 鈹€鈹€
     per_device_train_batch_size: int = 4
     gradient_accumulation_steps: int = 4
     learning_rate: float = 2e-4
@@ -146,9 +146,9 @@ class ModelSpec:
         }
 
 
-# ═══════════════════════════════════════════════════════════════════
-#  MODEL REGISTRY — All candidate models for VeritasCarbon
-# ═══════════════════════════════════════════════════════════════════
+# 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?
+#  MODEL REGISTRY 鈥?All candidate models for VeritasCarbon
+# 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?
 
 MODEL_REGISTRY: Dict[str, ModelSpec] = {}
 
@@ -159,7 +159,7 @@ def register_model(spec: ModelSpec) -> ModelSpec:
     return spec
 
 
-# ── Tier-1: Primary Experiments (Qwen family) ──
+# 鈹€鈹€ Tier-1: Primary Experiments (Qwen family) 鈹€鈹€
 
 register_model(ModelSpec(
     model_id="Qwen/Qwen2.5-7B-Instruct",
@@ -172,7 +172,7 @@ register_model(ModelSpec(
     license_type="Apache 2.0",
     qlora_vram_gb=16.0,
     min_gpus=1,
-    recommended_gpu="A100-40G",
+    recommended_gpu="A800-80G",
     tier=ModelTier.PRIMARY,
     experiment_role="Primary student model",
     rationale=(
@@ -201,11 +201,11 @@ register_model(ModelSpec(
     license_type="Apache 2.0",
     qlora_vram_gb=28.0,
     min_gpus=1,
-    recommended_gpu="A100-80G",
+    recommended_gpu="A800-80G",
     tier=ModelTier.SCALING,
     experiment_role="Scaling ablation mid-point",
     rationale=(
-        "Critical mid-point for the model scale ablation: 7B → 14B → 72B. "
+        "Critical mid-point for the model scale ablation: 7B 鈫?14B 鈫?72B. "
         "Enables plotting a proper scaling curve. 14B offers the best balance "
         "between capability and deployment cost for real-world ESG applications."
     ),
@@ -228,7 +228,7 @@ register_model(ModelSpec(
     license_type="Tongyi Qianwen License",
     qlora_vram_gb=48.0,
     min_gpus=1,
-    recommended_gpu="A100-80G",
+    recommended_gpu="A800-80G",
     tier=ModelTier.SELF_TRAINING,
     experiment_role="Self-training control (teacher model itself)",
     rationale=(
@@ -248,26 +248,27 @@ register_model(ModelSpec(
     dtype_override="float16",  # Explicit fp16 to reduce memory overhead
 ))
 
-# ── Tier-2: Cross-Architecture Generalization ──
+# 鈹€鈹€ Tier-2: Cross-Architecture Generalization 鈹€鈹€
 
 register_model(ModelSpec(
     model_id="THUDM/glm-4-9b-chat",
     display_name="GLM-4-9B",
     short_name="glm4-9b",
-    organization="Zhipu AI / Tsinghua",
+    organization="Tsinghua",
     param_count="9B",
     param_count_numeric=9.0,
     max_context_length=131072,
     license_type="Zhipu Open License",
     qlora_vram_gb=20.0,
     min_gpus=1,
-    recommended_gpu="A100-40G",
+    recommended_gpu="A800-80G",
     tier=ModelTier.CROSS_ARCH,
     experiment_role="Cross-architecture: GLM family",
     rationale=(
-        "Project already uses Zhipu GLM-4 API for QA generation (config api.provider='zhipu'). "
         "Cross-family validation proves CoDE data generalizes beyond Qwen. "
-        "Tsinghua-backed model has high academic credibility in Chinese NLP community."
+        "Tsinghua-backed model has high academic credibility in Chinese NLP community. "
+        "Note: GLM-4-9B is used ONLY as a downstream fine-tuning candidate; "
+        "all instruction generation uses Qwen2-72B-Instruct locally."
     ),
     local_dir_name="glm-4-9b-chat",
     disk_size_gb=18.0,
@@ -290,19 +291,19 @@ register_model(ModelSpec(
     license_type="DeepSeek License",
     qlora_vram_gb=24.0,
     min_gpus=1,
-    recommended_gpu="A100-80G",
+    recommended_gpu="A800-80G",
     tier=ModelTier.CROSS_ARCH,
     experiment_role="Cross-architecture: MoE representative",
     rationale=(
-        "Only MoE architecture in the candidate list — provides architecture diversity. "
-        "16B total params but only 2.4B active → extremely fast inference, ideal for "
+        "Only MoE architecture in the candidate list 鈥?provides architecture diversity. "
+        "16B total params but only 2.4B active 鈫?extremely fast inference, ideal for "
         "deployment. DeepSeek excels in financial/analytical domains, aligning with ESG."
     ),
     local_dir_name="DeepSeek-V2-Lite-Chat",
     disk_size_gb=32.0,
-    # MLA attention only — do NOT include gate_proj/up_proj/down_proj
-    # as they exist inside each of the 64 MoE experts (5184 LoRA adapters → OOM).
-    # q_lora_rank=None → uses q_proj directly; kv uses compressed MLA path.
+    # MLA attention only 鈥?do NOT include gate_proj/up_proj/down_proj
+    # as they exist inside each of the 64 MoE experts (5184 LoRA adapters 鈫?OOM).
+    # q_lora_rank=None 鈫?uses q_proj directly; kv uses compressed MLA path.
     lora_target_modules=["q_proj", "kv_a_proj_with_mqa", "kv_b_proj", "o_proj"],
     per_device_train_batch_size=1,
     gradient_accumulation_steps=16,
@@ -321,11 +322,11 @@ register_model(ModelSpec(
     license_type="Apache 2.0",
     qlora_vram_gb=16.0,
     min_gpus=1,
-    recommended_gpu="A100-40G",
+    recommended_gpu="A800-80G",
     tier=ModelTier.CROSS_ARCH,
     experiment_role="Cross-architecture: InternLM family",
     rationale=(
-        "Outstanding long-context capability (1M tokens) — ESG reports are long documents. "
+        "Outstanding long-context capability (1M tokens) 鈥?ESG reports are long documents. "
         "Strong agent/tool-use abilities align with CoDE's multi-expert design. "
         "Shanghai AI Lab (national team) has high academic credibility."
     ),
@@ -337,7 +338,7 @@ register_model(ModelSpec(
     unsloth_compatible=False,  # InternLM2 forward() rejects Unsloth's causal_mask kwarg
 ))
 
-# ── Tier-3: Optional ──
+# 鈹€鈹€ Tier-3: Optional 鈹€鈹€
 
 register_model(ModelSpec(
     model_id="01-ai/Yi-1.5-9B-Chat",
@@ -350,7 +351,7 @@ register_model(ModelSpec(
     license_type="Apache 2.0",
     qlora_vram_gb=18.0,
     min_gpus=1,
-    recommended_gpu="A100-40G",
+    recommended_gpu="A800-80G",
     tier=ModelTier.OPTIONAL,
     experiment_role="Optional: additional cross-family validation",
     rationale=(
@@ -364,9 +365,9 @@ register_model(ModelSpec(
 ))
 
 
-# ═══════════════════════════════════════════════════════════════════
+# 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?
 #  UTILITY FUNCTIONS
-# ═══════════════════════════════════════════════════════════════════
+# 鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺愨晲鈺?
 
 def get_model(short_name: str) -> ModelSpec:
     """Get a model spec by short name."""
@@ -413,7 +414,7 @@ def print_registry_summary() -> None:
     }
 
     print("=" * 90)
-    print("  VeritasCarbon Model Registry — Candidate Fine-tuning Models")
+    print("  VeritasCarbon Model Registry 鈥?Candidate Fine-tuning Models")
     print("=" * 90)
     print(f"\n  Teacher model: Qwen2-72B-Instruct (used for CoDE QA generation)")
     print(f"  Training data: train_filtered.jsonl (31,315 QA pairs, Alpaca format)")
@@ -424,17 +425,17 @@ def print_registry_summary() -> None:
                         key=lambda m: (list(ModelTier).index(m.tier), m.param_count_numeric)):
         if model.tier != current_tier:
             current_tier = model.tier
-            print(f"\n{'─' * 90}")
+            print(f"\n{'鈹€' * 90}")
             print(f"  {tier_labels.get(current_tier, current_tier.value)}")
-            print(f"{'─' * 90}")
+            print(f"{'鈹€' * 90}")
 
         arch_str = f" ({model.active_params} active)" if model.active_params else ""
-        dl_status = "✅ Downloaded" if model.is_downloaded else "❌ Not downloaded"
+        dl_status = "鉁?Downloaded" if model.is_downloaded else "鉂?Not downloaded"
         print(f"\n  [{model.short_name}] {model.display_name}")
         print(f"    Model ID:      {model.model_id}")
         print(f"    Organization:  {model.organization}")
         print(f"    Params:        {model.param_count}{arch_str}  |  Arch: {model.architecture.value}")
-        print(f"    VRAM (QLoRA):  ~{model.qlora_vram_gb:.0f}GB  |  GPU: {model.min_gpus}× {model.recommended_gpu}")
+        print(f"    VRAM (QLoRA):  ~{model.qlora_vram_gb:.0f}GB  |  GPU: {model.min_gpus}脳 {model.recommended_gpu}")
         print(f"    Disk size:     ~{model.disk_size_gb:.0f}GB  |  {dl_status}")
         print(f"    Local path:    {model.resolved_path}")
         print(f"    License:       {model.license_type}")
@@ -445,22 +446,22 @@ def check_downloads() -> Dict[str, bool]:
     """Check which models are downloaded locally.
 
     Returns:
-        Dict mapping short_name → is_downloaded.
+        Dict mapping short_name 鈫?is_downloaded.
     """
     status = {}
     total_needed = 0.0
     total_downloaded = 0.0
 
     print(f"Model download status ({MODEL_BASE_DIR}):")
-    print(f"{'─' * 75}")
+    print(f"{'鈹€' * 75}")
     print(f"  {'Model':<25} {'Size':>8} {'Status':>15} {'Local Path'}")
-    print(f"{'─' * 75}")
+    print(f"{'鈹€' * 75}")
 
     for model in sorted(MODEL_REGISTRY.values(),
                         key=lambda m: (list(ModelTier).index(m.tier), m.param_count_numeric)):
         dl = model.is_downloaded
         status[model.short_name] = dl
-        icon = "✅" if dl else "❌"
+        icon = "鉁? if dl else "鉂?
         path_str = str(model.local_path) if dl else "(not found)"
         print(f"  {model.short_name:<25} {model.disk_size_gb:>6.0f}GB  {icon:>12}  {path_str}")
         total_needed += model.disk_size_gb
@@ -470,12 +471,12 @@ def check_downloads() -> Dict[str, bool]:
     n_ok = sum(1 for v in status.values() if v)
     n_total = len(status)
     missing_gb = total_needed - total_downloaded
-    print(f"{'─' * 75}")
+    print(f"{'鈹€' * 75}")
     print(f"  Downloaded: {n_ok}/{n_total} models "
           f"({total_downloaded:.0f}GB / {total_needed:.0f}GB)")
     if missing_gb > 0:
         print(f"  Need to download: ~{missing_gb:.0f}GB more")
     else:
-        print(f"  All models ready! ✅")
+        print(f"  All models ready! 鉁?)
 
     return status
