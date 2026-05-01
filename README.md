@@ -17,7 +17,7 @@ VeritasCarbon converts **17,721 ESG disclosure documents** into **35,009 traceab
 - Every generated QA pair retains source mapping for full data provenance
 
 <p align="center">
-  <img src="paper/figures/fig1_pipeline_clean.png" width="85%" alt="VeritasCarbon Pipeline"/>
+  <img src="paper/figures/fig1_pipeline.png" width="85%" alt="VeritasCarbon Pipeline"/>
   <br>
   <em>Figure 1: The VeritasCarbon pipeline — from raw ESG documents to traceable instruction data.</em>
 </p>
@@ -133,7 +133,7 @@ All experiments use **random seed 42** and the same **Qwen2-72B-Instruct (4-bit)
 ## CoDE Framework
 
 <p align="center">
-  <img src="paper/figures/fig2_code_arch_clean.png" width="85%" alt="CoDE Architecture"/>
+  <img src="paper/figures/fig2_code_arch.png" width="85%" alt="CoDE Architecture"/>
   <br>
   <em>Figure 2: CoDE internal architecture — (A) 4-layer expert hierarchy, (B) MetaExpert orchestration, (C) collaboration modes, (D) feedback loop.</em>
 </p>
